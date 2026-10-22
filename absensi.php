@@ -8,6 +8,7 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 $templates = dbFetchAll("SELECT * FROM template_ujian WHERE aktif = 1 ORDER BY id DESC");
 $classes = dbFetchAll("SELECT * FROM kelas WHERE aktif = 1 ORDER BY tingkat DESC, nama_kelas ASC");
 $gurus = dbFetchAll("SELECT * FROM guru WHERE aktif = 1 ORDER BY nama ASC");
+$mapels = dbFetchAll("SELECT * FROM mapel WHERE aktif = 1 ORDER BY nama_mapel ASC");
 
 $defaultTpl = $templates[0] ?? [
     'nama_ujian' => 'Sumatif Akhir Semester (SAS) Ganjil',
@@ -113,8 +114,15 @@ $defaultTpl = $templates[0] ?? [
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="mata_pelajaran">Mata Pelajaran <span class="required">*</span></label>
-                                <input type="text" name="mata_pelajaran" id="mata_pelajaran" class="form-control" 
-                                       placeholder="Contoh: Pemrograman Web" required>
+                                <input type="text" name="mata_pelajaran" id="mata_pelajaran" class="form-control input-mapel-search" 
+                                       list="datalist_mapel" placeholder="Ketik atau pilih mata pelajaran..." autocomplete="off" required>
+                                <datalist id="datalist_mapel">
+                                    <?php foreach ($mapels as $m): ?>
+                                        <option value="<?= htmlspecialchars($m['nama_mapel']) ?>">
+                                            <?= !empty($m['kode_mapel']) ? '[' . htmlspecialchars($m['kode_mapel']) . '] ' : '' ?><?= htmlspecialchars($m['nama_mapel']) ?><?= !empty($m['kelompok']) ? ' (' . htmlspecialchars($m['kelompok']) . ')' : '' ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </datalist>
                             </div>
                         </div>
 
@@ -460,7 +468,7 @@ function autoFillGuru(num, el) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.input-guru-search').forEach(inp => {
+    document.querySelectorAll('.input-guru-search, .input-mapel-search').forEach(inp => {
         inp.addEventListener('focus', function() {
             if (this.showPicker) {
                 try { this.showPicker(); } catch(e) {}

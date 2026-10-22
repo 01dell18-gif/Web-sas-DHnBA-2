@@ -57,9 +57,10 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 |---|:---:|---|
 | `/admin/index.php` | Admin & Operator | **Dashboard:** Statistik total kelas, siswa, guru, arsip absensi, berita acara, Google Drive, alert selisih dokumen, pintasan cepat, dan log aktivitas. |
 | `/admin/kelas.php` | Admin & Operator | **Kelola Data Kelas:** Tambah, edit, hapus kelas (ikon aksi terstandarisasi), toggle status aktif/nonaktif, ringkasan siswa per kelas, dan tombol Reset Hapus Semua Data Kelas. |
-| `/admin/siswa.php` | Admin & Operator | **Kelola Data Siswa:** Tambah, edit, hapus (ikon aksi), toggle aktif siswa, filter siswa per kelas, dan tombol Reset Hapus Semua Data Siswa. |
-| `/admin/guru.php` | Admin & Operator | **Kelola Data Guru:** Manajemen pendidik (Nama, NIP/NIPPPK), toggle akses cepat (ceklis), ekspor & impor Excel `.xls`, dan tombol Reset Hapus Semua Data Guru. |
-| `/admin/import-siswa.php` | Admin & Operator | **Impor Excel:** Tab ganda untuk unggah berkas siswa dan berkas guru berformat `.xls` lengkap dengan template unduhan. |
+| `/admin/siswa.php` | Admin & Operator | **Kelola Data Siswa:** Tambah, edit, hapus (ikon aksi), toggle aktif siswa, filter siswa per kelas, **Ekspor Excel (.xls)** per kelas/semua kelas, dan tombol Reset Hapus Semua Data Siswa. |
+| `/admin/guru.php` | Admin & Operator | **Kelola Data Guru:** Manajemen pendidik (Nama, NIP/NIPPPK), toggle akses cepat (ceklis), **Ekspor Excel (.xls)**, **Impor Excel (.xls)**, dan tombol Reset Hapus Semua Data Guru. |
+| `/admin/mapel.php` | Admin & Operator | **Kelola Data Mapel:** Master data mata pelajaran (Kode, Nama, Kelompok: Umum/Kejuruan/Muatan Lokal), toggle akses cepat (ceklis), **Ekspor Excel (.xls)**, **Impor Excel (.xls)**, template unduhan, dan tombol Reset Hapus Semua Data Mapel. Terhubung dinamis sebagai pilihan otomatis di formulir Daftar Hadir dan Berita Acara. |
+| `/admin/import-siswa.php` | Admin & Operator | **Impor Data Excel:** Tab navigasi terpadu 3-in-1 untuk Unggah Berkas Siswa, Unggah Berkas Guru, dan Unggah Berkas Mapel berformat `.xls` lengkap dengan template unduhan masing-masing modul. |
 | `/admin/rekap-kehadiran.php` | Admin & Operator | **Laporan Rekap Kehadiran Siswa (Matriks Resmi):** Tampilan tabel matriks kehadiran dengan judul mapel vertikal (*rotated headers*), baris tanggal sesi, kalkulasi otomatis persentase kehadiran `(Hadir + Dispensasi) / Total Mapel × 100%`, legenda kode status warna-warni, kelola daftar mapel terdaftar (*chips* dengan tombol hapus ❌), modal input/perbarui absensi mapel dengan tombol *Set Semua Hadir*, dan tombol Hapus Presensi Kelas Ini. |
 | `/admin/export-rekap-excel.php` | Admin & Operator | **Ekspor Excel (.xls):** Menghasilkan spreadsheet resmi rekap kehadiran siswa per kelas berformat `.xls` dengan format matriks sel, pewarnaan status, dan persentase kehadiran. |
 | `/admin/absensi.php` | Admin & Operator | **Arsip Daftar Hadir:** Bilah unduh cepat ZIP dengan dropdown *Per Tingkat* yang tidak terpotong (overflow visible), modal unduh ZIP *Per Kelas* & *Per Tanggal* yang tampil langsung di bagian atas (*top-aligned*), aksi ikon terstandarisasi (Unduh, Pratinjau Tab Baru 👁️, Detail 🔍, Hapus 🗑️), dan tombol Hapus Semua Arsip Daftar Hadir. |
@@ -68,7 +69,7 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 | `/admin/rekonsiliasi.php` | Admin & Operator | **Audit & Rekonsiliasi Dokumen:** Pencocokan silang otomatis antara Arsip Daftar Hadir dan Berita Acara untuk melacak sesi yang belum dibuat atau terinput ganda, serta tombol Hapus Seluruh Dokumen Audit. |
 | `/admin/template-ujian.php` | **Khusus Admin** | **Template Ujian & Editor WYSIWYG:** Konfigurasi template ujian, nama ujian, tahun ajaran, dan editor WYSIWYG berita acara dengan palet tag placeholder interaktif serta live simulasi pratinjau teks. |
 | `/admin/pengaturan.php` | **Khusus Admin** | **Pengaturan Identitas & Kop Surat:** Unggah kop surat resmi, ganti logo, nama sekolah, alamat, kontak, dan URL Google Drive. |
-| `/admin/users.php` | **Khusus Admin** | **Manajemen Pengguna & Hak Akses:** Tambah, edit, dan hapus pengguna dengan pembagian peran Admin vs Operator. Dilengkapi kolom **Password** pada tabel *Daftar Pengguna Terdaftar* dengan ikon mata (`👁️`) untuk toggle melihat password secara interaktif. |
+| `/admin/users.php` | **Khusus Admin** | **Manajemen Pengguna & Hak Akses:** Tambah, edit, dan hapus pengguna dengan pembagian peran Admin vs Operator. Dilengkapi kolom **Password** pada tabel *Daftar Pengguna Terdaftar* dengan ikon mata (`👁️`) untuk toggle melihat password secara interaktif, tombol **Ekspor Excel (.xls)** seluruh akun pengguna, serta modal **Impor Excel (.xls)** untuk unggah data akun massal lengkap dengan template unduhan. |
 | `/admin/password.php` | Admin & Operator | **Ganti Password Akun:** Ubah kata sandi akun masing-masing pengguna dengan enkripsi bcrypt. |
 | `/admin/logout.php` | Admin & Operator | Mengakhiri sesi pengguna secara aman. |
 
@@ -116,6 +117,15 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 9. **Standardisasi Ikon Aksi & Format Excel (.xls):**
    - Seluruh tabel master dan arsip menggunakan kelompok tombol ikon yang seragam (`.action-btn-group`).
    - Seluruh fitur ekspor dan impor distandarisasikan ke format `.xls` dengan tipe MIME `application/vnd.ms-excel` dan styling `mso-number-format: "\@"` untuk melindungi angka NIS/NIP agar nol di depan tidak hilang.
+10. **Modul Master Data Mapel & Integrasi Form Publik:**
+    - Dibuatkan menu mandiri **Data Mapel** (`/admin/mapel.php`) di bawah bagian *DATA MASTER* sidebar untuk mengelola seluruh kurikulum ujian sekolah (Kode Mapel, Nama Mata Pelajaran, Kelompok Kurikulum: Umum, Kejuruan, Muatan Lokal).
+    - Dilengkapi statistik (Total Mapel, Aktif, Umum, Kejuruan), toggle switch aktif/nonaktif akses cepat (ceklis), tombol **Ekspor Excel (.xls)**, modal **Impor Excel (.xls)**, unduh template, dan tombol konfirmasi Hapus Semua Data Mapel.
+    - Terhubung secara langsung dan dinamis ke input Mata Pelajaran pada formulir publik **Daftar Hadir** (`/absensi.php`) dan **Berita Acara** (`/berita-acara.php`) melalui searchable datalist (`list="datalist_mapel"`). Pengguna dapat mengetik pencarian cepat atau memilih langsung dari daftar terstandarisasi, dengan sinkronisasi langsung ke live preview A4.
+11. **Ekspor & Impor Excel (.xls) Menyeluruh (Siswa, Guru, User, & Mapel):**
+    - **Data Siswa (`/admin/siswa.php`):** Ditambahkan tombol **Ekspor Excel (.xls)** di header toolbar yang mengekspor data siswa sesuai kelas yang sedang difilter atau seluruh kelas.
+    - **Data Guru (`/admin/guru.php`):** Ditambahkan tombol **Ekspor Excel (.xls)** serta integrasi modal **Impor Excel (.xls)**.
+    - **Manajemen User (`/admin/users.php`):** Ditambahkan tombol **Ekspor Excel (.xls)** untuk mencadangkan seluruh akun pengguna (Username, Nama Lengkap, Role, Password Plain, Tanggal Dibuat) serta modal **Impor Excel (.xls)** dengan template unduhan untuk penambahan dan pembaruan akun secara massal.
+    - **Impor Terpusat (`/admin/import-siswa.php`):** Dilengkapi sistem tab 3-in-1 untuk mengunggah berkas Siswa, berkas Guru, dan berkas Mapel secara terpadu.
 
 ---
 
@@ -125,6 +135,7 @@ Aplikasi mendukung 2 mode basis data:
    * 11 Kelas aktif (XII AK, XII BD 1, XII BD 2, XII DKV, XII LPB, XII LPKKK 1, XII LPKKK 2, XII MP 1, XII MP 2, XII TKJ, XII TSM).
    * 258 Siswa lengkap dengan NIS dan nama asli.
    * Data Guru lengkap dengan status ceklis aktif.
+   * 31 Mata Pelajaran kurikulum pre-seeded di tabel `mapel` (Umum, Kejuruan, Muatan Lokal).
    * 100 Arsip Daftar Hadir & 94 Berita Acara.
    * 138 Foto dokumentasi pelaksanaan asli di `storage/uploads/dokumentasi/`.
    * Template Ujian SAS Ganjil 2026/2027.

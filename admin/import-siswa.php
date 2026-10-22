@@ -52,6 +52,57 @@ if (isset($_GET['template'])) {
 </html>
 <?php
         exit;
+    } elseif ($tplType === 'mapel') {
+        header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+        header('Content-Disposition: attachment; filename="template_impor_mapel.xls"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        ?>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
+        th { background-color: #0284c7; color: #ffffff; font-weight: bold; padding: 8px 12px; border: 1px solid #0369a1; text-align: left; }
+        td { padding: 6px 12px; border: 1px solid #cbd5e1; mso-number-format:"\@"; }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Kode Mapel</th>
+                <th>Nama Mata Pelajaran</th>
+                <th>Kelompok</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="mso-number-format:'\@';">BIN-X</td>
+                <td>Bahasa Indonesia</td>
+                <td>Umum</td>
+            </tr>
+            <tr>
+                <td style="mso-number-format:'\@';">MAT-X</td>
+                <td>Matematika</td>
+                <td>Umum</td>
+            </tr>
+            <tr>
+                <td style="mso-number-format:'\@';">RPL-01</td>
+                <td>Pemrograman Web</td>
+                <td>Kejuruan</td>
+            </tr>
+            <tr>
+                <td style="mso-number-format:'\@';">ML-BLI</td>
+                <td>Bahasa Bali</td>
+                <td>Muatan Lokal</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+<?php
+        exit;
     } else {
         // Template Siswa (.xls)
         header('Content-Type: application/vnd.ms-excel; charset=utf-8');
@@ -214,8 +265,8 @@ function parseSpreadsheetRows($filePath, $origName) {
     return $rows;
 }
 
-$pageTitle = 'Impor Data Excel (Siswa & Guru)';
-$activeTab = ($_GET['type'] ?? 'siswa') === 'guru' ? 'guru' : 'siswa';
+$pageTitle = 'Impor Data Excel (Siswa, Guru & Mapel)';
+$activeTab = in_array($_GET['type'] ?? '', ['guru', 'mapel']) ? $_GET['type'] : 'siswa';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -295,6 +346,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             set_flash('danger', 'Silakan pilih berkas Excel (.xls) guru terlebih dahulu.');
+        }
+    } elseif ($target === 'mapel') {
+        $fileInputName = !empty($_FILES['file_mapel']['tmp_name']) ? 'file_mapel' : 'file_excel';
+        if (!empty($_FILES[$fileInputName]['tmp_name'])) {
+            $file = $_FILES[$fileInputName]['tmp_name'];
+            $origName = $_FILES[$fileInputName]['name'];
+            $rows = parseSpreadsheetRows($file, $origName);
+
+            if (!empty($rows)) {
+                $importedCount = 0;
+                $updatedCount = 0;
+
+                foreach ($rows as $cols) {
+                    if (count($cols) >= 4 && is_numeric($cols[0]) && !empty($cols[1])) {
+                        $kode = $cols[1] ?? '';
+                        $nama = $cols[2] ?? '';
+                        $kelompok = $cols[3] ?? 'Umum';
+                    } elseif (count($cols) >= 3) {
+                        $kode = $cols[0] ?? '';
+                        $nama = $cols[1] ?? '';
+                        $kelompok = $cols[2] ?? 'Umum';
+                    } elseif (count($cols) === 2) {
+                        $kode = $cols[0] ?? '';
+                        $nama = $cols[1] ?? '';
+                        $kelompok = 'Umum';
+                    } else {
+                        $kode = '';
+                        $nama = $cols[0] ?? '';
+                        $kelompok = 'Umum';
+                    }
+
+                    $kode = trim($kode);
+                    $nama = trim($nama);
+                    $kelompok = trim($kelompok);
+
+                    if ($nama === '' || in_array(strtolower($nama), ['nama', 'nama mapel', 'nama mata pelajaran', 'mata pelajaran', 'no', 'nomor'])) {
+                        continue;
+                    }
+                    if ($kelompok === '') $kelompok = 'Umum';
+
+                    $existing = dbFetch("SELECT id FROM mapel WHERE UPPER(TRIM(nama_mapel)) = :n", ['n' => strtoupper($nama)]);
+                    if ($existing) {
+                        dbUpdate('mapel', [
+                            'kode_mapel' => $kode,
+                            'kelompok' => $kelompok,
+                            'aktif' => 1,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ], 'id = :id', ['id' => $existing['id']]);
+                        $updatedCount++;
+                    } else {
+                        dbInsert('mapel', [
+                            'kode_mapel' => $kode,
+                            'nama_mapel' => $nama,
+                            'kelompok' => $kelompok,
+                            'aktif' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                        $importedCount++;
+                    }
+                }
+
+                $totalProcessed = $importedCount + $updatedCount;
+                log_activity('IMPORT_MAPEL', "Mengimpor {$importedCount} mapel baru dan memperbarui {$updatedCount} mapel dari berkas {$origName}.");
+                set_flash('success', "Berhasil memproses {$totalProcessed} mata pelajaran ({$importedCount} baru, {$updatedCount} diperbarui).");
+                header('Location: /admin/mapel.php');
+                exit;
+            } else {
+                set_flash('danger', 'Tidak ada data valid yang dapat dibaca dari berkas tersebut. Pastikan format kolom sesuai template.');
+            }
+        } else {
+            set_flash('danger', 'Silakan pilih berkas Excel (.xls) mapel terlebih dahulu.');
         }
     } else {
         // Target: Siswa
@@ -418,6 +541,11 @@ require_once __DIR__ . '/layout_header.php';
         <i class="bi bi-person-badge-fill"></i>
         <span>Unggah Berkas Guru (.xls)</span>
     </button>
+    <button type="button" class="btn <?= $activeTab === 'mapel' ? 'btn-primary' : 'btn-secondary' ?>" 
+            id="tabBtnMapel" onclick="switchImportTab('mapel')" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem;">
+        <i class="bi bi-journal-bookmark-fill"></i>
+        <span>Unggah Berkas Mapel (.xls)</span>
+    </button>
 </div>
 
 <!-- SECTION 1: UNGGAH BERKAS SISWA -->
@@ -503,26 +631,71 @@ require_once __DIR__ . '/layout_header.php';
     </div>
 </div>
 
+<!-- SECTION 3: UNGGAH BERKAS MAPEL -->
+<div class="card" id="cardImportMapel" style="max-width: 720px; <?= $activeTab === 'mapel' ? '' : 'display: none;' ?>">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <span class="card-title">
+            <i class="bi bi-journal-bookmark-fill" style="color: #0284c7;"></i> Unggah Berkas Mapel
+        </span>
+        <a href="/admin/import-siswa.php?template=mapel" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet mata pelajaran">
+            <i class="bi bi-download"></i> Unduh Template Mapel (.xls)
+        </a>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/admin/import-siswa.php" enctype="multipart/form-data">
+            <?= csrf_field() ?>
+            <input type="hidden" name="target" value="mapel">
+
+            <div class="form-group">
+                <label class="form-label" for="file_mapel">Pilih Berkas Excel (.xls) Mata Pelajaran <span class="required">*</span></label>
+                <input type="file" name="file_mapel" id="file_mapel" class="form-control" accept=".xls,.xlsx,.csv" required>
+                <div class="form-hint">
+                    Format utama yang didukung: <strong>.xls (Spreadsheet Excel)</strong>, .xlsx, .csv (Maksimal 5 MB).
+                </div>
+            </div>
+
+            <div style="background: var(--slate-50); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.1rem; margin-bottom: 1.25rem;">
+                <div style="font-weight: 700; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--slate-800);">
+                    Format Kolom Spreadsheet Mata Pelajaran:
+                </div>
+                <ul style="font-size: 0.85rem; color: var(--slate-600); padding-left: 1.25rem; line-height: 1.6;">
+                    <li><strong>Kode Mapel</strong>: Kode singkatan/identifikasi (Opsional, misal: <em>BIN-X</em>, <em>RPL-01</em>)</li>
+                    <li><strong>Nama Mata Pelajaran</strong>: Nama lengkap mata pelajaran (Wajib, misal: <em>Bahasa Indonesia</em>, <em>Pemrograman Web</em>)</li>
+                    <li><strong>Kelompok</strong>: Kelompok mata pelajaran (Opsional, pilihan: <em>Umum</em>, <em>Kejuruan</em>, <em>Muatan Lokal</em>)</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="background: #0284c7; border-color: #0284c7;">
+                <i class="bi bi-cloud-arrow-up-fill"></i> Unggah & Proses Impor Mapel
+            </button>
+        </form>
+    </div>
+</div>
+
 <script>
 function switchImportTab(type) {
     const cardSiswa = document.getElementById('cardImportSiswa');
     const cardGuru = document.getElementById('cardImportGuru');
+    const cardMapel = document.getElementById('cardImportMapel');
     const btnSiswa = document.getElementById('tabBtnSiswa');
     const btnGuru = document.getElementById('tabBtnGuru');
+    const btnMapel = document.getElementById('tabBtnMapel');
+
+    [cardSiswa, cardGuru, cardMapel].forEach(c => { if(c) c.style.display = 'none'; });
+    [btnSiswa, btnGuru, btnMapel].forEach(b => { if(b) b.className = 'btn btn-secondary'; });
 
     if (type === 'guru') {
-        if (cardSiswa) cardSiswa.style.display = 'none';
         if (cardGuru) cardGuru.style.display = 'block';
         if (btnGuru) btnGuru.className = 'btn btn-primary';
-        if (btnSiswa) btnSiswa.className = 'btn btn-secondary';
-        window.history.replaceState(null, '', '/admin/import-siswa.php?type=guru');
+    } else if (type === 'mapel') {
+        if (cardMapel) cardMapel.style.display = 'block';
+        if (btnMapel) btnMapel.className = 'btn btn-primary';
     } else {
+        type = 'siswa';
         if (cardSiswa) cardSiswa.style.display = 'block';
-        if (cardGuru) cardGuru.style.display = 'none';
         if (btnSiswa) btnSiswa.className = 'btn btn-primary';
-        if (btnGuru) btnGuru.className = 'btn btn-secondary';
-        window.history.replaceState(null, '', '/admin/import-siswa.php?type=siswa');
     }
+    window.history.replaceState(null, '', '/admin/import-siswa.php?type=' + type);
 }
 </script>
 

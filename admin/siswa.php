@@ -4,6 +4,45 @@ require_admin();
 
 $pageTitle = 'Kelola Data Siswa';
 
+// Handle Export Excel (.xls)
+if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
+    $selectedClassId = (int)($_GET['class_id'] ?? 0);
+    $whereSql = "1=1";
+    $params = [];
+    $titleSuffix = "Semua_Kelas";
+    if ($selectedClassId > 0) {
+        $whereSql .= " AND s.class_id = :cid";
+        $params['cid'] = $selectedClassId;
+        $cName = dbValue("SELECT nama_kelas FROM kelas WHERE id = :cid", ['cid' => $selectedClassId]);
+        if ($cName) {
+            $titleSuffix = preg_replace('/[^a-zA-Z0-9_-]/', '_', $cName);
+        }
+    }
+
+    $students = dbFetchAll("
+        SELECT s.*, k.nama_kelas 
+        FROM siswa s 
+        LEFT JOIN kelas k ON s.class_id = k.id 
+        WHERE {$whereSql} 
+        ORDER BY k.nama_kelas ASC, s.nama ASC
+    ", $params);
+
+    $headers = ['No', 'Kelas', 'NIS', 'NISN', 'Nama Siswa', 'Status'];
+    $rows = [];
+    foreach ($students as $idx => $st) {
+        $rows[] = [
+            $idx + 1,
+            $st['nama_kelas'] ?? '-',
+            $st['nis'] ?: '-',
+            $st['nisn'] ?: '-',
+            $st['nama'],
+            $st['aktif'] == 1 ? 'Aktif' : 'Nonaktif'
+        ];
+    }
+    log_activity('EXPORT_EXCEL', "Mengekspor data siswa ke format Excel (.xls) [{$titleSuffix}]");
+    export_excel_xls("Data_Siswa_{$titleSuffix}_" . date('Ymd_His') . ".xls", $headers, $rows, [2, 3]);
+}
+
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -142,6 +181,9 @@ require_once __DIR__ . '/layout_header.php';
         </div>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <a href="/admin/siswa.php?action=export_excel<?= $selectedClassId > 0 ? '&class_id=' . $selectedClassId : '' ?>" class="btn btn-secondary btn-sm" title="Ekspor data siswa ke format Excel .xls">
+            <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
+        </a>
         <a href="/admin/import-siswa.php?type=siswa" class="btn btn-success btn-sm" title="Impor data siswa dari format Excel .xls">
             <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
         </a>

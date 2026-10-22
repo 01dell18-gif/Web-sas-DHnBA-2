@@ -777,7 +777,52 @@ INSERT INTO `activity_logs` (`id`, `waktu`, `aktivitas`, `keterangan`, `ip_addre
 (30, '2026-10-22 05:49:56', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
 (31, '2026-10-22 05:50:02', 'LOGIN_SUCCESS', 'User operator (operator) berhasil login.', '127.0.0.1'),
 (32, '2026-10-22 05:50:43', 'LOGIN_FAILED', 'Percobaan login gagal untuk username: admin', '127.0.0.1'),
-(33, '2026-10-22 05:51:18', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1');
+-- --------------------------------------------------------
+-- Struktur dari tabel `mapel`
+-- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `mapel`;
+CREATE TABLE IF NOT EXISTS `mapel` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `kode_mapel` VARCHAR(50) DEFAULT '',
+    `nama_mapel` VARCHAR(150) NOT NULL,
+    `kelompok` VARCHAR(50) DEFAULT 'Kejuruan',
+    `aktif` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME NULL,
+    `updated_at` DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `mapel` (`id`, `kode_mapel`, `nama_mapel`, `kelompok`, `aktif`, `created_at`, `updated_at`) VALUES
+(1, 'MP-001', 'Bahasa Indonesia', 'Umum', 1, NOW(), NOW()),
+(2, 'MP-002', 'Bahasa Inggris', 'Umum', 1, NOW(), NOW()),
+(3, 'MP-003', 'Matematika', 'Umum', 1, NOW(), NOW()),
+(4, 'MP-004', 'Pendidikan Pancasila', 'Umum', 1, NOW(), NOW()),
+(5, 'MP-005', 'Pendidikan Agama Hindu dan Budi Pekerti', 'Umum', 1, NOW(), NOW()),
+(6, 'MP-006', 'Muatan Lokal Bahasa Bali', 'Muatan Lokal', 1, NOW(), NOW()),
+(7, 'MP-007', 'Administrasi Farmasi', 'Kejuruan', 1, NOW(), NOW()),
+(8, 'MP-008', 'Administrasi Sistem Jaringan', 'Kejuruan', 1, NOW(), NOW()),
+(9, 'MP-009', 'Administrasi Transaksi', 'Kejuruan', 1, NOW(), NOW()),
+(10, 'MP-010', 'Desain Grafis', 'Kejuruan', 1, NOW(), NOW()),
+(11, 'MP-011', 'Digital Marketing', 'Kejuruan', 1, NOW(), NOW()),
+(12, 'MP-012', 'Digital Onboarding', 'Kejuruan', 1, NOW(), NOW()),
+(13, 'MP-013', 'Digital Operation', 'Kejuruan', 1, NOW(), NOW()),
+(14, 'MP-014', 'Engine Management System Sepeda Motor', 'Kejuruan', 1, NOW(), NOW()),
+(15, 'MP-015', 'Farmakognosi', 'Kejuruan', 1, NOW(), NOW()),
+(16, 'MP-016', 'Farmakologi', 'Kejuruan', 1, NOW(), NOW()),
+(17, 'MP-017', 'Kimia Analisis', 'Kejuruan', 1, NOW(), NOW()),
+(18, 'MP-018', 'Komputerisasi Akuntansi Perbankan', 'Kejuruan', 1, NOW(), NOW()),
+(19, 'MP-019', 'Komunikasi Bisnis', 'Kejuruan', 1, NOW(), NOW()),
+(20, 'MP-020', 'Komunikasi di Tempat Kerja', 'Kejuruan', 1, NOW(), NOW()),
+(21, 'MP-021', 'Kreativitas, Inovasi dan Kewirausahaan (KIK)', 'Kejuruan', 1, NOW(), NOW()),
+(22, 'MP-022', 'Marketing', 'Kejuruan', 1, NOW(), NOW()),
+(23, 'MP-023', 'Pelayanan Farmasi', 'Kejuruan', 1, NOW(), NOW()),
+(24, 'MP-024', 'Pelayanan terhadap Kolega dan Pelanggan', 'Kejuruan', 1, NOW(), NOW()),
+(25, 'MP-025', 'Pengelolaan Administrasi Umum', 'Kejuruan', 1, NOW(), NOW()),
+(26, 'MP-026', 'Pengelolaan Rapat', 'Kejuruan', 1, NOW(), NOW()),
+(27, 'MP-027', 'Perencanaan Bisnis', 'Kejuruan', 1, NOW(), NOW()),
+(28, 'MP-028', 'Perencanaan dan Pengalamatan Jaringan', 'Kejuruan', 1, NOW(), NOW()),
+(29, 'MP-029', 'Pemrograman Web dan Perangkat Bergerak', 'Kejuruan', 1, NOW(), NOW()),
+(30, 'MP-030', 'Proses Produksi Desain', 'Kejuruan', 1, NOW(), NOW()),
+(31, 'MP-031', 'Karya Desain', 'Kejuruan', 1, NOW(), NOW());
 
 SET FOREIGN_KEY_CHECKS = 1;

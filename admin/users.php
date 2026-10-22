@@ -3,6 +3,36 @@ require_once __DIR__ . '/../config/functions.php';
 require_admin();
 require_admin_role();
 
+// Handle Export Excel (.xls)
+if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
+    $allUsers = dbFetchAll("SELECT * FROM users ORDER BY role ASC, username ASC");
+    $headers = ['No', 'Username', 'Nama Lengkap', 'Hak Akses / Peran', 'Password', 'Tanggal Dibuat'];
+    $rows = [];
+    foreach ($allUsers as $idx => $u) {
+        $rows[] = [
+            $idx + 1,
+            $u['username'],
+            $u['nama_lengkap'],
+            $u['role'] === 'admin' ? 'Administrator' : 'Operator',
+            $u['password_plain'] ?: '••••••••',
+            $u['created_at'] ?? '-'
+        ];
+    }
+    log_activity('EXPORT_EXCEL', "Mengekspor daftar pengguna ke format Excel (.xls)");
+    export_excel_xls("Data_Pengguna_SAS_" . date('Ymd_His') . ".xls", $headers, $rows, [1, 4]);
+}
+
+// Handle Download Template Excel (.xls)
+if (isset($_GET['action']) && $_GET['action'] === 'template_excel') {
+    $headers = ['Username', 'Nama Lengkap', 'Hak Akses (admin / operator)', 'Password'];
+    $sampleRows = [
+        ['operator_tsm', 'Operator TSM', 'operator', 'operator123'],
+        ['panitia_dkv', 'Panitia DKV', 'operator', 'dkv2026'],
+        ['admin_utama', 'Administrator Cadangan', 'admin', 'admin123']
+    ];
+    export_excel_xls("template_impor_pengguna.xls", $headers, $sampleRows, [0, 3]);
+}
+
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -97,6 +127,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /admin/users.php');
         exit;
     }
+
+    // Handle Import Excel
+    if ($action === 'import_excel') {
+        if (!empty($_FILES['file_user_excel']['tmp_name'])) {
+            $file = $_FILES['file_user_excel']['tmp_name'];
+            $rows = parse_spreadsheet_rows($file);
+
+            if (!empty($rows)) {
+                $createdCount = 0;
+                $updatedCount = 0;
+
+                foreach ($rows as $cols) {
+                    // Check if col 0 is sequence No
+                    if (count($cols) >= 4 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                        $uName = strtolower(trim($cols[1] ?? ''));
+                        $nama = trim($cols[2] ?? '');
+                        $role = strtolower(trim($cols[3] ?? 'operator'));
+                        $pass = trim($cols[4] ?? 'password123');
+                    } else {
+                        $uName = strtolower(trim($cols[0] ?? ''));
+                        $nama = trim($cols[1] ?? '');
+                        $role = strtolower(trim($cols[2] ?? 'operator'));
+                        $pass = trim($cols[3] ?? 'password123');
+                    }
+
+                    if ($uName === '') continue;
+                    if ($nama === '') $nama = ucfirst($uName);
+                    if (!in_array($role, ['admin', 'operator'])) {
+                        $role = 'operator';
+                    }
+                    if ($pass === '') $pass = 'password123';
+
+                    $existing = dbFetch("SELECT id FROM users WHERE username = :u", ['u' => $uName]);
+                    if ($existing) {
+                        dbUpdate('users', [
+                            'nama_lengkap' => $nama,
+                            'role' => $role,
+                            'password' => password_hash($pass, PASSWORD_BCRYPT),
+                            'password_plain' => $pass,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ], 'id = :id', ['id' => $existing['id']]);
+                        $updatedCount++;
+                    } else {
+                        dbInsert('users', [
+                            'username' => $uName,
+                            'nama_lengkap' => $nama,
+                            'role' => $role,
+                            'password' => password_hash($pass, PASSWORD_BCRYPT),
+                            'password_plain' => $pass,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                        $createdCount++;
+                    }
+                }
+
+                $total = $createdCount + $updatedCount;
+                log_activity('IMPORT_USERS', "Mengimpor {$total} data pengguna dari Excel ({$createdCount} baru, {$updatedCount} diperbarui)");
+                set_flash('success', "Berhasil memproses {$total} pengguna ({$createdCount} pengguna baru ditambahkan, {$updatedCount} diperbarui).");
+            } else {
+                set_flash('danger', 'Berkas Excel tidak memuat data yang valid atau format kolom tidak sesuai.');
+            }
+        } else {
+            set_flash('danger', 'Silakan pilih berkas Excel (.xls) untuk diunggah.');
+        }
+        header('Location: /admin/users.php');
+        exit;
+    }
 }
 
 // Data edit jika ada query param
@@ -123,6 +221,14 @@ require_once __DIR__ . '/layout_header.php';
                 Kelola akun pengguna sistem dengan pembagian hak akses <strong>Administrator</strong> (Penuh) dan <strong>Operator</strong> (Operasional Ujian).
             </p>
         </div>
+    </div>
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <a href="/admin/users.php?action=export_excel" class="btn btn-secondary btn-sm" title="Ekspor daftar pengguna ke format Excel .xls">
+            <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
+        </a>
+        <button type="button" class="btn btn-success btn-sm" onclick="openModal('modalImportUsers')" title="Impor pengguna dari format Excel .xls">
+            <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
+        </button>
     </div>
 </div>
 
@@ -305,6 +411,44 @@ require_once __DIR__ . '/layout_header.php';
                 </div>
             </div>
         </div>
+<!-- MODAL IMPOR USER DARI EXCEL -->
+<div id="modalImportUsers" class="custom-modal" style="display: none;">
+    <div style="background: #ffffff; width: 90%; max-width: 480px; border-radius: 14px; padding: 1.5rem; margin-top: 25px; margin-bottom: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.65rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--slate-900); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="bi bi-file-earmark-excel text-success"></i> Impor Pengguna (.xls)
+            </h3>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalImportUsers')">✕</button>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;">
+            Unggah berkas spreadsheet <code>.xls</code> / <code>.xlsx</code> untuk menambahkan atau memperbarui akun pengguna sistem secara massal.
+        </p>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong style="font-size: 0.85rem; color: var(--slate-800); display: block;">Format Template Excel</strong>
+                <span style="font-size: 0.75rem; color: var(--slate-500);">Kolom: Username, Nama, Hak Akses, Password</span>
+            </div>
+            <a href="/admin/users.php?action=template_excel" class="btn btn-outline-primary btn-sm" style="white-space: nowrap;">
+                <i class="bi bi-download"></i> Unduh Template
+            </a>
+        </div>
+
+        <form method="POST" action="/admin/users.php" enctype="multipart/form-data">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="import_excel">
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label">Pilih Berkas Excel (.xls / .xlsx / .csv)</label>
+                <input type="file" name="file_user_excel" class="form-control" accept=".xls,.xlsx,.csv" required>
+            </div>
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalImportUsers')">Batal</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-upload"></i> Unggah & Impor Pengguna
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

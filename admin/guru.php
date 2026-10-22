@@ -2,6 +2,39 @@
 require_once __DIR__ . '/../config/functions.php';
 require_admin();
 
+// Handle Export Excel (.xls)
+if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
+    $searchQ = trim($_GET['q'] ?? '');
+    $statusFilter = trim($_GET['status'] ?? '');
+
+    $where = "1=1";
+    $params = [];
+    if ($searchQ !== '') {
+        $where .= " AND (nama LIKE :q OR nip LIKE :q)";
+        $params['q'] = "%{$searchQ}%";
+    }
+    if ($statusFilter !== '') {
+        $where .= " AND aktif = :st";
+        $params['st'] = (int)$statusFilter;
+    }
+
+    $gurus = dbFetchAll("SELECT * FROM guru WHERE {$where} ORDER BY nama ASC", $params);
+
+    $headers = ['No', 'Nama Lengkap Guru', 'NIP / NIPPPK', 'Jabatan / Tugas', 'Status'];
+    $rows = [];
+    foreach ($gurus as $idx => $g) {
+        $rows[] = [
+            $idx + 1,
+            $g['nama'],
+            $g['nip'] ?: '-',
+            $g['jabatan'] ?? 'Guru / Pengawas',
+            $g['aktif'] == 1 ? 'Aktif' : 'Nonaktif'
+        ];
+    }
+    log_activity('EXPORT_EXCEL', "Mengekspor data guru ke format Excel (.xls)");
+    export_excel_xls("Data_Guru_SMKN1_Klungkung_" . date('Ymd_His') . ".xls", $headers, $rows, [2]);
+}
+
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -144,6 +177,9 @@ require_once __DIR__ . '/layout_header.php';
         </div>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <a href="/admin/guru.php?action=export_excel<?= !empty($searchQ) ? '&q=' . urlencode($searchQ) : '' ?><?= $statusFilter !== '' ? '&status=' . urlencode($statusFilter) : '' ?>" class="btn btn-secondary btn-sm" title="Ekspor data guru ke format Excel .xls">
+            <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
+        </a>
         <a href="/admin/import-siswa.php?type=guru" class="btn btn-success btn-sm" title="Impor data guru dari format Excel .xls">
             <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
         </a>

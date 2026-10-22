@@ -267,3 +267,162 @@ function create_zip_archive(string $zipFilePath, array $files): bool {
     return (file_put_contents($zipFilePath, $data_data . $ctrldir_data . $eocd) !== false);
 }
 
+/**
+ * Universal Excel .xls Exporter
+ * Generates official XML/HTML table spreadsheet with proper UTF-8 and mso-number-format.
+ */
+function export_excel_xls(string $filename, array $headers, array $rows, array $textColIndexes = []): void {
+    while (ob_get_level()) { ob_end_clean(); }
+    header_remove('Pragma');
+    header_remove('Expires');
+    header('Content-Type: application/vnd.ms-excel; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate');
+
+    echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+    echo '<head>';
+    echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+    echo '<style>';
+    echo 'table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt; }';
+    echo 'th { background-color: #3b82f6; color: #ffffff; font-weight: bold; padding: 8px 12px; border: 1px solid #1d4ed8; text-align: left; }';
+    echo 'td { padding: 6px 12px; border: 1px solid #cbd5e1; }';
+    echo '.text-cell { mso-number-format: "\@"; text-align: left; }';
+    echo '.center-cell { text-align: center; }';
+    echo '</style>';
+    echo '</head>';
+    echo '<body>';
+    echo '<table>';
+    echo '<thead><tr>';
+    foreach ($headers as $h) {
+        echo '<th>' . htmlspecialchars($h, ENT_QUOTES, 'UTF-8') . '</th>';
+    }
+    echo '</tr></thead>';
+    echo '<tbody>';
+    foreach ($rows as $r) {
+        echo '<tr>';
+        foreach ($r as $idx => $val) {
+            $isText = in_array($idx, $textColIndexes);
+            $class = $isText ? ' class="text-cell"' : '';
+            echo '<td' . $class . '>' . htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8') . '</td>';
+        }
+        echo '</tr>';
+    }
+    echo '</tbody>';
+    echo '</table>';
+    echo '</body>';
+    echo '</html>';
+    exit;
+}
+
+/**
+ * Universal spreadsheet row parser for HTML-based .xls, XLSX, and CSV/TSV
+ */
+function parse_spreadsheet_rows(string $filePath): array {
+    $rows = [];
+    $raw = @file_get_contents($filePath);
+    if ($raw === false) return [];
+
+    // 1. Check if HTML table-based .xls
+    if (stripos($raw, '<table') !== false) {
+        if (preg_match_all('~<tr[^>]*>(.*?)</tr>~is', $raw, $trMatches)) {
+            $isHeader = true;
+            foreach ($trMatches[1] as $tr) {
+                if (preg_match_all('~<t[dh][^>]*>(.*?)</t[dh]>~is', $tr, $cellMatches)) {
+                    $row = [];
+                    foreach ($cellMatches[1] as $cell) {
+                        $text = strip_tags($cell);
+                        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                        $text = trim(preg_replace('/\s+/', ' ', $text));
+                        $row[] = $text;
+                    }
+                    if ($isHeader) {
+                        $isHeader = false;
+                        continue;
+                    }
+                    if (!empty(array_filter($row, function($v) { return $v !== ''; }))) {
+                        $rows[] = $row;
+                    }
+                }
+            }
+        }
+        if (!empty($rows)) {
+            return $rows;
+        }
+    }
+
+    // 2. Check if XLSX (Zip Archive)
+    if (class_exists('ZipArchive')) {
+        $zip = new ZipArchive();
+        if ($zip->open($filePath) === true) {
+            $sharedStrings = [];
+            if (($xmlString = $zip->getFromName('xl/sharedStrings.xml')) !== false) {
+                $xml = @simplexml_load_string($xmlString);
+                if ($xml && isset($xml->si)) {
+                    foreach ($xml->si as $si) {
+                        $sharedStrings[] = (string)($si->t ?? $si->r->t ?? '');
+                    }
+                }
+            }
+            if (($sheetXml = $zip->getFromName('xl/worksheets/sheet1.xml')) !== false) {
+                $xml = @simplexml_load_string($sheetXml);
+                if ($xml && isset($xml->sheetData->row)) {
+                    $firstRow = true;
+                    foreach ($xml->sheetData->row as $r) {
+                        if ($firstRow) {
+                            $firstRow = false;
+                            continue;
+                        }
+                        $cols = [];
+                        foreach ($r->c as $c) {
+                            $val = (string)$c->v;
+                            if ((string)$c['t'] === 's' && isset($sharedStrings[(int)$val])) {
+                                $val = $sharedStrings[(int)$val];
+                            }
+                            $cols[] = trim($val);
+                        }
+                        if (!empty(array_filter($cols, function($v) { return $v !== ''; }))) {
+                            $rows[] = $cols;
+                        }
+                    }
+                }
+            }
+            $zip->close();
+            if (!empty($rows)) {
+                return $rows;
+            }
+        }
+    }
+
+    // 3. Fallback: Delimited text (CSV, TSV, or Semicolon)
+    $lines = preg_split('/\r\n|\r|\n/', trim($raw));
+    if (!empty($lines)) {
+        $firstLine = $lines[0];
+        $delims = [',', "\t", ';'];
+        $bestDelim = ',';
+        $maxCount = 0;
+        foreach ($delims as $d) {
+            $cnt = substr_count($firstLine, $d);
+            if ($cnt > $maxCount) {
+                $maxCount = $cnt;
+                $bestDelim = $d;
+            }
+        }
+        $firstRow = true;
+        foreach ($lines as $line) {
+            if (trim($line) === '') continue;
+            $row = str_getcsv($line, $bestDelim);
+            if ($firstRow) {
+                $firstRow = false;
+                continue;
+            }
+            $cleanRow = array_map('trim', $row);
+            if (!empty(array_filter($cleanRow, function($v) { return $v !== ''; }))) {
+                $rows[] = $cleanRow;
+            }
+        }
+    }
+
+    return $rows;
+}
+
+

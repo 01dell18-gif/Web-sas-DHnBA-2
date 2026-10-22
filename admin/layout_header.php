@@ -71,6 +71,9 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         <a href="/admin/guru.php" class="admin-menu-item <?= $currentScript === 'guru.php' ? 'active' : '' ?>">
             <i class="bi bi-person-badge"></i> <span>Data Guru</span>
         </a>
+        <a href="/admin/mapel.php" class="admin-menu-item <?= $currentScript === 'mapel.php' ? 'active' : '' ?>">
+            <i class="bi bi-journal-bookmark-fill"></i> <span>Data Mapel</span>
+        </a>
         <a href="/admin/import-siswa.php" class="admin-menu-item <?= ($currentScript === 'import-siswa.php' || $currentScript === 'import-excel.php') ? 'active' : '' ?>">
             <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel</span>
         </a>
