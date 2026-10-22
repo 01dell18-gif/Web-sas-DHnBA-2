@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Sistem - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item ">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item ">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item ">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item ">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item active">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="margin-bottom: 1.5rem;">
+    <h2>Pengaturan Identitas Sekolah & Kop Dokumen Resmi</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Kelola gambar kop surat resmi A4, identitas instansi, dan tautan folder Google Drive pengawas.
+    </p>
+</div>
+
+
+<form method="POST" action="/admin/pengaturan.php" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">
+    <div class="split-layout" style="height: auto;">
+        <!-- Pengaturan Kop Gambar Utama & Identitas -->
+        <div style="flex: 1;">
+
+            <!-- 1. KOP SURAT GAMBAR RESMI (UTAMA) -->
+            <div class="card" style="border-top: 4px solid var(--primary); margin-bottom: 1.5rem;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="card-title">📜 Gambar Kop Surat Sekolah Lengkap (Rekomendasi Utama)</span>
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Full Header Banner</span>
+                </div>
+                <div class="card-body">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        Sesuai standar dokumen resmi, kop surat diunggah dalam bentuk <strong>gambar banner lengkap</strong> yang memuat logo Pemprov Bali di kiri, lambang sekolah di kanan, aksara Bali, nama dinas/sekolah, alamat, dan garis pembatas ganda.
+                    </p>
+
+                    <div class="form-group">
+                        <label class="form-label">Mode Kop Dokumen:</label>
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem;">
+                                <input type="radio" name="kop_mode" value="image" checked>
+                                <strong>Gunakan Gambar Kop Lengkap</strong> (Rekomendasi)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem;">
+                                <input type="radio" name="kop_mode" value="text" >
+                                Gunakan Susunan Teks & Logo Terpisah
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pratinjau Gambar Kop Saat Ini -->
+                    <div style="margin: 1.25rem 0; padding: 12px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px;">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate-700); margin-bottom: 8px;">
+                            Pratinjau Gambar Kop Aktif:
+                        </div>
+                                                    <div style="background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; text-align: center;">
+                                <img src="/assets/img/kop-header.png?v=1791859720" alt="Kop Surat Lengkap" style="max-width: 100%; max-height: 120px; object-fit: contain; display: block; margin: 0 auto;">
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; word-break: break-all;">
+                                Lokasi berkas: <code>assets/img/kop-header.png</code>
+                            </div>
+                                            </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="kop_image_file">Unggah Gambar Kop Lengkap Baru</label>
+                        <input type="file" name="kop_image_file" id="kop_image_file" class="form-control" accept="image/png,image/jpeg,image/webp">
+                        <div class="form-hint">
+                            Format: PNG, JPG, JPEG, WebP. Maksimal 4 MB. Disarankan gambar memanjang horizontal dengan resolusi tajam (misal 1200 x 250 px).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. IDENTITAS SEKOLAH & TEKS KOP CADANGAN -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🏫 Identitas Sekolah & Cadangan Format Teks</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label" for="nama_sekolah">Nama Sekolah <span class="required">*</span></label>
+                        <input type="text" name="nama_sekolah" id="nama_sekolah" class="form-control" 
+                               value="SMK NEGERI 1 KLUNGKUNG" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="alamat_sekolah">Alamat Lengkap</label>
+                        <textarea name="alamat_sekolah" id="alamat_sekolah" class="form-control" rows="2">Jl. Merpati No. 1, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali 80711</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="kop_baris_1">Kop Baris 1 (Pemerintah)</label>
+                        <input type="text" name="kop_baris_1" id="kop_baris_1" class="form-control" 
+                               value="PEMERINTAH PROVINSI BALI" placeholder="PEMERINTAH PROVINSI BALI">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="kop_baris_2">Kop Baris 2 (Dinas)</label>
+                        <input type="text" name="kop_baris_2" id="kop_baris_2" class="form-control" 
+                               value="DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA" placeholder="DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="kop_baris_3">Kop Baris 3 (Nama Instansi Sekolah)</label>
+                        <input type="text" name="kop_baris_3" id="kop_baris_3" class="form-control" 
+                               value="SMK NEGERI 1 KLUNGKUNG" placeholder="SMK NEGERI 1 KLUNGKUNG">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="kop_telepon">Kontak / Telepon / Email</label>
+                            <input type="text" name="kop_telepon" id="kop_telepon" class="form-control" 
+                                   value="Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com" placeholder="Telp. (0366) 21152 | smkn1klungkung@yahoo.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="kop_website">Website Sekolah</label>
+                            <input type="text" name="kop_website" id="kop_website" class="form-control" 
+                                   value="Website: smkn1klungkung.sch.id" placeholder="smkn1klungkung.sch.id">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengaturan Samping: Logo & Google Drive -->
+        <div style="flex: 0 0 440px;">
+
+            <!-- Link Google Drive -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <span class="card-title">📁 Folder Google Drive Pengawas</span>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label" for="google_drive_folder_url">
+                            URL Folder Google Drive <span class="required">*</span>
+                        </label>
+                        <input type="url" name="google_drive_folder_url" id="google_drive_folder_url" class="form-control" 
+                               value="https://drive.google.com/drive/folders/1wExampleDriveFolderSMKN1Klungkung" placeholder="https://drive.google.com/drive/folders/..." required>
+                        <div class="form-hint">
+                            Hanya menerima domain <code>drive.google.com</code> dengan protokol HTTPS.
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="testDriveLink()">
+                            🔍 Uji / Buka Link di Tab Baru
+                        </button>
+                    </div>
+
+                    <div style="background: var(--info-light); color: var(--slate-800); border: 1px solid #bae6fd; border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; margin-top: 1rem;">
+                        💡 <strong>Catatan Pengawas:</strong> Tombol pada formulir publik akan membuka folder Google Drive ini agar pengawas dapat mengunggah berkas PDF yang telah selesai diunduh.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo Sekolah (Untuk Fallback) -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <span class="card-title">🖼️ Logo Instansi (Cadangan Mode Teks)</span>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem;">
+                        <div style="width: 75px; height: 75px; border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; background: #fff; padding: 4px;">
+                            <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Saat Ini" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 600;">Logo Tunggal Aktif</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); word-break: break-all;">
+                                storage/uploads/logo/logo_1792025656.png                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="logo_file">Unggah Logo Tunggal Baru (Opsional)</label>
+                        <input type="file" name="logo_file" id="logo_file" class="form-control" accept="image/png,image/jpeg,image/webp">
+                        <div class="form-hint">Format: PNG, JPG, WebP. Maksimal 2 MB. Digunakan bila mode teks diaktifkan.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1rem;">
+                💾 Simpan Semua Pengaturan
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+function testDriveLink() {
+    const input = document.getElementById('google_drive_folder_url');
+    const val = input.value.trim();
+    if (!val) {
+        alert('Silakan masukkan link Google Drive terlebih dahulu.');
+        return;
+    }
+    if (!val.startsWith('https://') || !val.includes('drive.google.com')) {
+        alert('Peringatan: URL harus diawali dengan https:// dan berasal dari domain drive.google.com');
+        return;
+    }
+    window.open(val, '_blank', 'noopener,noreferrer');
+}
+</script>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

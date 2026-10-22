@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impor Data Siswa - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item ">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item ">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item active">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item ">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item ">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item ">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="margin-bottom: 1.5rem;">
+    <h2>Impor Data Siswa</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Unggah data siswa dalam format Excel (.xlsx) atau CSV dengan pencocokan kelas otomatis.
+    </p>
+</div>
+
+
+    <!-- Form Unggah Berkas -->
+    <div class="card" style="max-width: 700px;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="card-title">Unggah Berkas Siswa</span>
+            <a href="/admin/import-siswa.php?template=1" class="btn btn-secondary btn-sm">
+                📥 Unduh Template CSV
+            </a>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/admin/import-siswa.php" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                <input type="hidden" name="step" value="upload">
+
+                <div class="form-group">
+                    <label class="form-label" for="file_siswa">Pilih File Excel / CSV <span class="required">*</span></label>
+                    <input type="file" name="file_siswa" id="file_siswa" class="form-control" accept=".xlsx,.xls,.csv" required>
+                    <div class="form-hint">
+                        Format yang didukung: <strong>.xlsx, .xls, .csv</strong> (Maksimal 5 MB).
+                    </div>
+                </div>
+
+                <div style="background: var(--slate-50); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">
+                    <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--slate-800);">
+                        Format Kolom yang Dibutuhkan:
+                    </div>
+                    <ul style="font-size: 0.85rem; color: var(--slate-600); padding-left: 1.25rem;">
+                        <li><strong>NIS</strong>: Nomor Induk Siswa (Opsional)</li>
+                        <li><strong>NISN</strong>: Nomor Induk Siswa Nasional (Opsional)</li>
+                        <li><strong>Nama Siswa</strong>: Nama lengkap siswa (Wajib)</li>
+                        <li><strong>Kelas</strong>: Nama kelas, misal: <em>XII RPL 1</em> (Wajib, akan dibuat otomatis jika belum ada)</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Unggah & Pratinjau Data
+                </button>
+            </form>
+        </div>
+    </div>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

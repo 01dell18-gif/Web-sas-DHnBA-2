@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item active">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item ">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item ">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item ">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item ">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="margin-bottom: 1.5rem;">
+    <h2>Dashboard Administrator</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Selamat datang di sistem Generator Absensi dan Berita Acara Ujian SMK Negeri 1 Klungkung.
+    </p>
+</div>
+
+    <div style="background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div>
+                <div style="font-weight: 700; color: #9f1239; font-size: 1rem;">
+                    Terdeteksi Selisih Jumlah Dokumen Ujian!
+                </div>
+                <div style="color: #4c0519; font-size: 0.875rem; margin-top: 2px;">
+                    Daftar Hadir: <strong>100</strong> vs Berita Acara: <strong>94</strong> (Selisih: <strong>6 dokumen</strong>).
+                    Ada sesi yang belum dibuat Berita Acara-nya atau pengawas menginput ganda.
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href="/admin/rekonsiliasi.php?status=mismatch" class="btn btn-sm" style="background: #e11d48; color: white; border: none; font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);">
+                <i class="bi bi-search"></i> Telusuri & Lihat Pelakunya ➔
+            </a>
+        </div>
+    </div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏫</div>
+        <div>
+            <div class="stat-value">11 <span style="font-size: 0.9rem; color: var(--text-muted);">/ 11</span></div>
+            <div class="stat-label">Kelas Aktif / Total</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">👨‍🎓</div>
+        <div>
+            <div class="stat-value">258 <span style="font-size: 0.9rem; color: var(--text-muted);">/ 258</span></div>
+            <div class="stat-label">Siswa Aktif / Total</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📑</div>
+        <div>
+            <div class="stat-value">100</div>
+            <div class="stat-label">Arsip Daftar Hadir</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #b45309;">📋</div>
+        <div>
+            <div class="stat-value">94</div>
+            <div class="stat-label">Arsip Berita Acara</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e8f0fe; color: #1a73e8;">📁</div>
+        <div>
+            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 4px;">Google Drive</div>
+            <a href="https://drive.google.com/drive/folders/1wExampleDriveFolderSMKN1Klungkung" target="_blank" rel="noopener noreferrer" class="btn btn-drive btn-sm">
+                Buka Folder ↗
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Pintasan Cepat -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Aksi & Pintasan Cepat</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="/admin/absensi.php" class="btn btn-primary">
+                📑 Kelola & Unduh Arsip Daftar Hadir (.ZIP / .PDF)
+            </a>
+            <a href="/admin/berita-acara.php" class="btn btn-primary" style="background-color: #b45309; border-color: #b45309;">
+                📋 Kelola & Unduh Berita Acara (.ZIP / .PDF)
+            </a>
+            <a href="/admin/rekonsiliasi.php" class="btn btn-secondary" style="border-color: #4657d9; color: #4657d9; background: #eef0fd; font-weight: 600;">
+                🛡️ Audit & Rekonsiliasi Kelengkapan Dokumen (Cek Selisih)
+            </a>
+            <a href="/admin/rekap-kehadiran.php" class="btn btn-secondary">
+                📊 Matriks Rekap Kehadiran Siswa
+            </a>
+            <a href="/admin/import-siswa.php" class="btn btn-secondary">
+                📥 Impor Data Siswa dari Excel/CSV
+            </a>
+            <a href="/admin/kelas.php" class="btn btn-secondary">
+                🏫 Kelola Data Kelas
+            </a>
+            <a href="/admin/siswa.php" class="btn btn-secondary">
+                👨‍🎓 Kelola Data Siswa
+            </a>
+            <a href="/admin/template-ujian.php" class="btn btn-secondary">
+                📝 Atur Template & Redaksi Berita Acara
+            </a>
+        </div>
+    </div>
+
+    <!-- Log Aktivitas Terakhir -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Log Aktivitas Terbaru</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Aktivitas</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                                                    <tr>
+                                    <td style="font-size: 0.8rem; white-space: nowrap;">
+                                        22/10/2026 07:54                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">LOGIN_SUCCESS</span>
+                                    </td>
+                                    <td style="font-size: 0.825rem;">Admin admin berhasil login.</td>
+                                </tr>
+                                                            <tr>
+                                    <td style="font-size: 0.8rem; white-space: nowrap;">
+                                        22/10/2026 06:53                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">LOGIN_SUCCESS</span>
+                                    </td>
+                                    <td style="font-size: 0.825rem;">Admin admin berhasil login.</td>
+                                </tr>
+                                                            <tr>
+                                    <td style="font-size: 0.8rem; white-space: nowrap;">
+                                        21/10/2026 12:17                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">LOGIN_SUCCESS</span>
+                                    </td>
+                                    <td style="font-size: 0.825rem;">Admin admin berhasil login.</td>
+                                </tr>
+                                                            <tr>
+                                    <td style="font-size: 0.8rem; white-space: nowrap;">
+                                        20/10/2026 10:32                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">LOGIN_SUCCESS</span>
+                                    </td>
+                                    <td style="font-size: 0.825rem;">Admin admin berhasil login.</td>
+                                </tr>
+                                                            <tr>
+                                    <td style="font-size: 0.8rem; white-space: nowrap;">
+                                        20/10/2026 09:42                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">LOGIN_SUCCESS</span>
+                                    </td>
+                                    <td style="font-size: 0.825rem;">Admin admin berhasil login.</td>
+                                </tr>
+                                                                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

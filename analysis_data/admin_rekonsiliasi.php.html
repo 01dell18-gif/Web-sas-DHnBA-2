@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit &amp; Rekonsiliasi Dokumen - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item ">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item ">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item ">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item active">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item ">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+        <h2><i class="bi bi-shield-check" style="color: var(--primary);"></i> Audit & Rekonsiliasi Dokumen</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">
+            Pencocokan otomatis antara Arsip Daftar Hadir dan Berita Acara untuk melacak sesi yang belum lengkap atau terinput ganda.
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="/admin/absensi.php" class="btn btn-secondary btn-sm">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="btn btn-secondary btn-sm">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+    </div>
+</div>
+
+<!-- Kartu Ringkasan Status -->
+<div class="stats-grid" style="margin-bottom: 1.5rem;">
+    <div class="stat-card" style="border-left: 4px solid var(--primary);">
+        <div class="stat-icon" style="background: #eef0fd; color: var(--primary); font-size: 1.4rem;">
+            <i class="bi bi-collection"></i>
+        </div>
+        <div>
+            <div class="stat-value">107</div>
+            <div class="stat-label">Total Sesi Ujian Terdeteksi</div>
+        </div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #ef4444;">
+        <div class="stat-icon" style="background: #fee2e2; color: #dc2626; font-size: 1.4rem;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value" style="color: #dc2626;">24</div>
+            <div class="stat-label">Perlu Tindakan (Selisih / Masalah)</div>
+        </div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+        <div class="stat-icon" style="background: #fef3c7; color: #b45309; font-size: 1.4rem;">
+            <i class="bi bi-clipboard-x"></i>
+        </div>
+        <div>
+            <div class="stat-value">14</div>
+            <div class="stat-label">Kurang Berita Acara</div>
+        </div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #3b82f6;">
+        <div class="stat-icon" style="background: #dbeafe; color: #1d4ed8; font-size: 1.4rem;">
+            <i class="bi bi-file-earmark-x"></i>
+        </div>
+        <div>
+            <div class="stat-value">8</div>
+            <div class="stat-label">Kurang Daftar Hadir</div>
+        </div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #8b5cf6;">
+        <div class="stat-icon" style="background: #f3e8ff; color: #7e22ce; font-size: 1.4rem;">
+            <i class="bi bi-copy"></i>
+        </div>
+        <div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Sesi Dobel / Duplikat</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter & Tab Cepat -->
+<div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-body" style="padding: 1rem 1.25rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.85rem;">
+            <a href="?status=mismatch" 
+               class="btn btn-sm btn-danger">
+                <i class="bi bi-exclamation-circle"></i> Tampilkan Selisih / Masalah (24)
+            </a>
+            <a href="?status=missing_ba" 
+               class="btn btn-sm btn-secondary">
+                <i class="bi bi-clipboard-x"></i> Kurang Berita Acara (14)
+            </a>
+            <a href="?status=missing_dh" 
+               class="btn btn-sm btn-secondary" style="">
+                <i class="bi bi-file-earmark-x"></i> Kurang Daftar Hadir (8)
+            </a>
+            <a href="?status=duplicate" 
+               class="btn btn-sm btn-secondary" style="">
+                <i class="bi bi-copy"></i> Duplikat (2)
+            </a>
+            <a href="?status=complete" 
+               class="btn btn-sm btn-secondary">
+                <i class="bi bi-check-all"></i> Lengkap (83)
+            </a>
+            <a href="?status=all" 
+               class="btn btn-sm btn-secondary">
+                <i class="bi bi-list-ul"></i> Semua Sesi (107)
+            </a>
+        </div>
+
+        <form method="GET" action="" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+            <input type="hidden" name="status" value="mismatch">
+            
+            <div style="flex: 1; min-width: 220px;">
+                <input type="text" name="q" class="form-control" placeholder="Cari Kelas, Mata Pelajaran, atau Nama Pengawas..." value="">
+            </div>
+
+            <div style="min-width: 140px;">
+                <select name="tingkat" class="form-control" onchange="this.form.submit()">
+                    <option value="">Semua Tingkat</option>
+                    <option value="X" >Tingkat X</option>
+                    <option value="XI" >Tingkat XI</option>
+                    <option value="XII" >Tingkat XII</option>
+                </select>
+            </div>
+
+            <div style="min-width: 150px;">
+                <input type="date" name="tanggal" class="form-control" value="" onchange="this.form.submit()">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Cari
+            </button>
+                    </form>
+    </div>
+</div>
+
+<!-- Tabel Hasil Rekonsiliasi -->
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="card-title">
+            Daftar Sesi Ujian (24 data ditampilkan)
+        </span>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+            Status aktif: <strong>MISMATCH</strong>
+        </span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table" style="vertical-align: middle;">
+                <thead>
+                    <tr>
+                        <th style="width: 50px; text-align: center;">No</th>
+                        <th>Kelas & Tingkat</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Tanggal & Ruang</th>
+                        <th style="text-align: center; width: 120px;">Daftar Hadir</th>
+                        <th style="text-align: center; width: 120px;">Berita Acara</th>
+                        <th>Pengawas Terdeteksi</th>
+                        <th>Status Kesesuaian</th>
+                        <th style="text-align: center; width: 100px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                                                        <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    1                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPB</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Matematika</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        22/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII LPB                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=97" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> I Wayan Suteja                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPB&mapel=Matematika&tanggal=2026-10-22" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    2                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPKKK 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Farmakognosi</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        22/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Ruang kelas XII LPKKK  1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=96" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> I Gusti Ayu  Karla Komala Dewi,S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPKKK+1&mapel=Farmakognosi&tanggal=2026-10-22" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    3                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TSM</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Engine Management System Sepeda Motoe</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        22/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII TSM                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=101" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Widi Sila                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+TSM&mapel=Engine+Management+System+Sepeda+Motoe&tanggal=2026-10-22" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    4                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII BD 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Kreativitas Inovasi dan Kewirausahaan (KIK)</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=73" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Kadek Winastri, S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+BD+1&mapel=Kreativitas+Inovasi+dan+Kewirausahaan+%28KIK%29&tanggal=2026-10-21" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    5                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPB</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Matematika</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: -                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=101" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> I Wayan Suteja                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPB&mapel=Matematika&tanggal=2026-10-21" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    6                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPKKK 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Farmakognosi</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Kelas XI LPKKK 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=99" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 2 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=100" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=98" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> I Gusti Ayu Karla Komala Dewi,S.Pd                                            </div>
+                                                                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> I Gusti  Ayu Karla  Komala Dewi,S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-warning" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Duplikat (1 DH, 2 BA)                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/admin/absensi.php?q=XII+LPKKK+1" 
+                                           class="btn btn-secondary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Periksa Arsip untuk hapus dobel">
+                                            <i class="bi bi-pencil-square"></i> Cek Dobel
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    7                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII MP 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pendidikan Agama Hindu dan Budi pekerti</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Kelas XII MP 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 2 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=88" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=84" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=90" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ida Ayu Desi Lestari                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-warning" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Duplikat (2 DH, 1 BA)                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/admin/absensi.php?q=XII+MP+1" 
+                                           class="btn btn-secondary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Periksa Arsip untuk hapus dobel">
+                                            <i class="bi bi-pencil-square"></i> Cek Dobel
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    8                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TSM</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Bahasa Bali</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII TSM                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=93" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Nyoman Sriwati Kartini,S.Pd.                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+TSM&mapel=Bahasa+Bali&tanggal=2026-10-21" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    9                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TSM</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Bahasa BLi</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        21/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII TSM                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=95" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Nyoman Sriwati Kartini,S.Pd.                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+TSM&mapel=Bahasa+BLi&tanggal=2026-10-21" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    10                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII BD 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pendidikan Pancasila</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        20/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Di kelas XII BD 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=53" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Putu Eka Wulandari                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+BD+1&mapel=Pendidikan+Pancasila&tanggal=2026-10-20" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    11                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII BD 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Kreativitas Inovasi dan Kewirausahaan (KIK)</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        20/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=78" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Kadek Winastri, S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+BD+1&mapel=Kreativitas+Inovasi+dan+Kewirausahaan+%28KIK%29&tanggal=2026-10-20" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    12                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPB</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Bahasa Indonesia</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        20/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Kelas XII LPB                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=48" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Nyoman Sriwati Kartini,S.Pd.                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+LPB&mapel=Bahasa+Indonesia&tanggal=2026-10-20" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    13                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPKKK 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Farmakologi</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        20/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII LPKKK 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=39" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Luh Gd. Karisma Widiantari                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPKKK+1&mapel=Farmakologi&tanggal=2026-10-20" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    14                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII MP 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Bahasa Inggris</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        20/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=65" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Denni Rosalami S. Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+MP+1&mapel=Bahasa+Inggris&tanggal=2026-10-20" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    15                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">-</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls Umum                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pengelolaan Rapat</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=24" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Eka Hikmahyanti                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=-&mapel=Pengelolaan+Rapat&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    16                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII DKV</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Desain Grafis</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: R-01                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=38" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Guru Pengawas S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+DKV&mapel=Desain+Grafis&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    17                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII DKV</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Desain Komunikasi Visual</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: R-05                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=44" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Guru Pengawas S.Pd                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+DKV&mapel=Desain+Komunikasi+Visual&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    18                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPB</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Bahasa Indonesia</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Kelas XII LPB                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=33" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ni Nyoman Sriwati Kartini,S.Pd.                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPB&mapel=Bahasa+Indonesia&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    19                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPKKK 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pendidikan Agama Hindu &amp; BP</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII LPKKK 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=8" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Kadek Hariasih, S.Fil.H                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+LPKKK+1&mapel=Pendidikan+Agama+Hindu+%26+BP&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    20                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII LPKKK 1</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pendidikan Agama Hindu &amp; Budi Pekerti</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XI LPKKK 1                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=15" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Kadek Hariasih, S.Fil.H                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+LPKKK+1&mapel=Pendidikan+Agama+Hindu+%26+Budi+Pekerti&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    21                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII MP 2</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pengelolaan Rapat</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Kelas 12 MP 2                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=11" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Eka Hikmahyanti                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+MP+2&mapel=Pengelolaan+Rapat&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    22                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TKJ</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Perencanaan dan pengalamatan jaringan</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab TKJ                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=4" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Anom widya darma                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+TKJ&mapel=Perencanaan+dan+pengalamatan+jaringan&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    23                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TKJ</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Pengalamatan dan perencanaan jaringan</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: Lab TKJ                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/berita-acara.php?action=view_single&id=10" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Anom widya darma                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Daftar Hadir                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/absensi.php?kelas=XII+TKJ&mapel=Pengalamatan+dan+perencanaan+jaringan&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px;" 
+                                           title="Buat Absensi untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat DH
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                    <tr style="background-color: #fff9f9;">
+                                <td style="text-align: center; font-weight: 600; color: var(--text-muted);">
+                                    24                                </td>
+                                <td>
+                                    <strong style="color: var(--text-heading);">XII TSM</strong>
+                                                                            <span class="badge badge-secondary" style="font-size: 0.725rem; margin-left: 4px;">
+                                            Kls XII                                        </span>
+                                                                    </td>
+                                <td>
+                                    <strong>Engine Management System Sepeda Motoe</strong>
+                                </td>
+                                <td>
+                                    <div style="font-size: 0.85rem; font-weight: 500;">
+                                        <i class="bi bi-calendar3" style="color: var(--text-muted);"></i> 
+                                        19/10/2026                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                        Ruang: XII TSM                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-success" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-check-circle-fill"></i> 1 Dokumen
+                                        </span>
+                                                                                    <div style="margin-top: 4px;">
+                                                <a href="/admin/absensi.php?action=view_single&id=95" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; padding: 2px 6px;" title="Lihat PDF">
+                                                    <i class="bi bi-file-pdf"></i> Lihat
+                                                </a>
+                                            </div>
+                                                                                                            </td>
+                                <td style="text-align: center;">
+                                                                            <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                                            <i class="bi bi-x-circle-fill"></i> Belum Ada
+                                        </span>
+                                                                    </td>
+                                <td>
+                                                                                                                        <div style="font-size: 0.85rem; font-weight: 500;">
+                                                <i class="bi bi-person-badge" style="color: var(--text-muted);"></i> Ketut Widisila                                            </div>
+                                                                                                            </td>
+                                <td>
+                                    <span class="badge badge-danger" style="font-size: 0.8rem; padding: 5px 8px;">
+                                        Kurang Berita Acara                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                                                            <a href="/berita-acara.php?kelas=XII+TSM&mapel=Engine+Management+System+Sepeda+Motoe&tanggal=2026-10-19" 
+                                           target="_blank" 
+                                           class="btn btn-primary btn-sm" 
+                                           style="font-size: 0.75rem; padding: 4px 8px; background: #b45309; border-color: #b45309;" 
+                                           title="Buat Berita Acara untuk sesi ini">
+                                            <i class="bi bi-plus-circle"></i> Buat BA
+                                        </a>
+                                                                    </td>
+                            </tr>
+                                                            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

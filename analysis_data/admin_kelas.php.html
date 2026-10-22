@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Kelas - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item ">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item active">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item ">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item ">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item ">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2>Kelola Data Kelas</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Daftar kelas aktif yang dapat dipilih oleh pengawas saat membuat dokumen absensi.
+        </p>
+    </div>
+</div>
+
+
+<div class="split-layout" style="height: auto;">
+    <!-- Formulir Tambah / Edit Kelas -->
+    <div style="flex: 0 0 380px;">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">➕ Tambah Kelas Baru</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/admin/kelas.php">
+                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                    <input type="hidden" name="action" value="save">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="nama_kelas">Nama Kelas <span class="required">*</span></label>
+                        <input type="text" name="nama_kelas" id="nama_kelas" class="form-control" 
+                               value="" placeholder="Contoh: XII RPL 1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="tingkat">Tingkat</label>
+                        <select name="tingkat" id="tingkat" class="form-select">
+                            <option value="">-- Pilih Tingkat --</option>
+                            <option value="X" >Tingkat X</option>
+                            <option value="XI" >Tingkat XI</option>
+                            <option value="XII" >Tingkat XII</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="program_keahlian">Program Keahlian</label>
+                        <input type="text" name="program_keahlian" id="program_keahlian" class="form-control" 
+                               value="" placeholder="Contoh: Rekayasa Perangkat Lunak">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" name="aktif" value="1" checked>
+                            Kelas Aktif (Dapat dipilih publik)
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            Tambah Kelas                        </button>
+                                            </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Daftar Kelas -->
+    <div style="flex: 1;">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Daftar Seluruh Kelas (11)</span>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama Kelas</th>
+                                <th>Tingkat</th>
+                                <th>Program Keahlian</th>
+                                <th style="text-align: center;">Jumlah Siswa</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: right;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td><strong>XII AK</strong></td>
+                                        <td>XII</td>
+                                        <td>Akuntansi dan Keuangan Lembaga</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=15" class="badge badge-info" title="Lihat Siswa">
+                                                28 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="15">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=15" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="15">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII BD 1</strong></td>
+                                        <td>XII</td>
+                                        <td>Bisnis Digital</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=10" class="badge badge-info" title="Lihat Siswa">
+                                                29 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="10">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=10" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="10">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII BD 2</strong></td>
+                                        <td>XII</td>
+                                        <td>Bisnis Digital</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=11" class="badge badge-info" title="Lihat Siswa">
+                                                20 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="11">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=11" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="11">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII DKV</strong></td>
+                                        <td>XII</td>
+                                        <td>Desain Komunikasi Visual</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=7" class="badge badge-info" title="Lihat Siswa">
+                                                23 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="7">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=7" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="7">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII LPB</strong></td>
+                                        <td>XII</td>
+                                        <td>Akuntansi dan Keuangan Lembaga</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=14" class="badge badge-info" title="Lihat Siswa">
+                                                12 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="14">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=14" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="14">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII LPKKK 1</strong></td>
+                                        <td>XII</td>
+                                        <td>Layanan Penunjang Kefarmasian Klinis dan Komunitas</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=8" class="badge badge-info" title="Lihat Siswa">
+                                                21 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="8">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=8" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="8">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII LPKKK 2</strong></td>
+                                        <td>XII</td>
+                                        <td>Layanan Penunjang Kefarmasian Klinis dan Komunitas</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=9" class="badge badge-info" title="Lihat Siswa">
+                                                19 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="9">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=9" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="9">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII MP 1</strong></td>
+                                        <td>XII</td>
+                                        <td>Manajemen Perkantoran</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=12" class="badge badge-info" title="Lihat Siswa">
+                                                27 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="12">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=12" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="12">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII MP 2</strong></td>
+                                        <td>XII</td>
+                                        <td>Manajemen Perkantoran</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=13" class="badge badge-info" title="Lihat Siswa">
+                                                27 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="13">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=13" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="13">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII TKJ</strong></td>
+                                        <td>XII</td>
+                                        <td>Teknik Komputer dan Jaringan</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=6" class="badge badge-info" title="Lihat Siswa">
+                                                20 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="6">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=6" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="6">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td><strong>XII TSM</strong></td>
+                                        <td>XII</td>
+                                        <td>Teknik Sepeda Motor</td>
+                                        <td style="text-align: center;">
+                                            <a href="/admin/siswa.php?class_id=5" class="badge badge-info" title="Lihat Siswa">
+                                                32 Siswa
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="toggle_active">
+                                                <input type="hidden" name="id" value="5">
+                                                <input type="hidden" name="status" value="0">
+                                                <button type="submit" class="badge badge-success" 
+                                                        style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                                    Aktif                                                </button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: right; white-space: nowrap;">
+                                            <a href="/admin/kelas.php?edit=5" class="btn btn-secondary btn-sm">Edit</a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="5">
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

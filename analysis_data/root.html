@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Absensi & Berita Acara - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+    <style>
+        .home-hero {
+            background: linear-gradient(135deg, #4657D9 0%, #253047 100%);
+            color: #ffffff;
+            padding: 3.5rem 1.25rem 4rem 1.25rem;
+            text-align: center;
+            border-bottom: 3px solid #3746BF;
+        }
+        .home-hero-logo {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+            border-radius: var(--radius-sm);
+        }
+        .home-title {
+            color: #ffffff;
+            font-size: 1.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .home-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.92;
+            color: #E0E5FF;
+            letter-spacing: 0.2px;
+        }
+        .choices-container {
+            max-width: 900px;
+            margin: -2.25rem auto 3rem auto;
+            padding: 0 1rem;
+        }
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .choice-card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 2.25rem 1.75rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .choice-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: #D4D8EB;
+        }
+        .choice-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.25rem auto;
+        }
+        .choice-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+        .choice-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+            line-height: 1.55;
+        }
+        @media (max-width: 600px) {
+            .home-hero {
+                padding: 2.25rem 1rem 3rem 1rem;
+            }
+            .home-hero-logo {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 0.75rem;
+            }
+            .home-title {
+                font-size: 1.4rem;
+            }
+            .choices-container {
+                margin-top: -1.5rem;
+            }
+            .choice-card {
+                padding: 1.5rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="navbar-brand">
+        <a href="/" class="brand-link">
+            <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+            <div class="brand-text">
+                <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                <span class="brand-subtitle">Generator Administrasi Ujian</span>
+            </div>
+        </a>
+    </div>
+    <button type="button" class="mobile-nav-toggle" id="btnToggleNav" onclick="toggleMobileNav(event)" aria-label="Toggle Menu">
+        <i class="bi bi-list"></i>
+    </button>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="/" class="nav-link active"><i class="bi bi-house"></i> Beranda</a></li>
+        <li><a href="/absensi.php" class="nav-link"><i class="bi bi-clipboard-check"></i> Daftar Hadir</a></li>
+        <li><a href="/berita-acara.php" class="nav-link"><i class="bi bi-file-earmark-text"></i> Berita Acara</a></li>
+        <li><a href="/admin/login.php" class="btn btn-secondary btn-sm"><i class="bi bi-shield-lock"></i> Admin</a></li>
+    </ul>
+</header>
+
+<section class="home-hero">
+    <div class="container" style="max-width: 700px;">
+        <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="home-hero-logo">
+        <h1 class="home-title">SMK NEGERI 1 KLUNGKUNG</h1>
+        <div class="home-subtitle">Generator Absensi & Berita Acara Pelaksanaan Ujian</div>
+    </div>
+</section>
+
+<main class="choices-container">
+    <div class="choices-grid">
+        <!-- Pilihan 1: Daftar Hadir -->
+        <div class="choice-card">
+            <div>
+                <div class="choice-icon" style="background: var(--primary-light); color: var(--primary);">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <h2 class="choice-title">Daftar Hadir Ujian</h2>
+                <p class="choice-desc">
+                    Isi kehadiran siswa per kelas secara live dan unduh lembar presensi resmi cetak PDF format A4.
+                </p>
+            </div>
+            <div>
+                <a href="/absensi.php" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1rem;">
+                    Buka Daftar Hadir <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Pilihan 2: Berita Acara -->
+        <div class="choice-card">
+            <div>
+                <div class="choice-icon" style="background: var(--lavender); color: var(--primary);">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <h2 class="choice-title">Berita Acara Ujian</h2>
+                <p class="choice-desc">
+                    Catat jalannya ujian, rekap kehadiran, unggah foto bukti pelaksanaan, dan unduh PDF resmi.
+                </p>
+            </div>
+            <div>
+                <a href="/berita-acara.php" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1rem;">
+                    Buka Berita Acara <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer style="background: #ffffff; border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: 0.825rem; color: var(--text-muted);">
+    <div class="container">
+        <div><strong>SMK NEGERI 1 KLUNGKUNG</strong> &bull; Administrasi Ujian Sekolah</div>
+    </div>
+</footer>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>

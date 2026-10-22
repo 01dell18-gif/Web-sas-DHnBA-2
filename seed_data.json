@@ -1,0 +1,1682 @@
+{
+  "5": {
+    "success": true,
+    "class": {
+      "id": 5,
+      "nama_kelas": "XII TSM",
+      "tingkat": "XII",
+      "program_keahlian": "Teknik Sepeda Motor"
+    },
+    "students": [
+      {
+        "id": 33,
+        "nis": "13526",
+        "nisn": "",
+        "nama": "Aldo Valentino"
+      },
+      {
+        "id": 34,
+        "nis": "13527",
+        "nisn": "",
+        "nama": "ARKANANTA MAULANA PUTRA APRILIANSYAH"
+      },
+      {
+        "id": 35,
+        "nis": "13528",
+        "nisn": "",
+        "nama": "I Gede Ari Widnyana"
+      },
+      {
+        "id": 36,
+        "nis": "13529",
+        "nisn": "",
+        "nama": "I Gede Candra Wiguna"
+      },
+      {
+        "id": 37,
+        "nis": "13530",
+        "nisn": "",
+        "nama": "I Gede Resa Pradnya Andika"
+      },
+      {
+        "id": 38,
+        "nis": "13531",
+        "nisn": "",
+        "nama": "I GUSTI NGURAH SATHYA DANANJAYA"
+      },
+      {
+        "id": 39,
+        "nis": "13532",
+        "nisn": "",
+        "nama": "I Kadek Angga Aditya Putra"
+      },
+      {
+        "id": 40,
+        "nis": "13533",
+        "nisn": "",
+        "nama": "I Kadek Dodik Ramayoga"
+      },
+      {
+        "id": 41,
+        "nis": "13534",
+        "nisn": "",
+        "nama": "I Kadek Dwi Adi Darma Yudhi"
+      },
+      {
+        "id": 42,
+        "nis": "13535",
+        "nisn": "",
+        "nama": "I Kadek Ipan Junata"
+      },
+      {
+        "id": 43,
+        "nis": "13536",
+        "nisn": "",
+        "nama": "I KADEK KUSUMA CAHYADI"
+      },
+      {
+        "id": 44,
+        "nis": "13537",
+        "nisn": "",
+        "nama": "I Ketut Catur Yoga Saputra"
+      },
+      {
+        "id": 46,
+        "nis": "13540",
+        "nisn": "",
+        "nama": "I Komang Bayu Septi Permana"
+      },
+      {
+        "id": 47,
+        "nis": "13541",
+        "nisn": "",
+        "nama": "I Komang Pebri Andika Saputra"
+      },
+      {
+        "id": 48,
+        "nis": "13542",
+        "nisn": "",
+        "nama": "I Made Agus Bayu Widi"
+      },
+      {
+        "id": 49,
+        "nis": "13543",
+        "nisn": "",
+        "nama": "I Made Div Aditya Pramana"
+      },
+      {
+        "id": 50,
+        "nis": "13544",
+        "nisn": "",
+        "nama": "I Ngurah Komang Ari Artana"
+      },
+      {
+        "id": 51,
+        "nis": "13545",
+        "nisn": "",
+        "nama": "I Putu Bayu Saputra"
+      },
+      {
+        "id": 52,
+        "nis": "13547",
+        "nisn": "",
+        "nama": "I Putu Pande Sedaya Tana"
+      },
+      {
+        "id": 53,
+        "nis": "13548",
+        "nisn": "",
+        "nama": "I Wayan Surya Nanta"
+      },
+      {
+        "id": 54,
+        "nis": "13550",
+        "nisn": "",
+        "nama": "JULIANTARA PUTRA"
+      },
+      {
+        "id": 55,
+        "nis": "13551",
+        "nisn": "",
+        "nama": "Kadek Angga Trisnawan"
+      },
+      {
+        "id": 56,
+        "nis": "13552",
+        "nisn": "",
+        "nama": "Ketut Mahardika"
+      },
+      {
+        "id": 45,
+        "nis": "13538",
+        "nisn": "",
+        "nama": "Ketut Rianta"
+      },
+      {
+        "id": 57,
+        "nis": "13553",
+        "nisn": "",
+        "nama": "Lorensius Kaka Lalo"
+      },
+      {
+        "id": 58,
+        "nis": "13554",
+        "nisn": "",
+        "nama": "Made Adi Mahardika"
+      },
+      {
+        "id": 59,
+        "nis": "13555",
+        "nisn": "",
+        "nama": "MUHAMMAD AZIZUL HAKIM"
+      },
+      {
+        "id": 60,
+        "nis": "13556",
+        "nisn": "",
+        "nama": "Nyoman Yudhi Triananda Wibawa"
+      },
+      {
+        "id": 61,
+        "nis": "13558",
+        "nisn": "",
+        "nama": "REDNO FEDRIANZAH"
+      },
+      {
+        "id": 64,
+        "nis": "13795",
+        "nisn": "",
+        "nama": "ROBERTO CHRISTIANO"
+      },
+      {
+        "id": 62,
+        "nis": "13559",
+        "nisn": "",
+        "nama": "WIRANTO SANJAYA"
+      },
+      {
+        "id": 63,
+        "nis": "13560",
+        "nisn": "",
+        "nama": "YUSUF ARDIANSYAH"
+      }
+    ],
+    "count": 32
+  },
+  "6": {
+    "success": true,
+    "class": {
+      "id": 6,
+      "nama_kelas": "XII TKJ",
+      "tingkat": "XII",
+      "program_keahlian": "Teknik Komputer dan Jaringan"
+    },
+    "students": [
+      {
+        "id": 65,
+        "nis": "13561",
+        "nisn": "",
+        "nama": "Agustinus Poka Mete"
+      },
+      {
+        "id": 66,
+        "nis": "13562",
+        "nisn": "",
+        "nama": "Akbar Alfiansah"
+      },
+      {
+        "id": 67,
+        "nis": "13563",
+        "nisn": "",
+        "nama": "Dwi Retno Ayuningrum"
+      },
+      {
+        "id": 68,
+        "nis": "13565",
+        "nisn": "",
+        "nama": "I Gede Adtya Wedha Paramartha"
+      },
+      {
+        "id": 69,
+        "nis": "13566",
+        "nisn": "",
+        "nama": "I Gede Putra Sang Pajar"
+      },
+      {
+        "id": 70,
+        "nis": "13567",
+        "nisn": "",
+        "nama": "I Komang Giri Artawan"
+      },
+      {
+        "id": 71,
+        "nis": "13568",
+        "nisn": "",
+        "nama": "I Made Sugiarta"
+      },
+      {
+        "id": 72,
+        "nis": "13569",
+        "nisn": "",
+        "nama": "I Putu Adi Ari Endrawan"
+      },
+      {
+        "id": 73,
+        "nis": "13570",
+        "nisn": "",
+        "nama": "I Putu Agus Pratama Putra"
+      },
+      {
+        "id": 74,
+        "nis": "13571",
+        "nisn": "",
+        "nama": "I Putu Pasek Prawira Putra"
+      },
+      {
+        "id": 75,
+        "nis": "13572",
+        "nisn": "",
+        "nama": "I Wayan Kartika Adi Putra"
+      },
+      {
+        "id": 76,
+        "nis": "13573",
+        "nisn": "",
+        "nama": "Komang Jano Artha"
+      },
+      {
+        "id": 77,
+        "nis": "13574",
+        "nisn": "",
+        "nama": "M. Afgansyah Al-Maghfiroh"
+      },
+      {
+        "id": 78,
+        "nis": "13575",
+        "nisn": "",
+        "nama": "Made Pradnya Wahyu Radheya"
+      },
+      {
+        "id": 79,
+        "nis": "13576",
+        "nisn": "",
+        "nama": "Ni Ketut Sinta"
+      },
+      {
+        "id": 80,
+        "nis": "13577",
+        "nisn": "",
+        "nama": "Ni Komang Sila Triana Sari"
+      },
+      {
+        "id": 81,
+        "nis": "13578",
+        "nisn": "",
+        "nama": "Radit"
+      },
+      {
+        "id": 82,
+        "nis": "13579",
+        "nisn": "",
+        "nama": "Rizka Nurdiandari"
+      },
+      {
+        "id": 83,
+        "nis": "13580",
+        "nisn": "",
+        "nama": "Rizky Adib Irlan Syah"
+      },
+      {
+        "id": 84,
+        "nis": "13581",
+        "nisn": "",
+        "nama": "Rizqy Al Farraby"
+      }
+    ],
+    "count": 20
+  },
+  "7": {
+    "success": true,
+    "class": {
+      "id": 7,
+      "nama_kelas": "XII DKV",
+      "tingkat": "XII",
+      "program_keahlian": "Desain Komunikasi Visual"
+    },
+    "students": [
+      {
+        "id": 85,
+        "nis": "13769",
+        "nisn": "",
+        "nama": "Anak Agung Gede Dika Pradipta"
+      },
+      {
+        "id": 86,
+        "nis": "13770",
+        "nisn": "",
+        "nama": "Gek Danaya Anindia"
+      },
+      {
+        "id": 87,
+        "nis": "13771",
+        "nisn": "",
+        "nama": "I Gede Ary Kesuma Suputra"
+      },
+      {
+        "id": 88,
+        "nis": "13772",
+        "nisn": "",
+        "nama": "I Gede Rian Primayoga"
+      },
+      {
+        "id": 89,
+        "nis": "13773",
+        "nisn": "",
+        "nama": "I Komang Raka Danaswara"
+      },
+      {
+        "id": 90,
+        "nis": "13774",
+        "nisn": "",
+        "nama": "I Made Dharma Mahardika"
+      },
+      {
+        "id": 91,
+        "nis": "13775",
+        "nisn": "",
+        "nama": "I Made Wahyu Adikusuma"
+      },
+      {
+        "id": 92,
+        "nis": "13776",
+        "nisn": "",
+        "nama": "I Putu Gede Eka Yogantara Pratmaja"
+      },
+      {
+        "id": 93,
+        "nis": "13777",
+        "nisn": "",
+        "nama": "I Putu Rendy Galang Permana"
+      },
+      {
+        "id": 94,
+        "nis": "13778",
+        "nisn": "",
+        "nama": "I Wayan Wira Pradnyana"
+      },
+      {
+        "id": 95,
+        "nis": "13779",
+        "nisn": "",
+        "nama": "Kadek Gita Anindita Kemulan"
+      },
+      {
+        "id": 96,
+        "nis": "13780",
+        "nisn": "",
+        "nama": "Komang Aditya"
+      },
+      {
+        "id": 97,
+        "nis": "13781",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Melani Ratna Dewi"
+      },
+      {
+        "id": 98,
+        "nis": "13782",
+        "nisn": "",
+        "nama": "Ni Kadek Ita Sutriani"
+      },
+      {
+        "id": 99,
+        "nis": "13783",
+        "nisn": "",
+        "nama": "Ni Kadek Ranita Dewi"
+      },
+      {
+        "id": 100,
+        "nis": "13784",
+        "nisn": "",
+        "nama": "Ni Luh Putu Sekar Darma Yanti"
+      },
+      {
+        "id": 101,
+        "nis": "13785",
+        "nisn": "",
+        "nama": "Ni Made Ayu Dwi Apriliani"
+      },
+      {
+        "id": 102,
+        "nis": "13786",
+        "nisn": "",
+        "nama": "Ni Putu Dian Cahyani"
+      },
+      {
+        "id": 103,
+        "nis": "13787",
+        "nisn": "",
+        "nama": "Ni Putu Ghina Anastasia Putri"
+      },
+      {
+        "id": 104,
+        "nis": "13788",
+        "nisn": "",
+        "nama": "Ni Putu Rismayani Darma Swari"
+      },
+      {
+        "id": 105,
+        "nis": "13789",
+        "nisn": "",
+        "nama": "Queena Bilqist Mulyadi Putri"
+      },
+      {
+        "id": 106,
+        "nis": "13790",
+        "nisn": "",
+        "nama": "Raditya Nugraha"
+      },
+      {
+        "id": 107,
+        "nis": "13791",
+        "nisn": "",
+        "nama": "Wayan Satya Dharma"
+      }
+    ],
+    "count": 23
+  },
+  "8": {
+    "success": true,
+    "class": {
+      "id": 8,
+      "nama_kelas": "XII LPKKK 1",
+      "tingkat": "XII",
+      "program_keahlian": "Layanan Penunjang Kefarmasian Klinis dan Komunitas"
+    },
+    "students": [
+      {
+        "id": 108,
+        "nis": "13582",
+        "nisn": "",
+        "nama": "Agus Billy Fedrico"
+      },
+      {
+        "id": 109,
+        "nis": "13583",
+        "nisn": "",
+        "nama": "Agus Eka Widya Pradnyana"
+      },
+      {
+        "id": 110,
+        "nis": "13584",
+        "nisn": "",
+        "nama": "Dewa Ayu Sri Widyastuti"
+      },
+      {
+        "id": 111,
+        "nis": "13585",
+        "nisn": "",
+        "nama": "I Dewa Ayu Dwi Cahya Indrayani"
+      },
+      {
+        "id": 112,
+        "nis": "13586",
+        "nisn": "",
+        "nama": "I Komang Edi Setiawan."
+      },
+      {
+        "id": 113,
+        "nis": "13587",
+        "nisn": "",
+        "nama": "Ida Ayu Putu Diah Kamiswari"
+      },
+      {
+        "id": 114,
+        "nis": "13588",
+        "nisn": "",
+        "nama": "Luh Ade Galuh Pratiwi"
+      },
+      {
+        "id": 115,
+        "nis": "13589",
+        "nisn": "",
+        "nama": "Munifa Inayatur Rohma"
+      },
+      {
+        "id": 116,
+        "nis": "13590",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Arsani"
+      },
+      {
+        "id": 117,
+        "nis": "13591",
+        "nisn": "",
+        "nama": "Ni Kadek Diah Dwi Adnyani"
+      },
+      {
+        "id": 118,
+        "nis": "13592",
+        "nisn": "",
+        "nama": "Ni Kadek Dian Candra Pratiwi"
+      },
+      {
+        "id": 119,
+        "nis": "13593",
+        "nisn": "",
+        "nama": "Ni Kadek Evinayanti"
+      },
+      {
+        "id": 120,
+        "nis": "13595",
+        "nisn": "",
+        "nama": "Ni Komang Ayu Santika"
+      },
+      {
+        "id": 121,
+        "nis": "13596",
+        "nisn": "",
+        "nama": "Ni Komang Widya Krista Yanti"
+      },
+      {
+        "id": 122,
+        "nis": "13597",
+        "nisn": "",
+        "nama": "Ni Made Juniari"
+      },
+      {
+        "id": 123,
+        "nis": "13598",
+        "nisn": "",
+        "nama": "Ni Made Shita Wulandari"
+      },
+      {
+        "id": 124,
+        "nis": "13599",
+        "nisn": "",
+        "nama": "Ni Putu Intan Merliani Putri"
+      },
+      {
+        "id": 125,
+        "nis": "13600",
+        "nisn": "",
+        "nama": "Ni Putu Novi Armatiana"
+      },
+      {
+        "id": 126,
+        "nis": "13601",
+        "nisn": "",
+        "nama": "Ni Wayan Ani Arthayasih"
+      },
+      {
+        "id": 127,
+        "nis": "13602",
+        "nisn": "",
+        "nama": "Ni Wayan Nanda Pradnya Suari"
+      },
+      {
+        "id": 128,
+        "nis": "13603",
+        "nisn": "",
+        "nama": "Yoneda Yebleb"
+      }
+    ],
+    "count": 21
+  },
+  "9": {
+    "success": true,
+    "class": {
+      "id": 9,
+      "nama_kelas": "XII LPKKK 2",
+      "tingkat": "XII",
+      "program_keahlian": "Layanan Penunjang Kefarmasian Klinis dan Komunitas"
+    },
+    "students": [
+      {
+        "id": 129,
+        "nis": "13604",
+        "nisn": "",
+        "nama": "Aisyah Dwi Agusthina"
+      },
+      {
+        "id": 130,
+        "nis": "13605",
+        "nisn": "",
+        "nama": "Elyska Kirana Putri"
+      },
+      {
+        "id": 147,
+        "nis": "14102",
+        "nisn": "",
+        "nama": "Gusti Ayu Putu Alita Bintang Lestari"
+      },
+      {
+        "id": 131,
+        "nis": "13606",
+        "nisn": "",
+        "nama": "I Gusti Ayu Indah Pertiwi"
+      },
+      {
+        "id": 132,
+        "nis": "13608",
+        "nisn": "",
+        "nama": "Mauli Diana Rahayu Putri"
+      },
+      {
+        "id": 133,
+        "nis": "13609",
+        "nisn": "",
+        "nama": "Ni Kadek Bintang Nopiani"
+      },
+      {
+        "id": 134,
+        "nis": "13611",
+        "nisn": "",
+        "nama": "Ni Kadek Winda Wulandewi"
+      },
+      {
+        "id": 135,
+        "nis": "13612",
+        "nisn": "",
+        "nama": "Ni Komang Anggraeni"
+      },
+      {
+        "id": 136,
+        "nis": "13613",
+        "nisn": "",
+        "nama": "Ni Komang Leges Aria Sentani"
+      },
+      {
+        "id": 137,
+        "nis": "13614",
+        "nisn": "",
+        "nama": "Ni Komang Sri Diah Lastari"
+      },
+      {
+        "id": 138,
+        "nis": "13615",
+        "nisn": "",
+        "nama": "Ni Komang Tri Maetarani"
+      },
+      {
+        "id": 139,
+        "nis": "13616",
+        "nisn": "",
+        "nama": "Ni Komang Trisna Dewi"
+      },
+      {
+        "id": 140,
+        "nis": "13617",
+        "nisn": "",
+        "nama": "Ni Luh Komang Divya Santhi"
+      },
+      {
+        "id": 141,
+        "nis": "13618",
+        "nisn": "",
+        "nama": "Ni Putu Galih Pratiwi Setiawan"
+      },
+      {
+        "id": 142,
+        "nis": "13619",
+        "nisn": "",
+        "nama": "Ni Putu Indah Muliarni"
+      },
+      {
+        "id": 143,
+        "nis": "13620",
+        "nisn": "",
+        "nama": "Ni Putu Martini Lestari"
+      },
+      {
+        "id": 144,
+        "nis": "13621",
+        "nisn": "",
+        "nama": "Ni Putu Widya Wulandari"
+      },
+      {
+        "id": 145,
+        "nis": "13622",
+        "nisn": "",
+        "nama": "Ni Wayan Novi Lestari"
+      },
+      {
+        "id": 146,
+        "nis": "13624",
+        "nisn": "",
+        "nama": "Rizqiana Ayudianingsih"
+      }
+    ],
+    "count": 19
+  },
+  "10": {
+    "success": true,
+    "class": {
+      "id": 10,
+      "nama_kelas": "XII BD 1",
+      "tingkat": "XII",
+      "program_keahlian": "Bisnis Digital"
+    },
+    "students": [
+      {
+        "id": 148,
+        "nis": "13625",
+        "nisn": "",
+        "nama": "Dewa Ayu Made Dwi Artika Darmayanti"
+      },
+      {
+        "id": 149,
+        "nis": "13626",
+        "nisn": "",
+        "nama": "I Gede Adi Putra"
+      },
+      {
+        "id": 150,
+        "nis": "13627",
+        "nisn": "",
+        "nama": "I Gusti Ayu Wika Ariestari"
+      },
+      {
+        "id": 151,
+        "nis": "13628",
+        "nisn": "",
+        "nama": "I Gusti Ngurah Wijana"
+      },
+      {
+        "id": 152,
+        "nis": "13629",
+        "nisn": "",
+        "nama": "I Kadek Yogi Iswara"
+      },
+      {
+        "id": 153,
+        "nis": "13630",
+        "nisn": "",
+        "nama": "I Nyoman Candra Paranarta"
+      },
+      {
+        "id": 154,
+        "nis": "13631",
+        "nisn": "",
+        "nama": "Kadek Suki Oktami"
+      },
+      {
+        "id": 155,
+        "nis": "13632",
+        "nisn": "",
+        "nama": "Luh Desiyani"
+      },
+      {
+        "id": 156,
+        "nis": "13633",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Dwipayani"
+      },
+      {
+        "id": 157,
+        "nis": "13634",
+        "nisn": "",
+        "nama": "Ni Kadek Sanjiani"
+      },
+      {
+        "id": 158,
+        "nis": "13635",
+        "nisn": "",
+        "nama": "Ni Kadek Widiantari"
+      },
+      {
+        "id": 159,
+        "nis": "13636",
+        "nisn": "",
+        "nama": "Ni Komang Ayu Intan Pratiwi"
+      },
+      {
+        "id": 160,
+        "nis": "13637",
+        "nisn": "",
+        "nama": "Ni Komang Henny Herdi Yani"
+      },
+      {
+        "id": 161,
+        "nis": "13638",
+        "nisn": "",
+        "nama": "Ni Komang Purnama Sari"
+      },
+      {
+        "id": 162,
+        "nis": "13639",
+        "nisn": "",
+        "nama": "Ni Komang Sri Damayanti"
+      },
+      {
+        "id": 163,
+        "nis": "13640",
+        "nisn": "",
+        "nama": "Ni Komang Trisna Yuni Astari"
+      },
+      {
+        "id": 164,
+        "nis": "13641",
+        "nisn": "",
+        "nama": "Ni Luh Putu Frema Sugi Maharani"
+      },
+      {
+        "id": 165,
+        "nis": "13642",
+        "nisn": "",
+        "nama": "Ni Made Sari Astini"
+      },
+      {
+        "id": 166,
+        "nis": "13643",
+        "nisn": "",
+        "nama": "Ni Made Sukma Yanti"
+      },
+      {
+        "id": 167,
+        "nis": "13644",
+        "nisn": "",
+        "nama": "Ni Nyoman Manik Dalem Maharani"
+      },
+      {
+        "id": 168,
+        "nis": "13645",
+        "nisn": "",
+        "nama": "Ni Putu Eka Candra Dewi"
+      },
+      {
+        "id": 169,
+        "nis": "13646",
+        "nisn": "",
+        "nama": "Ni Putu Sari Astuti"
+      },
+      {
+        "id": 170,
+        "nis": "13647",
+        "nisn": "",
+        "nama": "Ni Putu Sariasih"
+      },
+      {
+        "id": 171,
+        "nis": "13648",
+        "nisn": "",
+        "nama": "Ni Putu Selpi"
+      },
+      {
+        "id": 172,
+        "nis": "13649",
+        "nisn": "",
+        "nama": "Ni Putu Sinta Purnama Yanti"
+      },
+      {
+        "id": 173,
+        "nis": "13650",
+        "nisn": "",
+        "nama": "Putu Agus Mahendra"
+      },
+      {
+        "id": 174,
+        "nis": "13651",
+        "nisn": "",
+        "nama": "Putu Aryadinata"
+      },
+      {
+        "id": 175,
+        "nis": "13652",
+        "nisn": "",
+        "nama": "Putu Purnamawati"
+      },
+      {
+        "id": 176,
+        "nis": "13653",
+        "nisn": "",
+        "nama": "Rizki Ananta Ramadhani"
+      }
+    ],
+    "count": 29
+  },
+  "11": {
+    "success": true,
+    "class": {
+      "id": 11,
+      "nama_kelas": "XII BD 2",
+      "tingkat": "XII",
+      "program_keahlian": "Bisnis Digital"
+    },
+    "students": [
+      {
+        "id": 177,
+        "nis": "13654",
+        "nisn": "",
+        "nama": "Anisa Safila"
+      },
+      {
+        "id": 178,
+        "nis": "13655",
+        "nisn": "",
+        "nama": "Dewa Ayu Raras Variati"
+      },
+      {
+        "id": 196,
+        "nis": "13794",
+        "nisn": "",
+        "nama": "Galang Damai Dinata"
+      },
+      {
+        "id": 179,
+        "nis": "13656",
+        "nisn": "",
+        "nama": "I Gede Sutawan"
+      },
+      {
+        "id": 180,
+        "nis": "13657",
+        "nisn": "",
+        "nama": "I Kadek Desta Prawira"
+      },
+      {
+        "id": 181,
+        "nis": "13658",
+        "nisn": "",
+        "nama": "I Kadek Purnawirawan"
+      },
+      {
+        "id": 182,
+        "nis": "13659",
+        "nisn": "",
+        "nama": "I Ketut Alit Rupawan"
+      },
+      {
+        "id": 183,
+        "nis": "13660",
+        "nisn": "",
+        "nama": "I Komang Sucitra"
+      },
+      {
+        "id": 184,
+        "nis": "13661",
+        "nisn": "",
+        "nama": "I Made Windya Arsana"
+      },
+      {
+        "id": 185,
+        "nis": "13662",
+        "nisn": "",
+        "nama": "I Putu Aditya Suputra"
+      },
+      {
+        "id": 186,
+        "nis": "13663",
+        "nisn": "",
+        "nama": "Kadek Agus Apriana Bajesti Putra"
+      },
+      {
+        "id": 187,
+        "nis": "13664",
+        "nisn": "",
+        "nama": "Luh Made Purnama Dewi"
+      },
+      {
+        "id": 188,
+        "nis": "13665",
+        "nisn": "",
+        "nama": "Ni Kadek Meta Febriantari"
+      },
+      {
+        "id": 189,
+        "nis": "13666",
+        "nisn": "",
+        "nama": "Ni Kadek Putri Jayanti"
+      },
+      {
+        "id": 190,
+        "nis": "13667",
+        "nisn": "",
+        "nama": "Ni Komang Ayu Septianingsih"
+      },
+      {
+        "id": 191,
+        "nis": "13668",
+        "nisn": "",
+        "nama": "Ni Luh Nova Sinta Riari"
+      },
+      {
+        "id": 192,
+        "nis": "13669",
+        "nisn": "",
+        "nama": "Ni Nengah Febriani"
+      },
+      {
+        "id": 193,
+        "nis": "13670",
+        "nisn": "",
+        "nama": "Ni Pande Wayan Yonika Damayani"
+      },
+      {
+        "id": 194,
+        "nis": "13671",
+        "nisn": "",
+        "nama": "Ni Putu Lia Trisnayanti"
+      },
+      {
+        "id": 195,
+        "nis": "13672",
+        "nisn": "",
+        "nama": "Putu Vera Agustin"
+      }
+    ],
+    "count": 20
+  },
+  "12": {
+    "success": true,
+    "class": {
+      "id": 12,
+      "nama_kelas": "XII MP 1",
+      "tingkat": "XII",
+      "program_keahlian": "Manajemen Perkantoran"
+    },
+    "students": [
+      {
+        "id": 197,
+        "nis": "13673",
+        "nisn": "",
+        "nama": "Anak Agung Dewi Suryaningrat"
+      },
+      {
+        "id": 198,
+        "nis": "13674",
+        "nisn": "",
+        "nama": "Desak Nyoman Widya Sari"
+      },
+      {
+        "id": 199,
+        "nis": "13675",
+        "nisn": "",
+        "nama": "I Dewa Ayu Bulan Sriasih"
+      },
+      {
+        "id": 200,
+        "nis": "13676",
+        "nisn": "",
+        "nama": "I Gede Ary Sudiantara"
+      },
+      {
+        "id": 201,
+        "nis": "13677",
+        "nisn": "",
+        "nama": "I Gede Nesa Wira Arsana"
+      },
+      {
+        "id": 202,
+        "nis": "13678",
+        "nisn": "",
+        "nama": "I Gusti Ayu Diana Kristiani"
+      },
+      {
+        "id": 203,
+        "nis": "13679",
+        "nisn": "",
+        "nama": "I Gusti Ngurah Agus Januarta"
+      },
+      {
+        "id": 204,
+        "nis": "13680",
+        "nisn": "",
+        "nama": "Komang Ayu Seri Musthikarani"
+      },
+      {
+        "id": 205,
+        "nis": "13681",
+        "nisn": "",
+        "nama": "Made Nitarianti"
+      },
+      {
+        "id": 206,
+        "nis": "13682",
+        "nisn": "",
+        "nama": "Meisya Fazrina"
+      },
+      {
+        "id": 207,
+        "nis": "13683",
+        "nisn": "",
+        "nama": "Ni Kadek Aprilia Lestari"
+      },
+      {
+        "id": 208,
+        "nis": "13684",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Lestari"
+      },
+      {
+        "id": 209,
+        "nis": "13685",
+        "nisn": "",
+        "nama": "Ni Kadek Darma Yanti"
+      },
+      {
+        "id": 210,
+        "nis": "13686",
+        "nisn": "",
+        "nama": "Ni Kadek Ika Pradevi"
+      },
+      {
+        "id": 211,
+        "nis": "13687",
+        "nisn": "",
+        "nama": "Ni Kadek Risna Kumala Dewi"
+      },
+      {
+        "id": 212,
+        "nis": "13688",
+        "nisn": "",
+        "nama": "Ni Kadek Sintia Wati"
+      },
+      {
+        "id": 213,
+        "nis": "13689",
+        "nisn": "",
+        "nama": "Ni Ketut Melia Purnama Sari"
+      },
+      {
+        "id": 214,
+        "nis": "13690",
+        "nisn": "",
+        "nama": "Ni Komang Ayu Widiantari"
+      },
+      {
+        "id": 215,
+        "nis": "13691",
+        "nisn": "",
+        "nama": "Ni Komang Diah Anandita Permata"
+      },
+      {
+        "id": 216,
+        "nis": "13692",
+        "nisn": "",
+        "nama": "Ni Komang Rini Cahyani"
+      },
+      {
+        "id": 217,
+        "nis": "13693",
+        "nisn": "",
+        "nama": "Ni Luh Ayu Purnama Dewi"
+      },
+      {
+        "id": 218,
+        "nis": "13694",
+        "nisn": "",
+        "nama": "Ni Luh Lisna Diantari"
+      },
+      {
+        "id": 219,
+        "nis": "13695",
+        "nisn": "",
+        "nama": "Ni Luh Sri Nadi"
+      },
+      {
+        "id": 220,
+        "nis": "13696",
+        "nisn": "",
+        "nama": "Ni Nengah Septia Dewi"
+      },
+      {
+        "id": 221,
+        "nis": "13697",
+        "nisn": "",
+        "nama": "Ni Putu Eka Pramita Sari"
+      },
+      {
+        "id": 222,
+        "nis": "13698",
+        "nisn": "",
+        "nama": "Pande Ni Putu Adisty Kusuma Jati"
+      },
+      {
+        "id": 223,
+        "nis": "13699",
+        "nisn": "",
+        "nama": "Tiara Yuliyanti"
+      }
+    ],
+    "count": 27
+  },
+  "13": {
+    "success": true,
+    "class": {
+      "id": 13,
+      "nama_kelas": "XII MP 2",
+      "tingkat": "XII",
+      "program_keahlian": "Manajemen Perkantoran"
+    },
+    "students": [
+      {
+        "id": 224,
+        "nis": "13700",
+        "nisn": "",
+        "nama": "Anak Agung Istri Amira Vebriani"
+      },
+      {
+        "id": 225,
+        "nis": "13701",
+        "nisn": "",
+        "nama": "I Dewa Ayu Juniantari"
+      },
+      {
+        "id": 226,
+        "nis": "13702",
+        "nisn": "",
+        "nama": "I Gede Tri Jaya Winnata"
+      },
+      {
+        "id": 227,
+        "nis": "13703",
+        "nisn": "",
+        "nama": "Ida Bagus Yuda Pratama"
+      },
+      {
+        "id": 228,
+        "nis": "13704",
+        "nisn": "",
+        "nama": "Irsyad Adiba Hafas Zidansyah"
+      },
+      {
+        "id": 229,
+        "nis": "13705",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Aprilia Dewi"
+      },
+      {
+        "id": 230,
+        "nis": "13706",
+        "nisn": "",
+        "nama": "Ni Kadek Ayu Larasati"
+      },
+      {
+        "id": 231,
+        "nis": "13707",
+        "nisn": "",
+        "nama": "Ni Kadek Puspa Aryanti"
+      },
+      {
+        "id": 232,
+        "nis": "13708",
+        "nisn": "",
+        "nama": "Ni Kadek Sriyanti"
+      },
+      {
+        "id": 233,
+        "nis": "13709",
+        "nisn": "",
+        "nama": "Ni Komang Adelia Putri"
+      },
+      {
+        "id": 234,
+        "nis": "13710",
+        "nisn": "",
+        "nama": "Ni Komang Indah Jesika Dewi"
+      },
+      {
+        "id": 235,
+        "nis": "13711",
+        "nisn": "",
+        "nama": "Ni Komang Listia Dewi"
+      },
+      {
+        "id": 236,
+        "nis": "13712",
+        "nisn": "",
+        "nama": "Ni Komang Padmawati"
+      },
+      {
+        "id": 237,
+        "nis": "13713",
+        "nisn": "",
+        "nama": "Ni Komang Sutri Prantini"
+      },
+      {
+        "id": 238,
+        "nis": "13714",
+        "nisn": "",
+        "nama": "Ni Komang Triana Pusparani"
+      },
+      {
+        "id": 239,
+        "nis": "13715",
+        "nisn": "",
+        "nama": "Ni Luh Vika Widyawati"
+      },
+      {
+        "id": 240,
+        "nis": "13716",
+        "nisn": "",
+        "nama": "Ni Made Suci Manik Astari"
+      },
+      {
+        "id": 241,
+        "nis": "13717",
+        "nisn": "",
+        "nama": "Ni Putu Ayu Bintang"
+      },
+      {
+        "id": 242,
+        "nis": "13718",
+        "nisn": "",
+        "nama": "Ni Putu Diah Arthasari"
+      },
+      {
+        "id": 243,
+        "nis": "13719",
+        "nisn": "",
+        "nama": "Ni Putu Eka Semara Putri"
+      },
+      {
+        "id": 244,
+        "nis": "13720",
+        "nisn": "",
+        "nama": "Ni Putu Eka Widiantari"
+      },
+      {
+        "id": 245,
+        "nis": "13721",
+        "nisn": "",
+        "nama": "Ni Putu Mei Wulandari"
+      },
+      {
+        "id": 246,
+        "nis": "13722",
+        "nisn": "",
+        "nama": "Ni Putu Puspawati"
+      },
+      {
+        "id": 247,
+        "nis": "13723",
+        "nisn": "",
+        "nama": "Ni Putu Tia Dewi"
+      },
+      {
+        "id": 248,
+        "nis": "13724",
+        "nisn": "",
+        "nama": "Pande Putu Galuh Risanti Indira Yunika"
+      },
+      {
+        "id": 249,
+        "nis": "13725",
+        "nisn": "",
+        "nama": "Putu Juli Ayu Antari"
+      },
+      {
+        "id": 250,
+        "nis": "13726",
+        "nisn": "",
+        "nama": "Sang Made Arta Mahendra"
+      }
+    ],
+    "count": 27
+  },
+  "14": {
+    "success": true,
+    "class": {
+      "id": 14,
+      "nama_kelas": "XII LPB",
+      "tingkat": "XII",
+      "program_keahlian": "Akuntansi dan Keuangan Lembaga"
+    },
+    "students": [
+      {
+        "id": 251,
+        "nis": "13727",
+        "nisn": "",
+        "nama": "Afrilia"
+      },
+      {
+        "id": 252,
+        "nis": "13728",
+        "nisn": "",
+        "nama": "Anak Agung Istri Prima Pebrianti"
+      },
+      {
+        "id": 253,
+        "nis": "13729",
+        "nisn": "",
+        "nama": "Gede Risky Adi Permana"
+      },
+      {
+        "id": 254,
+        "nis": "13730",
+        "nisn": "",
+        "nama": "I Gusti Ayu Putu Candra Widiantari"
+      },
+      {
+        "id": 255,
+        "nis": "13731",
+        "nisn": "",
+        "nama": "I Gusti Made Diah Purnama Sari"
+      },
+      {
+        "id": 256,
+        "nis": "13732",
+        "nisn": "",
+        "nama": "Ida Ayu Indah Gangga Swari"
+      },
+      {
+        "id": 257,
+        "nis": "13733",
+        "nisn": "",
+        "nama": "Ida Ayu Nyoman Reditya Oktaviani"
+      },
+      {
+        "id": 258,
+        "nis": "13734",
+        "nisn": "",
+        "nama": "Ida Ayu Sinta Dewi"
+      },
+      {
+        "id": 259,
+        "nis": "13736",
+        "nisn": "",
+        "nama": "Nabila Tusak Diah"
+      },
+      {
+        "id": 260,
+        "nis": "13737",
+        "nisn": "",
+        "nama": "Ni Kadek Intan Satrya Wati"
+      },
+      {
+        "id": 261,
+        "nis": "13738",
+        "nisn": "",
+        "nama": "Ni Made Ari Diana Sari"
+      },
+      {
+        "id": 262,
+        "nis": "13739",
+        "nisn": "",
+        "nama": "Rina Agustina"
+      }
+    ],
+    "count": 12
+  },
+  "15": {
+    "success": true,
+    "class": {
+      "id": 15,
+      "nama_kelas": "XII AK",
+      "tingkat": "XII",
+      "program_keahlian": "Akuntansi dan Keuangan Lembaga"
+    },
+    "students": [
+      {
+        "id": 263,
+        "nis": "13741",
+        "nisn": "",
+        "nama": "I Desak Ketut Patniki Astuti"
+      },
+      {
+        "id": 264,
+        "nis": "13742",
+        "nisn": "",
+        "nama": "I Dewa Ayu Awidiya Sari"
+      },
+      {
+        "id": 265,
+        "nis": "13743",
+        "nisn": "",
+        "nama": "I Dewa Ayu Meira Dianra Sari"
+      },
+      {
+        "id": 266,
+        "nis": "13744",
+        "nisn": "",
+        "nama": "I Putu Juniarta"
+      },
+      {
+        "id": 267,
+        "nis": "13745",
+        "nisn": "",
+        "nama": "I Wayan Agus Septiadi"
+      },
+      {
+        "id": 268,
+        "nis": "13746",
+        "nisn": "",
+        "nama": "Ketut Ananta Wardana"
+      },
+      {
+        "id": 269,
+        "nis": "13747",
+        "nisn": "",
+        "nama": "Ni Kadek Anggun Putri Pramesti"
+      },
+      {
+        "id": 270,
+        "nis": "13748",
+        "nisn": "",
+        "nama": "Ni Kadek Ratih Sancikadewi"
+      },
+      {
+        "id": 271,
+        "nis": "13749",
+        "nisn": "",
+        "nama": "Ni Kadek Santiasih"
+      },
+      {
+        "id": 272,
+        "nis": "13750",
+        "nisn": "",
+        "nama": "Ni Kadek Sinta Widyantini"
+      },
+      {
+        "id": 273,
+        "nis": "13751",
+        "nisn": "",
+        "nama": "Ni Kadek Suadnyani Megeng"
+      },
+      {
+        "id": 274,
+        "nis": "13752",
+        "nisn": "",
+        "nama": "Ni Ketut Catur Rahayu"
+      },
+      {
+        "id": 275,
+        "nis": "13753",
+        "nisn": "",
+        "nama": "Ni Komang Bintang Triasih"
+      },
+      {
+        "id": 276,
+        "nis": "13754",
+        "nisn": "",
+        "nama": "Ni Luh Nyoman Tri Githa Pramesti"
+      },
+      {
+        "id": 277,
+        "nis": "13755",
+        "nisn": "",
+        "nama": "Ni Luh Putu Candra Cahyani"
+      },
+      {
+        "id": 278,
+        "nis": "13756",
+        "nisn": "",
+        "nama": "Ni Putu Anggik Deswandari"
+      },
+      {
+        "id": 279,
+        "nis": "13757",
+        "nisn": "",
+        "nama": "Ni Putu Ayu Krisna Candra Dewi"
+      },
+      {
+        "id": 280,
+        "nis": "13758",
+        "nisn": "",
+        "nama": "Ni Putu Dewik"
+      },
+      {
+        "id": 281,
+        "nis": "13759",
+        "nisn": "",
+        "nama": "Ni Putu Diah Darmayanti"
+      },
+      {
+        "id": 282,
+        "nis": "13760",
+        "nisn": "",
+        "nama": "Ni Putu Dian Ambarwati"
+      },
+      {
+        "id": 283,
+        "nis": "13761",
+        "nisn": "",
+        "nama": "Ni Putu Dian Maharani"
+      },
+      {
+        "id": 284,
+        "nis": "13762",
+        "nisn": "",
+        "nama": "Ni Putu Echa Setyawati"
+      },
+      {
+        "id": 285,
+        "nis": "13763",
+        "nisn": "",
+        "nama": "Ni Putu Eka Pandewi"
+      },
+      {
+        "id": 286,
+        "nis": "13764",
+        "nisn": "",
+        "nama": "Ni Putu Stefany Devita Putri"
+      },
+      {
+        "id": 287,
+        "nis": "13765",
+        "nisn": "",
+        "nama": "Ni Putu Wita Sinta Pradnyani"
+      },
+      {
+        "id": 288,
+        "nis": "13766",
+        "nisn": "",
+        "nama": "Ni Wayan Chandra Rusita Devi"
+      },
+      {
+        "id": 289,
+        "nis": "13767",
+        "nisn": "",
+        "nama": "Pande Made Shasmita Aurellia Putri"
+      },
+      {
+        "id": 290,
+        "nis": "13768",
+        "nisn": "",
+        "nama": "Yenny Febri Yanthy Ningsih"
+      }
+    ],
+    "count": 28
+  }
+}

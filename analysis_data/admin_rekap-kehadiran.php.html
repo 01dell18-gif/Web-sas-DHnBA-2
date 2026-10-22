@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Kehadiran Siswa - SMK NEGERI 1 KLUNGKUNG</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="icon" type="image/png" href="/storage/uploads/logo/logo_1792025656.png?v=1792025656">
+</head>
+<body>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="navbar-brand">
+            <a href="/admin/index.php" class="brand-link">
+                <img src="/storage/uploads/logo/logo_1792025656.png?v=1792025656" alt="Logo Sekolah" class="navbar-logo">
+                <div class="brand-text">
+                    <span class="brand-title">SMK NEGERI 1 KLUNGKUNG</span>
+                    <span class="brand-subtitle">Admin Panel Administrasi</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
+            Halo, <strong>Administrator SAS SMKN 1 Klungkung</strong>
+        </span>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
+            <i class="bi bi-globe2"></i> Web Publik
+        </a>
+        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> Keluar
+        </a>
+    </div>
+</header>
+
+<div class="admin-sidebar-layout">
+    <aside class="admin-sidebar">
+        <a href="/admin/index.php" class="admin-menu-item ">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="/admin/kelas.php" class="admin-menu-item ">
+            <i class="bi bi-mortarboard"></i> Data Kelas
+        </a>
+        <a href="/admin/siswa.php" class="admin-menu-item ">
+            <i class="bi bi-person-lines-fill"></i> Data Siswa
+        </a>
+        <a href="/admin/import-siswa.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+        </a>
+        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item active">
+            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+        </a>
+        <a href="/admin/absensi.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+        </a>
+        <a href="/admin/berita-acara.php" class="admin-menu-item ">
+            <i class="bi bi-archive"></i> Arsip Berita Acara
+        </a>
+        <a href="/admin/rekonsiliasi.php" class="admin-menu-item ">
+            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+        </a>
+        <a href="/admin/template-ujian.php" class="admin-menu-item ">
+            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+        </a>
+        <a href="/admin/pengaturan.php" class="admin-menu-item ">
+            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+        </a>
+        <a href="/admin/password.php" class="admin-menu-item ">
+            <i class="bi bi-key"></i> Ganti Password
+        </a>
+    </aside>
+
+    <main class="admin-main">
+        
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
+            📑 Laporan Rekap Kehadiran Siswa
+        </h1>
+        <p style="font-size: 0.9rem; color: var(--slate-600);">
+            Rekapitulasi kehadiran ujian seluruh mata pelajaran per kelas (Format Resmi & Ekspor Excel).
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="/admin/export-rekap-excel.php?class_id=15&tahun_ajaran=2026%2F2027&semester=Ganjil" 
+               class="btn btn-success" title="Download Spreadsheet Excel">
+                📊 Ekspor Excel (.xlsx)
+            </a>
+            <button type="button" class="btn btn-primary" onclick="openInputModal()">
+                ➕ Input / Perbarui Mapel
+            </button>
+            </div>
+</div>
+
+
+<!-- Filter Kelas & Periode -->
+<div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-body" style="padding: 1.25rem;">
+        <form method="GET" action="/admin/rekap-kehadiran.php" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label class="form-label" for="filterClassId">Pilih Kelas</label>
+                <select name="class_id" id="filterClassId" class="form-select" onchange="this.form.submit()">
+                                                                        <option value="15" selected>
+                                XII AK                            </option>
+                                                    <option value="10" >
+                                XII BD 1                            </option>
+                                                    <option value="11" >
+                                XII BD 2                            </option>
+                                                    <option value="7" >
+                                XII DKV                            </option>
+                                                    <option value="14" >
+                                XII LPB                            </option>
+                                                    <option value="8" >
+                                XII LPKKK 1                            </option>
+                                                    <option value="9" >
+                                XII LPKKK 2                            </option>
+                                                    <option value="12" >
+                                XII MP 1                            </option>
+                                                    <option value="13" >
+                                XII MP 2                            </option>
+                                                    <option value="6" >
+                                XII TKJ                            </option>
+                                                    <option value="5" >
+                                XII TSM                            </option>
+                                                            </select>
+            </div>
+
+            <div style="width: 170px;">
+                <label class="form-label" for="filterTahun">Tahun Ajaran</label>
+                <div style="position: relative;">
+                    <input type="text" name="tahun_ajaran" id="filterTahun" class="form-control" 
+                           value="2026/2027" placeholder="2025/2026" list="listTahunAjaran" onchange="this.form.submit()">
+                    <datalist id="listTahunAjaran">
+                                                    <option value="2026/2027"></option>
+                                                    <option value="2025/2026"></option>
+                                            </datalist>
+                </div>
+            </div>
+
+            <div style="width: 140px;">
+                <label class="form-label" for="filterSemester">Semester</label>
+                <select name="semester" id="filterSemester" class="form-select" onchange="this.form.submit()">
+                    <option value="Ganjil" selected>Ganjil</option>
+                    <option value="Genap" >Genap</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-secondary">
+                    🔍 Tampilkan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tampilan Lembar Rekap Matrix -->
+    <div class="card">
+        <div class="card-body" style="padding: 1.5rem;">
+            <!-- Kop Judul Laporan Sesuai Format -->
+            <div style="text-align: center; margin-bottom: 1.5rem; text-transform: uppercase;">
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: #000; margin: 0 0 4px 0; letter-spacing: 0.5px;">
+                    REKAP KEHADIRAN SISWA
+                </h2>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #000; margin: 0 0 4px 0;">
+                    SUMATIF AKHIR SEMESTER (SAS)
+                </h3>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #000; margin: 0 0 16px 0;">
+                    SEMESTER GANJIL TAHUN AJAR 2026/2027                </h4>
+                <div style="text-align: left; font-weight: 700; font-size: 0.95rem; color: #000;">
+                    KELAS : XII AK                </div>
+            </div>
+
+            <!-- Tabel Matrix Rekap Kehadiran -->
+            <div class="table-responsive" style="border: 1px solid #000;">
+                <table class="table" style="width: 100%; border-collapse: collapse; margin-bottom: 0; font-size: 0.825rem; text-align: center;">
+                    <thead>
+                        <tr style="background-color: #f8fafc; border-bottom: 1px solid #000;">
+                            <th rowspan="2" style="width: 45px; text-align: center; vertical-align: middle; border: 1px solid #000; font-weight: 700;">NO</th>
+                            <th rowspan="2" style="width: 90px; text-align: center; vertical-align: middle; border: 1px solid #000; font-weight: 700;">NIS</th>
+                            <th rowspan="2" style="text-align: left; vertical-align: middle; border: 1px solid #000; font-weight: 700; min-width: 180px; padding-left: 10px;">NAMA</th>
+                            
+                                                                                                <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            Bahasa Bali                                        </div>
+                                    </th>
+                                                                    <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            Pendidikan Agama Hindu dan Budi Pekerti                                        </div>
+                                    </th>
+                                                                    <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            Matematika                                        </div>
+                                    </th>
+                                                                    <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            Bahasa Indonesia                                        </div>
+                                    </th>
+                                                                    <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            Pendidikan Pancasila                                        </div>
+                                    </th>
+                                                                    <th style="text-align: center; vertical-align: bottom; border: 1px solid #000; min-width: 65px; max-width: 85px; padding: 6px 4px; font-weight: 700;">
+                                        <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 120px;">
+                                            KIK                                        </div>
+                                    </th>
+                                                            
+                            <th rowspan="2" style="width: 110px; text-align: center; vertical-align: middle; border: 1px solid #000; font-weight: 700;">
+                                <div style="writing-mode: vertical-rl; transform: rotate(180deg); margin: 6px auto; white-space: nowrap; font-size: 0.8rem; max-height: 130px;">
+                                    PERSENTASE KEHADIRAN
+                                </div>
+                            </th>
+                        </tr>
+                                                    <tr style="background-color: #f8fafc; border-bottom: 1px solid #000;">
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        19/10/2026                                    </th>
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        19/10/2026                                    </th>
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        19/10/2026                                    </th>
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        20/10/2026                                    </th>
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        20/10/2026                                    </th>
+                                                                    <th style="font-size: 0.725rem; font-weight: 600; text-align: center; border: 1px solid #000; padding: 4px; white-space: nowrap;">
+                                        20/10/2026                                    </th>
+                                                            </tr>
+                                            </thead>
+                    <tbody>
+                                                                                    <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">1</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13741</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        I Desak Ketut Patniki Astuti                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Desak Ketut Patniki Astuti - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">2</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13742</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        I Dewa Ayu Awidiya Sari                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Awidiya Sari - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">3</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13743</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        I Dewa Ayu Meira Dianra Sari                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Dewa Ayu Meira Dianra Sari - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">4</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13744</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        I Putu Juniarta                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Putu Juniarta - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">5</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13745</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        I Wayan Agus Septiadi                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="I Wayan Agus Septiadi - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">6</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13746</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ketut Ananta Wardana                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ketut Ananta Wardana - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">7</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13747</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Kadek Anggun Putri Pramesti                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Anggun Putri Pramesti - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">8</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13748</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Kadek Ratih Sancikadewi                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Ratih Sancikadewi - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">9</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13749</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Kadek Santiasih                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Santiasih - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">10</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13750</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Kadek Sinta Widyantini                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Sinta Widyantini - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">11</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13751</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Kadek Suadnyani Megeng                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Kadek Suadnyani Megeng - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">12</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13752</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Ketut Catur Rahayu                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Ketut Catur Rahayu - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">13</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13753</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Komang Bintang Triasih                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Komang Bintang Triasih - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">14</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13754</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Luh Nyoman Tri Githa Pramesti                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Nyoman Tri Githa Pramesti - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">15</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13755</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Luh Putu Candra Cahyani                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Luh Putu Candra Cahyani - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">16</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13756</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Anggik Deswandari                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Anggik Deswandari - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">17</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13757</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Ayu Krisna Candra Dewi                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Ayu Krisna Candra Dewi - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">18</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13758</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Dewik                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dewik - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">19</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13759</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Diah Darmayanti                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Diah Darmayanti - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">20</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13760</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Dian Ambarwati                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Ambarwati - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">21</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13761</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Dian Maharani                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Dian Maharani - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">22</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13762</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Echa Setyawati                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Echa Setyawati - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">23</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13763</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Eka Pandewi                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Eka Pandewi - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">24</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13764</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Stefany Devita Putri                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Stefany Devita Putri - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">25</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13765</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Putu Wita Sinta Pradnyani                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Putu Wita Sinta Pradnyani - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">26</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13766</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Ni Wayan Chandra Rusita Devi                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Ni Wayan Chandra Rusita Devi - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">27</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13767</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Pande Made Shasmita Aurellia Putri                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Pande Made Shasmita Aurellia Putri - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                            <tr style="border-bottom: 1px solid #000;">
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 600;">28</td>
+                                    <td style="text-align: center; border: 1px solid #000;">13768</td>
+                                    <td style="text-align: left; border: 1px solid #000; padding-left: 10px; font-weight: 500; white-space: nowrap;">
+                                        Yenny Febri Yanthy Ningsih                                    </td>
+
+                                                                                                                        <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - Bahasa Bali: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - Pendidikan Agama Hindu dan Budi Pekerti: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - Matematika: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - Bahasa Indonesia: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - Pendidikan Pancasila: Hadir">
+                                                H                                            </td>
+                                                                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700; color: #15803d; background-color: #dcfce7;" 
+                                                title="Yenny Febri Yanthy Ningsih - KIK: Hadir">
+                                                H                                            </td>
+                                                                            
+                                    <td style="text-align: center; border: 1px solid #000; font-weight: 700;">
+                                        100%
+                                    </td>
+                                </tr>
+                                                                        </tbody>
+                </table>
+            </div>
+
+            <!-- Legenda Kode Kehadiran -->
+            <div style="margin-top: 1.25rem; display: flex; gap: 1.25rem; font-size: 0.85rem; flex-wrap: wrap; align-items: center;">
+                <span style="font-weight: 700; color: var(--slate-700);">Keterangan Status:</span>
+                <span><strong style="color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 4px;">H</strong> = Hadir</span>
+                <span><strong style="color: #b45309; background: #fef3c7; padding: 2px 8px; border-radius: 4px;">D</strong> = Dispensasi</span>
+                <span><strong style="color: #0369a1; background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">I</strong> = Izin</span>
+                <span><strong style="color: #6d28d9; background: #ede9fe; padding: 2px 8px; border-radius: 4px;">S</strong> = Sakit</span>
+                <span><strong style="color: #b91c1c; background: #fee2e2; padding: 2px 8px; border-radius: 4px;">A</strong> = Alpa / Tidak Hadir</span>
+                <span style="margin-left: auto; color: var(--slate-500); font-size: 0.8rem;">
+                    * Persentase Kehadiran = (Hadir + Dispensasi) / Total Mapel &times; 100%
+                </span>
+            </div>
+
+            <!-- Daftar Kelola Sesi Mapel (Jika ingin mengedit atau menghapus) -->
+                            <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                    <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--slate-800);">
+                        Kelola Mata Pelajaran Terdaftar (6 Mapel)
+                    </h5>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>Bahasa Bali</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(19/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel Bahasa Bali dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="6">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>Pendidikan Agama Hindu dan Budi Pekerti</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(19/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel Pendidikan Agama Hindu dan Budi Pekerti dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="28">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>Matematika</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(19/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel Matematika dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="40">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>Bahasa Indonesia</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(20/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel Bahasa Indonesia dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="49">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>Pendidikan Pancasila</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(20/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel Pendidikan Pancasila dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="51">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                                    <div style="background: var(--slate-100); border: 1px solid var(--border); padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                                <strong>KIK</strong>
+                                <span style="color: var(--slate-500); font-size: 0.75rem;">(20/10/2026)</span>
+                                <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: inline;" onsubmit="return confirm('Hapus mapel KIK dari rekap kelas ini?')">
+                                    <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">                                    <input type="hidden" name="action" value="delete_subject">
+                                    <input type="hidden" name="session_id" value="60">
+                                    <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;" title="Hapus Mapel Ini">
+                                        ❌
+                                    </button>
+                                </form>
+                            </div>
+                                            </div>
+                </div>
+                    </div>
+    </div>
+
+<!-- MODAL INPUT / EDIT ABSENSI MAPEL -->
+<div id="modalInputMapel" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; padding: 1rem;">
+    <div style="background: #fff; max-width: 650px; width: 100%; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); max-height: 90vh; display: flex; flex-direction: column;">
+        <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--slate-900);">
+                Input / Perbarui Absensi Mapel
+            </h3>
+            <button type="button" onclick="closeInputModal()" style="border: none; background: transparent; font-size: 1.25rem; cursor: pointer;">&times;</button>
+        </div>
+        <form method="POST" action="/admin/rekap-kehadiran.php?class_id=15" style="display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+            <input type="hidden" name="csrf_token" value="f3b88cb4fad7c94ca7002375918a1668ff9506789c4102db91c3bbd288a8a748">            <input type="hidden" name="action" value="save_subject_attendance">
+            <input type="hidden" name="class_id" value="15">
+            <input type="hidden" name="tahun_ajaran" value="2026/2027">
+            <input type="hidden" name="semester" value="Ganjil">
+
+            <div style="padding: 1.25rem; overflow-y: auto; flex: 1;">
+                <div class="alert alert-info" style="font-size: 0.85rem; margin-bottom: 1rem;">
+                    💡 <strong>Otomatis Valid:</strong> Jika nama mata pelajaran sama (misal: "Matematika"), sistem akan langsung memperbarui data yang sudah ada dan tidak membuat kolom ganda.
+                </div>
+
+                <div class="grid-2" style="margin-bottom: 1rem;">
+                    <div>
+                        <label class="form-label" for="inpMapel">Nama Mata Pelajaran <span class="required">*</span></label>
+                        <input type="text" name="mata_pelajaran" id="inpMapel" class="form-control" 
+                               placeholder="Contoh: Matematika" required list="listMapel">
+                        <datalist id="listMapel">
+                                                            <option value="Bahasa Bali"></option>
+                                                            <option value="Pendidikan Agama Hindu dan Budi Pekerti"></option>
+                                                            <option value="Matematika"></option>
+                                                            <option value="Bahasa Indonesia"></option>
+                                                            <option value="Pendidikan Pancasila"></option>
+                                                            <option value="KIK"></option>
+                                                    </datalist>
+                    </div>
+                    <div>
+                        <label class="form-label" for="inpTgl">Tanggal Ujian <span class="required">*</span></label>
+                        <input type="date" name="tanggal_ujian" id="inpTgl" class="form-control" value="2026-10-22" required>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label class="form-label" style="margin: 0;">Presensi Siswa Kelas XII AK:</label>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setAllModalStatus('Hadir')">
+                        ✅ Set Semua Hadir
+                    </button>
+                </div>
+
+                <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm);">
+                    <table class="table" style="font-size: 0.825rem; margin-bottom: 0;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background: #fff; z-index: 1;">
+                                <th style="width: 30px;">No</th>
+                                <th>Nama Siswa</th>
+                                <th style="width: 140px; text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                                <tr>
+                                        <td>1</td>
+                                        <td>
+                                            <strong>I Desak Ketut Patniki Astuti</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13741</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[263]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>2</td>
+                                        <td>
+                                            <strong>I Dewa Ayu Awidiya Sari</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13742</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[264]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>3</td>
+                                        <td>
+                                            <strong>I Dewa Ayu Meira Dianra Sari</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13743</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[265]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>4</td>
+                                        <td>
+                                            <strong>I Putu Juniarta</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13744</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[266]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>5</td>
+                                        <td>
+                                            <strong>I Wayan Agus Septiadi</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13745</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[267]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>6</td>
+                                        <td>
+                                            <strong>Ketut Ananta Wardana</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13746</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[268]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>7</td>
+                                        <td>
+                                            <strong>Ni Kadek Anggun Putri Pramesti</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13747</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[269]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>8</td>
+                                        <td>
+                                            <strong>Ni Kadek Ratih Sancikadewi</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13748</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[270]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>9</td>
+                                        <td>
+                                            <strong>Ni Kadek Santiasih</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13749</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[271]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>10</td>
+                                        <td>
+                                            <strong>Ni Kadek Sinta Widyantini</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13750</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[272]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>11</td>
+                                        <td>
+                                            <strong>Ni Kadek Suadnyani Megeng</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13751</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[273]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>12</td>
+                                        <td>
+                                            <strong>Ni Ketut Catur Rahayu</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13752</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[274]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>13</td>
+                                        <td>
+                                            <strong>Ni Komang Bintang Triasih</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13753</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[275]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>14</td>
+                                        <td>
+                                            <strong>Ni Luh Nyoman Tri Githa Pramesti</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13754</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[276]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>15</td>
+                                        <td>
+                                            <strong>Ni Luh Putu Candra Cahyani</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13755</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[277]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>16</td>
+                                        <td>
+                                            <strong>Ni Putu Anggik Deswandari</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13756</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[278]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>17</td>
+                                        <td>
+                                            <strong>Ni Putu Ayu Krisna Candra Dewi</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13757</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[279]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>18</td>
+                                        <td>
+                                            <strong>Ni Putu Dewik</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13758</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[280]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>19</td>
+                                        <td>
+                                            <strong>Ni Putu Diah Darmayanti</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13759</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[281]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>20</td>
+                                        <td>
+                                            <strong>Ni Putu Dian Ambarwati</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13760</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[282]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>21</td>
+                                        <td>
+                                            <strong>Ni Putu Dian Maharani</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13761</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[283]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>22</td>
+                                        <td>
+                                            <strong>Ni Putu Echa Setyawati</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13762</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[284]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>23</td>
+                                        <td>
+                                            <strong>Ni Putu Eka Pandewi</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13763</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[285]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>24</td>
+                                        <td>
+                                            <strong>Ni Putu Stefany Devita Putri</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13764</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[286]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>25</td>
+                                        <td>
+                                            <strong>Ni Putu Wita Sinta Pradnyani</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13765</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[287]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>26</td>
+                                        <td>
+                                            <strong>Ni Wayan Chandra Rusita Devi</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13766</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[288]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>27</td>
+                                        <td>
+                                            <strong>Pande Made Shasmita Aurellia Putri</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13767</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[289]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>28</td>
+                                        <td>
+                                            <strong>Yenny Febri Yanthy Ningsih</strong>
+                                            <div style="font-size: 0.75rem; color: var(--slate-500);">13768</div>
+                                        </td>
+                                        <td>
+                                            <select name="students[290]" class="form-select form-select-sm modal-status-select">
+                                                <option value="Hadir" selected>Hadir (H)</option>
+                                                <option value="Dispensasi">Dispensasi (D)</option>
+                                                <option value="Izin">Izin (I)</option>
+                                                <option value="Sakit">Sakit (S)</option>
+                                                <option value="Tidak Hadir">Tidak Hadir (A)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="padding: 1rem 1.25rem; background: var(--slate-50); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeInputModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">💾 Simpan Absensi Mapel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openInputModal() {
+    const modal = document.getElementById('modalInputMapel');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeInputModal() {
+    const modal = document.getElementById('modalInputMapel');
+    if (modal) modal.style.display = 'none';
+}
+
+function setAllModalStatus(status) {
+    document.querySelectorAll('.modal-status-select').forEach(sel => {
+        sel.value = status;
+    });
+}
+</script>
+
+    </main>
+</div>
+
+<script src="/assets/js/app.js"></script>
+</body>
+</html>
