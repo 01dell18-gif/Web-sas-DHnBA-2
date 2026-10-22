@@ -20,8 +20,12 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
 
 <header class="navbar">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
-            <i class="bi bi-list"></i>
+        <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" onclick="toggleAdminSidebar(event)" aria-label="Toggle Sidebar" title="Sembunyikan / Tampilkan Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
         </button>
         <div class="navbar-brand">
             <a href="/admin/index.php" class="brand-link">
@@ -48,7 +52,7 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
             <i class="bi bi-globe2"></i> <span>Web Publik</span>
         </a>
-        <a href="/admin/logout.php" class="btn btn-danger-soft btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+        <a href="/admin/logout.php" class="btn btn-danger-soft btn-sm" data-confirm="Apakah Anda yakin ingin keluar dari sistem aplikasi?" data-confirm-title="Konfirmasi Keluar (Logout)" title="Keluar dari sesi admin">
             <i class="bi bi-box-arrow-right"></i> <span>Keluar</span>
         </a>
     </div>

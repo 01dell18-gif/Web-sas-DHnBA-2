@@ -126,6 +126,29 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
     - **Data Guru (`/admin/guru.php`):** Ditambahkan tombol **Ekspor Excel (.xls)** serta integrasi modal **Impor Excel (.xls)**.
     - **Manajemen User (`/admin/users.php`):** Ditambahkan tombol **Ekspor Excel (.xls)** untuk mencadangkan seluruh akun pengguna (Username, Nama Lengkap, Role, Password Plain, Tanggal Dibuat) serta modal **Impor Excel (.xls)** dengan template unduhan untuk penambahan dan pembaruan akun secara massal.
     - **Impor Terpusat (`/admin/import-siswa.php`):** Dilengkapi sistem tab 3-in-1 untuk mengunggah berkas Siswa, berkas Guru, dan berkas Mapel secara terpadu.
+12. **Sistem Notifikasi & Konfirmasi Berupa Modal Popup Menyeluruh:**
+    - **Notifikasi Popup (`#flashNotificationModal`):** Pesan flash notifikasi (sukses, peringatan, error/bahaya, info) dari sistem PHP kini tampil sebagai pop-up modal elegan di tengah atas layar dengan badge icon, judul, teks keterangan lengkap, tombol "OK, Mengerti", dan tombol silang tutup (serta auto-dismiss setelah beberapa detik).
+    - **Konfirmasi Modal Dialog ("Lanjut / Tidak"):** Semua aksi konfirmasi (penghapusan data satu per satu di tabel siswa, kelas, guru, mapel, user, template ujian, rekap mapel; pengosongan/reset formulir publik; tombol logout admin) beralih dari alert/confirm browser ke dialog popup interaktif (`#modalGlobalConfirmDialog`) dengan dua opsi pilihan: **"Lanjut"** (merah) dan **"Tidak"** (abu-abu).
+    - **Override Native Alert & Form Interceptor:** `window.alert()` dialihkan otomatis membuka popup modal pemberitahuan (`showNotificationModal`), dan seluruh form dengan `onsubmit="return confirm(...)"` diintersepsi secara otomatis pada tingkat DOM oleh `app.js`.
+13. **Tata Letak Filter Horizontal Mendatar (Arsip Daftar Hadir & Arsip Berita Acara):**
+    - Formulir filter pada menu **Arsip Daftar Hadir** (`/admin/absensi.php`) dan **Arsip Berita Acara** (`/admin/berita-acara.php`) kini berjejer mendatar ke samping (*horizontal row*):
+      `[Tingkat Kelas] [Kelas] [Tanggal Ujian] [Cari Mapel / Pengawas] [🔍 Terapkan Filter]`
+    - Menggunakan class flexbox `.filter-horizontal-form` dengan `align-items: flex-end`, sehingga kolom pilihan, input tanggal, kotak pencarian, dan tombol submit tersusun sejajar rapi dalam satu baris mendatar dan responsif melipat di perangkat seluler.
+14. **Pratinjau & Cetak Laporan PDF (Preview PDF Cetak) di Tab Baru pada Rekap Kehadiran Siswa:**
+    - Pada menu **Laporan Rekap Kehadiran Siswa** (`/admin/rekap-kehadiran.php`), ditambahkan tombol **"Preview PDF (Cetak)"** dengan ikon PDF merah di sebelah tombol *Ekspor Excel (.xls)*.
+    - Membuka pratinjau dokumen di tab baru (`target="_blank"`) yang dihasilkan oleh backend generator PDF resmi (`/admin/export-rekap-pdf.php`) menggunakan Dompdf A4 Landscape:
+      - Kop Surat resmi sekolah dan identitas dokumen.
+      - Tabel metadata kelas, tahun ajaran, semester, dan tanggal cetak.
+      - Matriks kehadiran seluruh siswa untuk setiap mata pelajaran dengan kode status (H, D, I, S, A).
+      - Kalkulasi total kehadiran dan persentase kehadiran `(Hadir + Dispensasi) / Total Mapel × 100%`.
+      - Baris total kehadiran siswa per mapel di bagian bawah tabel.
+      - Legenda kode status dan 3 kolom blok tanda tangan resmi (Kepala Sekolah, Ketua Panitia Ujian SAS, dan Wali Kelas).
+      - Disajikan via header `application/pdf; inline` siap cetak langsung atau disimpan.
+15. **Navbar & Sidebar Fleksibel (Collapsible dengan Tombol Hamburger):**
+    - Ditambahkan tombol toggle sidebar/navbar berbentuk rounded square dengan ikon 3 garis horizontal (*hamburger menu icon* `≡`) yang identik dengan desain yang diminta pengguna.
+    - **Desktop Mode (> 900px):** Menekan tombol toggle menyembunyikan sidebar admin (width: 0), dan area konten utama (`.admin-main`) otomatis melebar penuh 100% (*isi dinamis mengikuti saat navbar disembunyikan atau ditampilkan*). Menekan tombol kembali mengembalikan posisi sidebar ke 240px. Status toggle tersimpan otomatis di `localStorage`.
+    - **Mobile Mode (≤ 900px):** Sidebar secara default tersembunyi rapi dan muncul saat tombol toggle ditekan dengan animasi slide down, serta otomatis menutup bila mengklik di luar area menu.
+    - **Halaman Publik:** Tombol toggle yang sama mengontrol visibilitas menu navigasi dropdown mobile.
 
 ---
 

@@ -337,8 +337,8 @@ require_once __DIR__ . '/layout_header.php';
         <span class="card-title">🔍 Filter Data Arsip Berita Acara</span>
     </div>
     <div class="card-body">
-        <form method="GET" action="/admin/berita-acara.php" class="grid-4" style="gap: 1rem; align-items: flex-end;">
-            <div class="form-group" style="margin-bottom: 0;">
+        <form method="GET" action="/admin/berita-acara.php" class="filter-horizontal-form">
+            <div class="form-group filter-col">
                 <label class="form-label" for="filter_tingkat">Tingkat Kelas</label>
                 <select name="tingkat" id="filter_tingkat" class="form-select">
                     <option value="">-- Semua Tingkat --</option>
@@ -348,7 +348,7 @@ require_once __DIR__ . '/layout_header.php';
                 </select>
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
+            <div class="form-group filter-col">
                 <label class="form-label" for="filter_class_id">Kelas</label>
                 <select name="class_id" id="filter_class_id" class="form-select">
                     <option value="">-- Semua Kelas --</option>
@@ -360,22 +360,22 @@ require_once __DIR__ . '/layout_header.php';
                 </select>
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
+            <div class="form-group filter-col">
                 <label class="form-label" for="filter_tanggal">Tanggal Ujian</label>
                 <input type="date" name="tanggal" id="filter_tanggal" class="form-control" value="<?= htmlspecialchars($tanggalFilter) ?>">
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
+            <div class="form-group filter-col-search">
                 <label class="form-label" for="q">Cari Mapel / Pengawas</label>
                 <input type="text" name="q" id="q" class="form-control" placeholder="Ketik kata kunci..." value="<?= htmlspecialchars($searchQ) ?>">
             </div>
 
-            <div style="grid-column: 1 / -1; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                <button type="submit" class="btn btn-primary btn-sm">
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap; height: 38px;">
                     🔍 Terapkan Filter
                 </button>
                 <?php if ($tingkatFilter || $classFilter || $tanggalFilter || $searchQ): ?>
-                    <a href="/admin/berita-acara.php" class="btn btn-secondary btn-sm">
+                    <a href="/admin/berita-acara.php" class="btn btn-secondary btn-sm" style="white-space: nowrap; height: 38px; display: inline-flex; align-items: center;">
                         Reset Filter
                     </a>
                 <?php endif; ?>

@@ -1692,3 +1692,153 @@ textarea.form-control {
     color: var(--primary);
 }
 
+/* =========================================================
+   Collapsible Sidebar (Desktop & Mobile)
+   ========================================================= */
+.btn-sidebar-toggle,
+.mobile-nav-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    border: 1.5px solid #d0d7de;
+    background: #f6f8fa;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.btn-sidebar-toggle:hover,
+.mobile-nav-toggle:hover {
+    background: #edf2f7;
+    border-color: #94a3b8;
+    color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.btn-sidebar-toggle:active,
+.mobile-nav-toggle:active {
+    transform: scale(0.95);
+}
+
+.admin-sidebar {
+    width: 240px;
+    min-width: 240px;
+    transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.2s ease,
+                visibility 0.25s;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.admin-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Desktop Collapsed Sidebar State */
+body.sidebar-collapsed .admin-sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-right: none !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+body.sidebar-collapsed .admin-main {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Mobile Sidebar Toggle State */
+@media (max-width: 900px) {
+    .admin-sidebar-layout {
+        flex-direction: column;
+    }
+    .admin-sidebar {
+        display: none;
+        width: 100% !important;
+        min-width: 100% !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    body.mobile-sidebar-open .admin-sidebar {
+        display: flex;
+        animation: slideDownNav 0.2s ease-out;
+    }
+}
+
+/* =========================================================
+   Horizontal Filter Layout (Arsip Daftar Hadir & Berita Acara)
+   ========================================================= */
+.filter-horizontal-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.filter-horizontal-form .filter-col {
+    flex: 1 1 180px;
+    min-width: 150px;
+    margin-bottom: 0;
+}
+
+.filter-horizontal-form .filter-col-search {
+    flex: 1.5 1 240px;
+    min-width: 180px;
+    margin-bottom: 0;
+}
+
+.filter-horizontal-form .filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .filter-horizontal-form .filter-col,
+    .filter-horizontal-form .filter-col-search {
+        flex: 1 1 100%;
+    }
+    .filter-horizontal-form .filter-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 0.25rem;
+    }
+}
+
+/* =========================================================
+   Notification & Confirmation Popup Cards
+   ========================================================= */
+.notification-popup-card {
+    background: #ffffff;
+    width: 92%;
+    max-width: 480px;
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+    animation: modalTopSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    margin-top: 25px;
+    margin-bottom: 2rem;
+}
+
+

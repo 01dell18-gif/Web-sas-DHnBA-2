@@ -622,11 +622,11 @@ function toggleHtmlSourceMode() {
 
 // Kembalikan ke susunan redaksi standar resmi
 function resetWysiwygToDefault() {
-    if (confirm('Apakah Anda yakin ingin mengembalikan isi redaksi berita acara ke format standar resmi?')) {
+    window.showConfirmDialog('Apakah Anda yakin ingin mengembalikan isi redaksi berita acara ke format standar resmi?', function() {
         if (wysiwygCanvas) wysiwygCanvas.innerHTML = DEFAULT_REDAKSI_HTML;
         if (wysiwygSource) wysiwygSource.value = DEFAULT_REDAKSI_HTML;
         syncFromCanvas();
-    }
+    }, 'Reset Redaksi Standar', true);
 }
 
 // Sisipkan placeholder ke editor yang sedang aktif

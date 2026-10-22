@@ -217,6 +217,10 @@ require_once __DIR__ . '/layout_header.php';
         </div>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <a href="/admin/export-rekap-pdf.php?class_id=<?= $selectedClassId ?>&tahun_ajaran=<?= urlencode($selectedTahun) ?>&semester=<?= urlencode($selectedSemester) ?>" 
+           target="_blank" class="btn btn-secondary btn-sm" title="Pratinjau & Cetak Laporan PDF di Tab Baru">
+            <i class="bi bi-file-earmark-pdf-fill" style="color: #ef4444;"></i> <span>Preview PDF (Cetak)</span>
+        </a>
         <a href="/admin/export-rekap-excel.php?class_id=<?= $selectedClassId ?>&tahun_ajaran=<?= urlencode($selectedTahun) ?>&semester=<?= urlencode($selectedSemester) ?>" 
            class="btn btn-success btn-sm" title="Download Spreadsheet Excel">
             <i class="bi bi-file-earmark-excel"></i> <span>Ekspor Excel (.xls)</span>

@@ -77,8 +77,69 @@ function render_flash(): string {
     $flash = get_flash();
     if (!$flash) return '';
     $type = htmlspecialchars($flash['type'], ENT_QUOTES, 'UTF-8');
-    $msg = htmlspecialchars($flash['message'], ENT_QUOTES, 'UTF-8');
-    return "<div class=\"alert alert-{$type}\" style=\"margin-bottom: 1.25rem;\">{$msg}</div>";
+    $rawMsg = $flash['message'];
+    $msg = htmlspecialchars($rawMsg, ENT_QUOTES, 'UTF-8');
+
+    $title = 'Pemberitahuan';
+    $icon = 'bi-info-circle-fill';
+    $iconColor = '#3b82f6';
+    $bgColor = '#eff6ff';
+    $borderColor = '#bfdbfe';
+
+    if ($type === 'success') {
+        $title = 'Berhasil!';
+        $icon = 'bi-check-circle-fill';
+        $iconColor = '#10b981';
+        $bgColor = '#ecfdf5';
+        $borderColor = '#a7f3d0';
+    } elseif ($type === 'danger' || $type === 'error') {
+        $title = 'Perhatian / Terjadi Kesalahan';
+        $icon = 'bi-exclamation-triangle-fill';
+        $iconColor = '#ef4444';
+        $bgColor = '#fef2f2';
+        $borderColor = '#fecaca';
+    } elseif ($type === 'warning') {
+        $title = 'Peringatan';
+        $icon = 'bi-exclamation-circle-fill';
+        $iconColor = '#f59e0b';
+        $bgColor = '#fffbeb';
+        $borderColor = '#fde68a';
+    }
+
+    return '
+    <!-- FLASH NOTIFICATION POPUP MODAL -->
+    <div id="flashNotificationModal" class="custom-modal" style="display: flex; z-index: 999999;">
+        <div class="notification-popup-card" style="border-top: 4px solid ' . $iconColor . ';">
+            <div style="display: flex; align-items: flex-start; gap: 0.9rem;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: ' . $bgColor . '; border: 1px solid ' . $borderColor . '; color: ' . $iconColor . '; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;">
+                    <i class="bi ' . $icon . '"></i>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0 0 0.35rem 0;">' . $title . '</h3>
+                    <p style="font-size: 0.885rem; color: #475569; line-height: 1.5; margin: 0;">' . $msg . '</p>
+                </div>
+                <button type="button" onclick="closeFlashNotificationModal()" style="background: none; border: none; font-size: 1.35rem; color: #94a3b8; cursor: pointer; padding: 0 4px; line-height: 1; border-radius: 6px;" title="Tutup">&times;</button>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="closeFlashNotificationModal()" style="min-width: 90px;">
+                    OK, Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+    function closeFlashNotificationModal() {
+        const el = document.getElementById("flashNotificationModal");
+        if (el) {
+            el.style.opacity = "0";
+            el.style.transition = "opacity 0.22s ease";
+            setTimeout(() => { el.style.display = "none"; }, 220);
+        }
+    }
+    // Auto-close after 5.5 seconds
+    setTimeout(closeFlashNotificationModal, 5500);
+    </script>
+    ';
 }
 
 /**

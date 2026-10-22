@@ -124,8 +124,12 @@ $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
             </div>
         </a>
     </div>
-    <button type="button" class="mobile-nav-toggle" id="btnToggleNav" onclick="toggleMobileNav(event)" aria-label="Toggle Menu">
-        <i class="bi bi-list"></i>
+    <button type="button" class="mobile-nav-toggle btn-sidebar-toggle" id="btnToggleNav" onclick="toggleMobileNav(event)" aria-label="Toggle Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
     </button>
     <ul class="nav-links" id="navLinks">
         <li><a href="/" class="nav-link active"><i class="bi bi-house"></i> Beranda</a></li>
