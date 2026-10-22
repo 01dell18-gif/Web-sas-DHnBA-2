@@ -1623,3 +1623,72 @@ textarea.form-control {
 ::-webkit-scrollbar-thumb:hover {
     background: #94A3B8;
 }
+
+/* =========================================================
+   Top-Aligned Modals & Dropdown Overflow Support
+   ========================================================= */
+.card-overflow-visible {
+    overflow: visible !important;
+}
+
+.custom-modal, .custom-modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    z-index: 9999 !important;
+    display: none;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding-top: 50px !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-bottom: 2rem !important;
+    overflow-y: auto !important;
+    backdrop-filter: blur(2px);
+}
+
+.custom-modal > div, .custom-modal-dialog {
+    margin-top: 15px !important;
+    margin-bottom: 30px !important;
+    animation: modalTopSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes modalTopSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    z-index: 1050;
+    padding: 6px 0;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 14px;
+    color: var(--slate-700);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+
+.dropdown-item:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+

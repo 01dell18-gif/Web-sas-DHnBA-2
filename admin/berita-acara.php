@@ -288,8 +288,8 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- BILAH UNDUH CEPAT (ZIP) -->
-<div class="card" style="margin-bottom: 0.75rem; border-left: 4px solid #b45309; background: #fffbeb;">
-    <div class="card-body" style="padding: 0.65rem 0.85rem;">
+<div class="card card-overflow-visible" style="margin-bottom: 0.75rem; border-left: 4px solid #b45309; background: #fffbeb; overflow: visible !important; position: relative; z-index: 50;">
+    <div class="card-body" style="padding: 0.65rem 0.85rem; overflow: visible !important;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <strong style="color: #b45309; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem;">
@@ -301,14 +301,14 @@ require_once __DIR__ . '/layout_header.php';
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; position: relative;">
                 <!-- Tombol Unduh Tingkat -->
-                <div style="position: relative; display: inline-block;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleDropdown('dropTingkatBA')">
+                <div class="dropdown-group" style="position: relative; display: inline-block;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleDropdown('dropTingkatBA', event)">
                         🎓 Per Tingkat ▾
                     </button>
-                    <div id="dropTingkatBA" class="custom-dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 180px; z-index: 50; padding: 4px 0; margin-top: 4px;">
-                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=X" class="dropdown-item" style="display: block; padding: 6px 12px; font-size: 0.85rem; text-decoration: none; color: #333;">📦 Tingkat X (<?= $totalX ?> Dokumen)</a>
-                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=XI" class="dropdown-item" style="display: block; padding: 6px 12px; font-size: 0.85rem; text-decoration: none; color: #333;">📦 Tingkat XI (<?= $totalXI ?> Dokumen)</a>
-                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=XII" class="dropdown-item" style="display: block; padding: 6px 12px; font-size: 0.85rem; text-decoration: none; color: #333;">📦 Tingkat XII (<?= $totalXII ?> Dokumen)</a>
+                    <div id="dropTingkatBA" class="custom-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); min-width: 220px; z-index: 1050; padding: 6px 0;">
+                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=X" class="dropdown-item">📦 Tingkat X (<?= $totalX ?> Dokumen)</a>
+                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=XI" class="dropdown-item">📦 Tingkat XI (<?= $totalXI ?> Dokumen)</a>
+                        <a href="/admin/berita-acara.php?action=download_zip&mode=tingkat&tingkat=XII" class="dropdown-item">📦 Tingkat XII (<?= $totalXII ?> Dokumen)</a>
                     </div>
                 </div>
 
@@ -525,9 +525,9 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- Modal Unduh Per Kelas -->
-<div id="modalDownloadKelasBA" class="custom-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #fff; width: 90%; max-width: 440px; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">📦 Unduh ZIP Per Kelas</h3>
+<div id="modalDownloadKelasBA" class="custom-modal">
+    <div style="background: #fff; width: 90%; max-width: 440px; border-radius: 12px; padding: 1.5rem; margin-top: 15px; margin-bottom: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.25);">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 700; color: var(--slate-900);">📦 Unduh ZIP Per Kelas</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Pilih kelas untuk mengunduh seluruh Berita Acara dalam kelas tersebut:</p>
         <form method="GET" action="/admin/berita-acara.php">
             <input type="hidden" name="action" value="download_zip">
@@ -550,9 +550,9 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- Modal Unduh Per Tanggal -->
-<div id="modalDownloadTanggalBA" class="custom-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #fff; width: 90%; max-width: 440px; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">📅 Unduh ZIP Per Tanggal</h3>
+<div id="modalDownloadTanggalBA" class="custom-modal">
+    <div style="background: #fff; width: 90%; max-width: 440px; border-radius: 12px; padding: 1.5rem; margin-top: 15px; margin-bottom: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.25);">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 700; color: var(--slate-900);">📅 Unduh ZIP Per Tanggal</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Pilih tanggal pelaksanaan ujian:</p>
         <form method="GET" action="/admin/berita-acara.php">
             <input type="hidden" name="action" value="download_zip">
@@ -570,10 +570,10 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- Modal Galeri Foto -->
-<div id="modalPhotoGallery" class="custom-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #fff; width: 90%; max-width: 750px; border-radius: 12px; padding: 1.5rem; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+<div id="modalPhotoGallery" class="custom-modal">
+    <div style="background: #fff; width: 90%; max-width: 750px; border-radius: 12px; padding: 1.5rem; margin-top: 15px; margin-bottom: 2rem; max-height: 85vh; overflow-y: auto; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-            <h3 id="galleryModalTitle" style="font-size: 1.1rem; margin: 0;">📸 Dokumentasi Pelaksanaan Ujian</h3>
+            <h3 id="galleryModalTitle" style="font-size: 1.1rem; margin: 0; font-weight: 700;">📸 Dokumentasi Pelaksanaan Ujian</h3>
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalPhotoGallery')">✕</button>
         </div>
         <div id="galleryPhotoContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;"></div>
@@ -581,10 +581,10 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- Modal Detail Record -->
-<div id="modalDetailRecord" class="custom-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: #fff; width: 90%; max-width: 600px; border-radius: 12px; padding: 1.5rem; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+<div id="modalDetailRecord" class="custom-modal">
+    <div style="background: #fff; width: 90%; max-width: 600px; border-radius: 12px; padding: 1.5rem; margin-top: 15px; margin-bottom: 2rem; max-height: 85vh; overflow-y: auto; box-shadow: 0 12px 30px rgba(0,0,0,0.25);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-            <h3 style="font-size: 1.15rem; margin: 0;">Detail Berita Acara Ujian</h3>
+            <h3 style="font-size: 1.15rem; margin: 0; font-weight: 700;">Detail Berita Acara Ujian</h3>
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalDetailRecord')">✕</button>
         </div>
         <div id="modalDetailContent" style="font-size: 0.9rem; line-height: 1.6;"></div>
@@ -592,11 +592,20 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <script>
-function toggleDropdown(id) {
+function toggleDropdown(id, event) {
+    if (event) event.stopPropagation();
     const el = document.getElementById(id);
     if (!el) return;
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    const isShowing = el.style.display === 'block';
+    document.querySelectorAll('.custom-dropdown-menu').forEach(d => d.style.display = 'none');
+    el.style.display = isShowing ? 'none' : 'block';
 }
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown-group')) {
+        document.querySelectorAll('.custom-dropdown-menu').forEach(d => d.style.display = 'none');
+    }
+});
 
 function openDownloadKelasModalBA() {
     document.getElementById('modalDownloadKelasBA').style.display = 'flex';
