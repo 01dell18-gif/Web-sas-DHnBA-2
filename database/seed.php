@@ -186,7 +186,7 @@ $defaultSettings = [
     'kop_telepon' => 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com',
     'kop_website' => 'Website: smkn1klungkung.sch.id',
     'logo_path' => 'storage/uploads/logo/logo_default.png',
-    'google_drive_folder_url' => 'https://drive.google.com/drive/folders/1wExampleDriveFolderSMKN1Klungkung'
+    'google_drive_folder_url' => 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing'
 ];
 
 foreach ($defaultSettings as $k => $v) {

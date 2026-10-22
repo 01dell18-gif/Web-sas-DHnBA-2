@@ -12,7 +12,7 @@ $totalAbsensi = (int)dbValue("SELECT COUNT(*) FROM absensi");
 $totalBeritaAcara = (int)dbValue("SELECT COUNT(*) FROM berita_acara");
 $selisih = abs($totalAbsensi - $totalBeritaAcara);
 
-$driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com');
+$driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 
 $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
 ?>

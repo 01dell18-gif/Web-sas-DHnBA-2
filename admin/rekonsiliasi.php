@@ -1,6 +1,62 @@
 <?php
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
+
 $pageTitle = 'Audit & Rekonsiliasi Dokumen';
-require_once __DIR__ . '/layout_header.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_all_docs') {
+    verify_csrf();
+    // Wipe absensi
+    $allDH = dbFetchAll("SELECT id, pdf_path FROM absensi");
+    foreach ($allDH as $doc) {
+        if (!empty($doc['pdf_path'])) {
+            $f = BASE_PATH . '/' . $doc['pdf_path'];
+            if (file_exists($f)) @unlink($f);
+        }
+    }
+    $dirDh = BASE_PATH . '/storage/absensi';
+    if (is_dir($dirDh)) {
+        foreach (glob($dirDh . '/*.pdf') as $f) @unlink($f);
+    }
+    getDb()->exec("DELETE FROM absensi");
+
+    // Wipe berita_acara
+    $allBA = dbFetchAll("SELECT id, pdf_path, foto_dokumentasi FROM berita_acara");
+    foreach ($allBA as $doc) {
+        if (!empty($doc['pdf_path'])) {
+            $f = BASE_PATH . '/' . $doc['pdf_path'];
+            if (file_exists($f)) @unlink($f);
+        }
+        if (!empty($doc['foto_dokumentasi'])) {
+            $photos = json_decode($doc['foto_dokumentasi'], true) ?: [];
+            foreach ($photos as $ph) {
+                $pF = BASE_PATH . '/' . $ph;
+                if (file_exists($pF)) @unlink($pF);
+            }
+        }
+    }
+    $dirBa = BASE_PATH . '/storage/berita-acara';
+    if (is_dir($dirBa)) {
+        foreach (glob($dirBa . '/*.pdf') as $f) @unlink($f);
+    }
+    $dirPhotos = BASE_PATH . '/storage/uploads/kegiatan';
+    if (is_dir($dirPhotos)) {
+        foreach (glob($dirPhotos . '/*') as $f) {
+            if (is_file($f)) @unlink($f);
+        }
+    }
+    getDb()->exec("DELETE FROM berita_acara");
+
+    if (DB_TYPE === 'sqlite') {
+        getDb()->exec("DELETE FROM sqlite_sequence WHERE name IN ('absensi', 'berita_acara')");
+    }
+    $cDH = count($allDH);
+    $cBA = count($allBA);
+    log_activity('CLEAR_ALL_DOCUMENTS', "Mereset seluruh berkas dokumen ujian: {$cDH} Daftar Hadir dan {$cBA} Berita Acara.");
+    set_flash('success', "Seluruh dokumen ujian ({$cDH} Daftar Hadir & {$cBA} Berita Acara) berhasil dibersihkan.");
+    header('Location: /admin/rekonsiliasi.php');
+    exit;
+}
 
 // Fetch all absensi and berita acara records
 $allDH = dbFetchAll("SELECT * FROM absensi ORDER BY tanggal_ujian DESC, id DESC");
@@ -88,6 +144,8 @@ foreach ($sessions as $key => $sess) {
         }
     }
 }
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <!-- Modern Header Banner -->
@@ -103,15 +161,25 @@ foreach ($sessions as $key => $sess) {
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/admin/absensi.php" class="btn btn-secondary btn-sm">
             <i class="bi bi-file-earmark-check"></i> <span>Arsip Daftar Hadir</span>
         </a>
         <a href="/admin/berita-acara.php" class="btn btn-secondary btn-sm">
             <i class="bi bi-archive"></i> <span>Arsip Berita Acara</span>
         </a>
+        <?php if ($totalSessions > 0): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllDocuments()" title="Kosongkan seluruh dokumen ujian untuk persiapan periode baru">
+                <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Dokumen (DH & BA)</span>
+            </button>
+        <?php endif; ?>
     </div>
 </div>
+
+<form id="formResetAllDocs" method="POST" action="/admin/rekonsiliasi.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_all_docs">
+</form>
 
 <!-- Kartu Ringkasan Status Ultra-Modern -->
 <div class="stats-grid">
@@ -362,5 +430,16 @@ foreach ($sessions as $key => $sess) {
         </table>
     </div>
 </div>
+
+<script>
+function confirmResetAllDocuments() {
+    const code = prompt("PERINGATAN TINGKAT TINGGI: Tindakan ini akan MENGHAPUS SELURUH dokumen Daftar Hadir dan Berita Acara dari sistem.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formResetAllDocs').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

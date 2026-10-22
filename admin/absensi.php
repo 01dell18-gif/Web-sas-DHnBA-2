@@ -115,6 +115,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     exit;
 }
 
+// Handle Delete All (Reset Semua Arsip Daftar Hadir)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_all') {
+    verify_csrf();
+    $allDocs = dbFetchAll("SELECT id, pdf_path FROM absensi");
+    $count = count($allDocs);
+    foreach ($allDocs as $doc) {
+        if (!empty($doc['pdf_path'])) {
+            $f = BASE_PATH . '/' . $doc['pdf_path'];
+            if (file_exists($f)) @unlink($f);
+        }
+    }
+    $dir = BASE_PATH . '/storage/absensi';
+    if (is_dir($dir)) {
+        foreach (glob($dir . '/*.pdf') as $f) {
+            @unlink($f);
+        }
+    }
+    getDb()->exec("DELETE FROM absensi");
+    if (DB_TYPE === 'sqlite') {
+        getDb()->exec("DELETE FROM sqlite_sequence WHERE name = 'absensi'");
+    }
+    log_activity('CLEAR_ALL_ABSENSI', "Menghapus seluruh arsip daftar hadir ({$count} dokumen) dan file fisik PDF untuk reset.");
+    set_flash('success', "Seluruh arsip daftar hadir ({$count} dokumen) berhasil dihapus dan dikosongkan.");
+    header('Location: /admin/absensi.php');
+    exit;
+}
+
 // Query Filters
 $tingkatFilter = trim($_GET['tingkat'] ?? '');
 $classFilter = (int)($_GET['class_id'] ?? 0);
@@ -168,12 +195,22 @@ require_once __DIR__ . '/layout_header.php';
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/absensi.php" target="_blank" class="btn btn-primary btn-sm" title="Buka Formulir Daftar Hadir">
             <i class="bi bi-pencil-square"></i> <span>Buat Daftar Hadir ↗</span>
         </a>
+        <?php if ($totalDocs > 0): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllAbsensi()" title="Kosongkan seluruh arsip daftar hadir untuk persiapan ujian baru">
+                <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Arsip Daftar Hadir</span>
+            </button>
+        <?php endif; ?>
     </div>
 </div>
+
+<form id="formDeleteAllAbsensi" method="POST" action="/admin/absensi.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_all">
+</form>
 
 <!-- KARTU STATISTIK RINGKAS -->
 <div class="stats-grid">
@@ -581,6 +618,14 @@ function showRecordDetail(doc) {
     `;
     document.getElementById('modalDetailContent').innerHTML = content;
     document.getElementById('modalDetailRecord').style.display = 'flex';
+}
+function confirmResetAllAbsensi() {
+    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH berkas arsip daftar hadir (database dan file PDF) dari server untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formDeleteAllAbsensi').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
 }
 </script>
 

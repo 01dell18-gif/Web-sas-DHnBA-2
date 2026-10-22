@@ -1,6 +1,29 @@
 <?php
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
+
 $pageTitle = 'Laporan Rekap Kehadiran Siswa';
-require_once __DIR__ . '/layout_header.php';
+
+// Handle Reset Presensi Kelas
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_class_absensi') {
+    verify_csrf();
+    $targetCid = (int)($_POST['target_class_id'] ?? 0);
+    if ($targetCid > 0) {
+        $docs = dbFetchAll("SELECT id, pdf_path FROM absensi WHERE class_id = :cid", ['cid' => $targetCid]);
+        foreach ($docs as $d) {
+            if (!empty($d['pdf_path'])) {
+                $f = BASE_PATH . '/' . $d['pdf_path'];
+                if (file_exists($f)) @unlink($f);
+            }
+        }
+        dbDelete('absensi', 'class_id = :cid', ['cid' => $targetCid]);
+        $count = count($docs);
+        log_activity('CLEAR_CLASS_ABSENSI', "Menghapus seluruh presensi kelas ID #{$targetCid} ({$count} dokumen)");
+        set_flash('success', "Seluruh presensi pada kelas terpilih ({$count} dokumen) berhasil dikosongkan.");
+    }
+    header('Location: /admin/rekap-kehadiran.php?class_id=' . $targetCid);
+    exit;
+}
 
 $classes = dbFetchAll("SELECT * FROM kelas ORDER BY tingkat DESC, nama_kelas ASC");
 $selectedClassId = (int)($_GET['class_id'] ?? ($classes[0]['id'] ?? 15));
@@ -53,6 +76,8 @@ foreach ($absensiSessions as $sess) {
         $attendanceMap[$sid][$mp] = $code;
     }
 }
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <div class="page-header-card">
@@ -67,7 +92,7 @@ foreach ($absensiSessions as $sess) {
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/admin/export-rekap-excel.php?class_id=<?= $selectedClassId ?>&tahun_ajaran=<?= urlencode($selectedTahun) ?>&semester=<?= urlencode($selectedSemester) ?>" 
            class="btn btn-success btn-sm" title="Download Spreadsheet Excel">
             <i class="bi bi-file-earmark-excel"></i> <span>Ekspor Excel (.xlsx)</span>
@@ -75,8 +100,19 @@ foreach ($absensiSessions as $sess) {
         <a href="/absensi.php" target="_blank" class="btn btn-primary btn-sm">
             <i class="bi bi-pencil-square"></i> <span>Buat Absensi ↗</span>
         </a>
+        <?php if (!empty($absensiSessions)): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetClassAbsensi(<?= $selectedClassId ?>, '<?= htmlspecialchars($namaKelas, ENT_QUOTES) ?>')" title="Kosongkan data presensi kelas ini">
+                <i class="bi bi-trash3-fill"></i> <span>Hapus Presensi Kelas Ini</span>
+            </button>
+        <?php endif; ?>
     </div>
 </div>
+
+<form id="formResetClassAbsensi" method="POST" action="/admin/rekap-kehadiran.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_class_absensi">
+    <input type="hidden" name="target_class_id" value="<?= $selectedClassId ?>">
+</form>
 
 <!-- Filter Kelas & Periode -->
 <div class="card" style="margin-bottom: 0.75rem;">
@@ -222,5 +258,16 @@ foreach ($absensiSessions as $sess) {
         </div>
     </div>
 </div>
+
+<script>
+function confirmResetClassAbsensi(cid, className) {
+    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data presensi/daftar hadir kelas " + className + " dari sistem.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formResetClassAbsensi').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

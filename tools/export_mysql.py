@@ -5,7 +5,7 @@ conn = sqlite3.connect('database/sas.sqlite')
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
-tables = ['users', 'pengaturan', 'template_ujian', 'kelas', 'siswa', 'absensi', 'berita_acara', 'activity_logs']
+tables = ['users', 'pengaturan', 'template_ujian', 'kelas', 'siswa', 'guru', 'absensi', 'berita_acara', 'activity_logs']
 
 sql_lines = [
     "-- ========================================================",
@@ -50,6 +50,18 @@ CREATE TABLE IF NOT EXISTS `siswa` (
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL,
     KEY `idx_class_id` (`class_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+""",
+    'guru': """
+CREATE TABLE IF NOT EXISTS `guru` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nama` VARCHAR(150) NOT NULL,
+    `nip` VARCHAR(50) DEFAULT '-',
+    `jabatan` VARCHAR(100) DEFAULT 'Guru / Pengawas',
+    `aktif` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME NULL,
+    `updated_at` DATETIME NULL,
+    KEY `idx_guru_nama` (`nama`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """,
     'template_ujian': """

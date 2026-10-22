@@ -31,6 +31,7 @@ print("4. Testing admin pages...")
 pages = [
     '/admin/kelas.php',
     '/admin/siswa.php',
+    '/admin/guru.php',
     '/admin/absensi.php',
     '/admin/berita-acara.php',
     '/admin/rekap-kehadiran.php',
@@ -45,4 +46,45 @@ for p in pages:
     assert "navbar" in content
     print(f"   [OK] {p} loaded ({len(content)} bytes)")
 
+print("5. Testing Guru pickers in Absensi & Berita Acara...")
+abs_content = opener.open(f"{BASE}/absensi.php").read().decode()
+assert "select-guru-picker" in abs_content
+assert "autoFillGuru" in abs_content
+print("   [OK] absensi.php has autoFillGuru and teacher dropdown!")
+
+ba_content = opener.open(f"{BASE}/berita-acara.php").read().decode()
+assert "select-guru-picker" in ba_content
+assert "autoFillGuru" in ba_content
+print("   [OK] berita-acara.php has autoFillGuru and teacher dropdown!")
+
+print("6. Testing Reset Buttons presence...")
+kelas_content = opener.open(f"{BASE}/admin/kelas.php").read().decode()
+assert "confirmResetAllKelas" in kelas_content
+print("   [OK] admin/kelas.php has confirmResetAllKelas button!")
+
+siswa_content = opener.open(f"{BASE}/admin/siswa.php").read().decode()
+assert "confirmResetAllSiswa" in siswa_content
+print("   [OK] admin/siswa.php has confirmResetAllSiswa button!")
+
+guru_content = opener.open(f"{BASE}/admin/guru.php").read().decode()
+assert "confirmResetAllGuru" in guru_content
+print("   [OK] admin/guru.php has confirmResetAllGuru button!")
+
+abs_admin = opener.open(f"{BASE}/admin/absensi.php").read().decode()
+assert "confirmResetAllAbsensi" in abs_admin
+print("   [OK] admin/absensi.php has confirmResetAllAbsensi button!")
+
+ba_admin = opener.open(f"{BASE}/admin/berita-acara.php").read().decode()
+assert "confirmResetAllBA" in ba_admin
+print("   [OK] admin/berita-acara.php has confirmResetAllBA button!")
+
+rekap_admin = opener.open(f"{BASE}/admin/rekap-kehadiran.php").read().decode()
+assert "confirmResetClassAbsensi" in rekap_admin
+print("   [OK] admin/rekap-kehadiran.php has confirmResetClassAbsensi button!")
+
+rekon_admin = opener.open(f"{BASE}/admin/rekonsiliasi.php").read().decode()
+assert "confirmResetAllDocuments" in rekon_admin
+print("   [OK] admin/rekonsiliasi.php has confirmResetAllDocuments button!")
+
 print("\nALL TESTS PASSED WITH 100% SUCCESS!")
+

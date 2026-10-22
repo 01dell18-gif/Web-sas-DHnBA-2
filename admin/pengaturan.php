@@ -66,7 +66,7 @@ $kopBaris2 = get_setting('kop_baris_2', 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAG
 $kopBaris3 = get_setting('kop_baris_3', 'SMK NEGERI 1 KLUNGKUNG');
 $kopTelepon = get_setting('kop_telepon', 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com');
 $kopWebsite = get_setting('kop_website', 'Website: smkn1klungkung.sch.id');
-$driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com/drive/folders/1wExampleDriveFolderSMKN1Klungkung');
+$driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 ?>

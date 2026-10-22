@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `updated_at` DATETIME NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMKN 1 Klungkung', 'admin', '2026-10-22 03:03:04', '2026-10-22 03:03:04'),
-(2, 'operator', '$2y$10$tZ2R4GkEev86wG67x7y3rOq0iB/QfV/b9oZl1K54aH7p8.6PZJ4rG', 'Operator SAS SMKN 1 Klungkung', 'operator', '2026-10-22 03:03:04', '2026-10-22 03:03:04');
+(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMKN', 'admin', '2026-10-22 03:03:04', '2026-10-22 05:22:33'),
+(2, 'operator', '$2y$10$frHJGKF5ZNQ9PgEga0gGQeCN9QJJeTxwfvmcGSKUx14CpTmKFjB9m', 'Operator SAS SMK', 'operator', '2026-10-22 03:47:12', '2026-10-22 04:44:07');
 
 
 DROP TABLE IF EXISTS `pengaturan`;
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `pengaturan` (
     `setting_value` TEXT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT INTO `pengaturan` (`id`, `setting_key`, `setting_value`) VALUES
-(1, 'nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG'),
+(1, 'nama_sekolah', 'SMK NEGERI 1 FYJ CHANNEL'),
 (2, 'alamat_sekolah', 'Jl. Merpati No. 1, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali 80711'),
 (3, 'kop_mode', 'image'),
 (4, 'kop_image_path', 'assets/img/kop-header.png'),
@@ -38,7 +38,7 @@ INSERT INTO `pengaturan` (`id`, `setting_key`, `setting_value`) VALUES
 (8, 'kop_telepon', 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com'),
 (9, 'kop_website', 'Website: smkn1klungkung.sch.id'),
 (10, 'logo_path', 'storage/uploads/logo/logo_default.png'),
-(11, 'google_drive_folder_url', 'https://drive.google.com/drive/folders/1wExampleDriveFolderSMKN1Klungkung');
+(11, 'google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 
 
 DROP TABLE IF EXISTS `template_ujian`;
@@ -371,6 +371,83 @@ INSERT INTO `siswa` (`id`, `class_id`, `nis`, `nisn`, `nama`, `aktif`, `created_
 (290, 15, '13768', '', 'Yenny Febri Yanthy Ningsih', 1, '2026-10-22 03:03:10', '2026-10-22 03:03:10');
 
 
+DROP TABLE IF EXISTS `guru`;
+CREATE TABLE IF NOT EXISTS `guru` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `nama` VARCHAR(150) NOT NULL,
+    `nip` VARCHAR(50) DEFAULT '-',
+    `jabatan` VARCHAR(100) DEFAULT 'Guru / Pengawas',
+    `aktif` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME NULL,
+    `updated_at` DATETIME NULL,
+    KEY `idx_guru_nama` (`nama`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `guru` (`id`, `nama`, `nip`, `jabatan`, `aktif`, `created_at`, `updated_at`) VALUES
+(1, '-', '-', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(2, 'A A. Istri Raka Yuliantari, S.Pd', '199002252022212027', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(3, 'A.A. Istri Eka Putri Sadiningtyas, S.Pd.', '199105022022212005', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(4, 'A.A. Istri Raka Yuliantari, S.Pd', '199002252022212027', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(5, 'Anak Agung Ayu Puspa Kusuma Dhari, S.T', '197810042009022007', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(6, 'Anak Agung Istri Eka Putri Sadiningtyas', '199105022022212005', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(7, 'Anom widya darma', '198309132023211009', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(8, 'Arik Ardana, S.Pd.', '198603142019031012', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(9, 'Bambang Hadi Subrata', '198712022023211008', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(10, 'Denni Rosalami S. Pd', '198507202025212023', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(11, 'Denni Rosalami S.Pd', '198507202025212023', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(12, 'Dewa Ayu Putu Putri Sanjani', '199204072022212004', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(13, 'Eka Hikmahyanti', '198401112022212002', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(14, 'Faris Azka', '199410082019031008', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(15, 'Guru Pengawas S.Pd', '198501012010011001', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(16, 'I Dewa Ayu Ketut Candrayani,S.Pd.H', '198502252023212016', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(17, 'I Dewa Gede Sudiana, S.Pd.', '19820227 202221 1 010', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(18, 'I Gusti  Ayu Karla  Komala Dewi,S.Pd', '198709022024212019', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(19, 'I Gusti Ayu  Karla Komala Dewi,S.Pd', '198709022024212014', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(20, 'I Gusti Ayu Karla Komala Dewi,S.Pd', '198709022024212019', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(21, 'I Gusti Ayu Made Sri Rahayu', '199002182022212022', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(22, 'I Gustii Ayu Karla Komala Dewi,S.Pd', '198709022024212019', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(23, 'I Made Juniarta', '199006042022211018', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(24, 'I Made Miasa S.Pd.M.Pd', '197212312003121031', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(25, 'I Made Miasa.S.Pd.M.Pd', '197212312003121031', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(26, 'I Wayan Dedy Artana, S.Pd', '198912312024211019', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(27, 'I Wayan Developer, S.Kom.', '198501012010011001', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(28, 'I Wayan Suteja', '197410252023211002', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(29, 'I Wayan Warjana, S.Pd', '199006042022211002 lki', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(30, 'I Wayan Warjana,S.Pd', '199006042022211002', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(31, 'Ida Ayu Desi Lestari', '198112182006042016', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(32, 'Ida Bagus Gde Agung Raditya Eka Putra, S.Farm.', '198902052022211002', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(33, 'Kade Ferry Apriyana, S.Pd', '199404132024211021', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(34, 'Kadek Hariasih, S.Fil.H', '199001022023212024', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(35, 'Kadek Sari Cuciati, S. Farm', '198806242022212001', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(36, 'Ketut Widisila', '197906102010011023', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(37, 'Komang Ari Martini, S.Pd.', '198805252011012020', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(38, 'Luh Desy Dianayanti, S.Pd., M.Pd.', '198412132009022009', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(39, 'Luh Gd. Karisma Widiantari', '-', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(40, 'Luh Nyoman Satria Purnama Dewi', '199104292023212012', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(41, 'Ni Kadek Dewi Sutarini, S.Pd', '198905182023212017', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(42, 'Ni Kadek Winastri, S.Pd', '198411222022212004', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(43, 'Ni Kadek Winastri,S.Pd', '-', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(44, 'Ni Ketut Budiati', '198008102022212005', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(45, 'Ni Ketut Budiati,S.Pd.M.Pd.', '198008102022212005', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(46, 'Ni Komang Martini, S. Pd.', '197505012022211004', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(47, 'Ni Luh Ririn Liana Dewi', '199305232023212034', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(48, 'Ni Luh Ririn Liana Dewi, S. Pd.', '199305232023212034', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(49, 'Ni Made Sunariani', '197604112010012008', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(50, 'Ni Nengah Sumiartini, S.Pd', '198804242011012020', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49');
+INSERT INTO `guru` (`id`, `nama`, `nip`, `jabatan`, `aktif`, `created_at`, `updated_at`) VALUES
+(51, 'Ni Nyoman Sriwati Kartini,S.Pd.', '196704212024212001', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(52, 'Ni Putu Eka Wulandari', '198812232011012021', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(53, 'P.Mirah Marliasuari', '-', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(54, 'Putu Doantara Yasa', '198603172023211012', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(55, 'Putu Sri Satri Dewi, S.Pd', '199404272022212002', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(56, 'Sang Ayu Made Desiani, S.Pd., M.Pd.', '-', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(57, 'Sang Putu Astayasa, S.Pd.', '199304192025211020', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(58, 'Sri Reswati', '199204222022212003', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(59, 'Tjokorda Istri Eka Andayani', '197308252006032003', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(60, 'Tjokorda Istri Eka Andayani, S.Pd', '197308252006042003', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(61, 'Tjokorda Istri Eka Andayani,SE', '197308252006042003', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49'),
+(62, 'Widi Sila', '197906102010011023', 'Guru / Pengawas', 1, '2026-10-22 05:37:49', '2026-10-22 05:37:49');
+
+
 DROP TABLE IF EXISTS `absensi`;
 CREATE TABLE IF NOT EXISTS `absensi` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -509,6 +586,13 @@ INSERT INTO `absensi` (`id`, `nama_ujian`, `tahun_ajaran`, `semester`, `class_id
 (101, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 14, 'XII LPB', 'XII', 'Matematika', '-', '-', '2026-10-21', '11:30', '13:30', 12, 0, 0, 0, 0, 12, 'I Wayan Suteja', '197410252023211002', '-', '-', 'digital', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII LPB-Matematika-2026-10-21.pdf', 83119, '[]', '2026-10-22 06:56:54', '2026-10-22 06:56:54'),
 (102, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 11, 'XII BD 2', 'XII', 'Digital Marketing', '1', 'Kelas 12BD2', '2026-10-22', '07:30', '09:30', 20, 0, 0, 0, 0, 20, 'Tjokorda Istri Eka Andayani', '197308252006032003', '', '', 'digital', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII BD 2-Digital Marketing-2026-10-22.pdf', 85117, '[]', '2026-10-22 07:05:25', '2026-10-22 07:05:25'),
 (103, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 13, 'XII MP 2', 'XII', 'Pendidikan Agama Hindu dan Budi pekerti', '1', 'Kelas XII MP 2', '2026-10-22', '07:30', '09:30', 25, 0, 1, 1, 0, 27, 'Ida Ayu Desi Lestari', '198112182006042016', '', '', 'digital', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII MP 2-Pendidikan Agama Hindu dan Budi pekerti-2026-10-22.pdf', 85813, '[]', '2026-10-22 07:14:57', '2026-10-22 07:14:57');
+INSERT INTO `absensi` (`id`, `nama_ujian`, `tahun_ajaran`, `semester`, `class_id`, `nama_kelas`, `tingkat`, `mata_pelajaran`, `sesi`, `ruang`, `tanggal_ujian`, `jam_mulai`, `jam_selesai`, `peserta_hadir`, `peserta_dispensasi`, `peserta_izin`, `peserta_sakit`, `peserta_tidak_hadir`, `total_peserta`, `nama_pengawas_1`, `nip_pengawas_1`, `nama_pengawas_2`, `nip_pengawas_2`, `signature_mode`, `ttd_pengawas_1`, `ttd_pengawas_2`, `pdf_path`, `file_size`, `data_siswa`, `created_at`, `updated_at`) VALUES
+(104, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 79976, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 03:15:25', '2026-10-22 03:15:25'),
+(105, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 79976, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 03:16:57', '2026-10-22 03:16:57'),
+(106, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 25427, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 03:28:08', '2026-10-22 03:28:08'),
+(107, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 25427, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 03:32:25', '2026-10-22 03:32:25'),
+(108, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 25427, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 03:52:41', '2026-10-22 03:52:41'),
+(109, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '1', 'Lab Komputer RPL', '2026-10-22', '07:30', '09:30', 2, 0, 0, 0, 0, 2, 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', 'storage/absensi/DH-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 25427, '[{"id":"1","nama":"I Desak Ketut Patniki Astuti","nis":"13741","status":"Hadir"},{"id":"2","nama":"I Dewa Ayu Awidiya Sari","nis":"13742","status":"Hadir"}]', '2026-10-22 04:13:59', '2026-10-22 04:13:59');
 
 
 DROP TABLE IF EXISTS `berita_acara`;
@@ -642,7 +726,13 @@ INSERT INTO `berita_acara` (`id`, `template_id`, `nama_ujian`, `tahun_ajaran`, `
 (101, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 5, 'XII TSM', 'XII', 'Engine Management System Sepeda Motoe', '2026-10-22', '07:30', '09:30', 'XII TSM', 32, 32, 0, 1, 1, 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.', 'Widi Sila', '197906102010011023', '', '', 'digital', '', '', '["storage/uploads/dokumentasi/dok_ba_20261022_075535_21e8c4_1.jpg"]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII TSM-Engine Management System Sepeda Motoe-2026-10-22.pdf', 136922, '2026-10-22 06:55:08', '2026-10-22 06:55:36'),
 (102, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 9, 'XII LPKKK 2', 'XII', 'Farmakognosi', '2026-10-22', '12:05', '14:55', 'Kelas XII LPKKK 2', 19, 19, 0, 1, 1, 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.', 'I Gusti Ayu Karla Komala Dewi,S.Pd', '198709022024212019', '', '', 'digital', '', '', '["storage/uploads/dokumentasi/dok_ba_20261022_075911_a666c7_1.jpg"]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII LPKKK 2-Farmakognosi-2026-10-22.pdf', 115003, '2026-10-22 06:59:12', '2026-10-22 06:59:12'),
 (103, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 11, 'XII BD 2', 'XII', 'Digital Marketing', '2026-10-22', '07:30', '09:30', 'Kelas 12BD2', 20, 20, 0, 1, 1, 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.', 'Tjokorda Istri Eka Andayani', '197308252006042003', '', '', 'digital', '', '', '["storage/uploads/dokumentasi/dok_ba_20261022_080810_124c24_1.jpg","storage/uploads/dokumentasi/dok_ba_20261022_080810_611b5d_2.jpg"]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII BD 2-Digital Marketing-2026-10-22.pdf', 212116, '2026-10-22 07:08:10', '2026-10-22 07:08:10'),
-(104, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 13, 'XII MP 2', 'XII', 'Pendidikan Agama Hindu dan Budi pekerti', '2026-10-22', '07:30', '09:30', 'Kelas XII MP 2', 27, 25, 2, 1, 1, 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.', 'Ida Ayu Desi Lestari', '198112182006042016', '', '', 'digital', '', '', '["storage/uploads/dokumentasi/dok_ba_20261022_081703_5401fb_1.jpg","storage/uploads/dokumentasi/dok_ba_20261022_081703_41a841_2.jpg"]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII MP 2-Pendidikan Agama Hindu dan Budi pekerti-2026-10-22.pdf', 180339, '2026-10-22 07:17:04', '2026-10-22 07:17:04');
+(104, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 13, 'XII MP 2', 'XII', 'Pendidikan Agama Hindu dan Budi pekerti', '2026-10-22', '07:30', '09:30', 'Kelas XII MP 2', 27, 25, 2, 1, 1, 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.', 'Ida Ayu Desi Lestari', '198112182006042016', '', '', 'digital', '', '', '["storage/uploads/dokumentasi/dok_ba_20261022_081703_5401fb_1.jpg","storage/uploads/dokumentasi/dok_ba_20261022_081703_41a841_2.jpg"]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII MP 2-Pendidikan Agama Hindu dan Budi pekerti-2026-10-22.pdf', 180339, '2026-10-22 07:17:04', '2026-10-22 07:17:04'),
+(105, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 83247, '2026-10-22 03:15:25', '2026-10-22 03:15:25'),
+(106, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 82941, '2026-10-22 03:16:57', '2026-10-22 03:16:57'),
+(107, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 28392, '2026-10-22 03:28:09', '2026-10-22 03:28:09'),
+(108, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 28541, '2026-10-22 03:32:25', '2026-10-22 03:32:25'),
+(109, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 28544, '2026-10-22 03:52:42', '2026-10-22 03:52:42'),
+(110, 1, 'Sumatif Akhir Semester (SAS) Ganjil', '2026/2027', 'Ganjil', 15, 'XII AK', 'XII', 'Pemrograman Web dan Perangkat Bergerak', '2026-10-22', '07:30', '09:30', 'Lab Komputer RPL', 28, 28, 0, 1, 1, 'Ujian berlangsung kondusif dan tertib.', 'I Wayan Developer, S.Kom.', '198501012010011001', '', '', 'manual', '', '', '[]', 'storage/berita-acara/BA-SAS GANJIL 26-27-XII AK-Pemrograman Web dan Perangkat Bergerak-2026-10-22.pdf', 28544, '2026-10-22 04:14:00', '2026-10-22 04:14:00');
 
 
 DROP TABLE IF EXISTS `activity_logs`;
@@ -653,6 +743,40 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
     `keterangan` TEXT NOT NULL,
     `ip_address` VARCHAR(50) DEFAULT '127.0.0.1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `activity_logs` (`id`, `waktu`, `aktivitas`, `keterangan`, `ip_address`) VALUES
+(1, '2026-10-22 03:14:04', 'LOGIN_SUCCESS', 'Admin admin berhasil login.', '127.0.0.1'),
+(2, '2026-10-22 03:15:25', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #104', '127.0.0.1'),
+(3, '2026-10-22 03:15:25', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #105', '127.0.0.1'),
+(4, '2026-10-22 03:16:57', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #105', '127.0.0.1'),
+(5, '2026-10-22 03:16:57', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #106', '127.0.0.1'),
+(6, '2026-10-22 03:17:03', 'LOGIN_SUCCESS', 'Admin admin berhasil login.', '127.0.0.1'),
+(7, '2026-10-22 03:18:52', 'LOGIN_SUCCESS', 'Admin admin berhasil login.', '127.0.0.1'),
+(8, '2026-10-22 03:28:09', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #106', '127.0.0.1'),
+(9, '2026-10-22 03:28:09', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #107', '127.0.0.1'),
+(10, '2026-10-22 03:32:19', 'LOGIN_SUCCESS', 'Admin admin berhasil login.', '127.0.0.1'),
+(11, '2026-10-22 03:32:25', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #107', '127.0.0.1'),
+(12, '2026-10-22 03:32:25', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #108', '127.0.0.1'),
+(13, '2026-10-22 03:37:22', 'UPDATE_SETTINGS', 'Memperbarui pengaturan identitas sekolah, kop surat, dan Google Drive.', '127.0.0.1'),
+(14, '2026-10-22 03:51:40', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
+(15, '2026-10-22 03:51:57', 'LOGIN_SUCCESS', 'User operator (operator) berhasil login.', '127.0.0.1'),
+(16, '2026-10-22 03:52:28', 'LOGIN_SUCCESS', 'User operator (operator) berhasil login.', '127.0.0.1'),
+(17, '2026-10-22 03:52:35', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
+(18, '2026-10-22 03:52:41', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #108', '127.0.0.1'),
+(19, '2026-10-22 03:52:42', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #109', '127.0.0.1'),
+(20, '2026-10-22 04:13:49', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
+(21, '2026-10-22 04:13:55', 'LOGIN_SUCCESS', 'User operator (operator) berhasil login.', '127.0.0.1'),
+(22, '2026-10-22 04:13:59', 'CREATE_DH', 'Membuat Daftar Hadir XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #109', '127.0.0.1'),
+(23, '2026-10-22 04:14:00', 'CREATE_BA', 'Membuat Berita Acara XII AK (Pemrograman Web dan Perangkat Bergerak) - ID #110', '127.0.0.1'),
+(24, '2026-10-22 04:42:35', 'UPDATE_USER', 'Memperbarui data pengguna: admin', '127.0.0.1'),
+(25, '2026-10-22 04:42:39', 'UPDATE_USER', 'Memperbarui data pengguna: admin', '127.0.0.1'),
+(26, '2026-10-22 04:44:07', 'UPDATE_USER', 'Memperbarui data pengguna: operator', '127.0.0.1'),
+(27, '2026-10-22 05:22:13', 'LOGIN_FAILED', 'Percobaan login gagal untuk username: SAdmin', '127.0.0.1'),
+(28, '2026-10-22 05:22:20', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
+(29, '2026-10-22 05:22:33', 'UPDATE_USER', 'Memperbarui data pengguna: admin', '127.0.0.1'),
+(30, '2026-10-22 05:49:56', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
+(31, '2026-10-22 05:50:02', 'LOGIN_SUCCESS', 'User operator (operator) berhasil login.', '127.0.0.1'),
+(32, '2026-10-22 05:50:43', 'LOGIN_FAILED', 'Percobaan login gagal untuk username: admin', '127.0.0.1'),
+(33, '2026-10-22 05:51:18', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1');
 
 
 SET FOREIGN_KEY_CHECKS = 1;

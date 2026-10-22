@@ -123,6 +123,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     exit;
 }
 
+// Handle Delete All (Reset Semua Arsip Berita Acara)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_all') {
+    verify_csrf();
+    $allDocs = dbFetchAll("SELECT id, pdf_path, foto_dokumentasi FROM berita_acara");
+    $count = count($allDocs);
+    foreach ($allDocs as $doc) {
+        if (!empty($doc['pdf_path'])) {
+            $f = BASE_PATH . '/' . $doc['pdf_path'];
+            if (file_exists($f)) @unlink($f);
+        }
+        if (!empty($doc['foto_dokumentasi'])) {
+            $photos = json_decode($doc['foto_dokumentasi'], true) ?: [];
+            foreach ($photos as $ph) {
+                $pF = BASE_PATH . '/' . $ph;
+                if (file_exists($pF)) @unlink($pF);
+            }
+        }
+    }
+    // Clean storage/berita-acara/ directory
+    $dirBa = BASE_PATH . '/storage/berita-acara';
+    if (is_dir($dirBa)) {
+        foreach (glob($dirBa . '/*.pdf') as $f) {
+            @unlink($f);
+        }
+    }
+    // Clean storage/uploads/kegiatan/ directory
+    $dirPhotos = BASE_PATH . '/storage/uploads/kegiatan';
+    if (is_dir($dirPhotos)) {
+        foreach (glob($dirPhotos . '/*') as $f) {
+            if (is_file($f)) @unlink($f);
+        }
+    }
+    getDb()->exec("DELETE FROM berita_acara");
+    if (DB_TYPE === 'sqlite') {
+        getDb()->exec("DELETE FROM sqlite_sequence WHERE name = 'berita_acara'");
+    }
+    log_activity('CLEAR_ALL_BA', "Menghapus seluruh arsip berita acara ({$count} dokumen), file PDF, dan foto kegiatan untuk reset.");
+    set_flash('success', "Seluruh arsip berita acara ({$count} dokumen) dan berkas fisiknya berhasil dihapus dan dikosongkan.");
+    header('Location: /admin/berita-acara.php');
+    exit;
+}
+
 // Filters
 $tingkatFilter = trim($_GET['tingkat'] ?? '');
 $classFilter = (int)($_GET['class_id'] ?? 0);
@@ -176,12 +218,22 @@ require_once __DIR__ . '/layout_header.php';
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/berita-acara.php" target="_blank" class="btn btn-primary btn-sm" title="Buka Formulir Berita Acara">
             <i class="bi bi-pencil-square"></i> <span>Buat Berita Acara ↗</span>
         </a>
+        <?php if ($totalDocs > 0): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllBA()" title="Kosongkan seluruh arsip berita acara untuk persiapan ujian baru">
+                <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Arsip Berita Acara</span>
+            </button>
+        <?php endif; ?>
     </div>
 </div>
+
+<form id="formDeleteAllBA" method="POST" action="/admin/berita-acara.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_all">
+</form>
 
 <!-- KARTU STATISTIK RINGKAS -->
 <div class="stats-grid">
@@ -616,6 +668,15 @@ function showRecordDetail(doc) {
     `;
     document.getElementById('modalDetailContent').innerHTML = content;
     document.getElementById('modalDetailRecord').style.display = 'flex';
+}
+
+function confirmResetAllBA() {
+    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH berkas arsip berita acara (database, file PDF, dan foto kegiatan) dari server untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formDeleteAllBA').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
 }
 </script>
 

@@ -7,6 +7,7 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 
 $templates = dbFetchAll("SELECT * FROM template_ujian WHERE aktif = 1 ORDER BY id DESC");
 $classes = dbFetchAll("SELECT * FROM kelas WHERE aktif = 1 ORDER BY tingkat DESC, nama_kelas ASC");
+$gurus = dbFetchAll("SELECT * FROM guru WHERE aktif = 1 ORDER BY nama ASC");
 
 $defaultTpl = $templates[0] ?? [
     'id' => 1,
@@ -216,25 +217,59 @@ $defaultTpl = $templates[0] ?? [
                     <div class="card-body">
                         <div class="grid-2">
                             <div>
-                                <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--primary);">Pengawas I</h4>
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--primary);">
+                                    <i class="bi bi-person-check-fill"></i> Pengawas I
+                                </h4>
+                                <?php if (!empty($gurus)): ?>
+                                    <div class="form-group" style="margin-bottom: 0.45rem;">
+                                        <label class="form-label" style="font-size: 0.74rem; color: var(--text-muted);">
+                                            Pilih Cepat dari Data Guru:
+                                        </label>
+                                        <select class="form-select select-guru-picker" onchange="autoFillGuru(1, this)" style="background: #f8fafc; font-size: 0.8rem; padding: 0.3rem 0.5rem;">
+                                            <option value="">-- Pilih Guru / Pengawas I --</option>
+                                            <?php foreach ($gurus as $g): ?>
+                                                <option value="<?= htmlspecialchars($g['nama']) ?>" data-nip="<?= htmlspecialchars($g['nip'] !== '-' ? $g['nip'] : '') ?>">
+                                                    <?= htmlspecialchars($g['nama']) ?> (<?= htmlspecialchars($g['nip'] ?: '-') ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="form-group">
                                     <label class="form-label" for="nama_pengawas_1">Nama Lengkap <span class="required">*</span></label>
                                     <input type="text" name="nama_pengawas_1" id="nama_pengawas_1" class="form-control" placeholder="Nama pengawas 1" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="nip_pengawas_1">NIP (Opsional)</label>
-                                    <input type="text" name="nip_pengawas_1" id="nip_pengawas_1" class="form-control" placeholder="19800101...">
+                                    <label class="form-label" for="nip_pengawas_1">NIP / NIPPPK (Opsional)</label>
+                                    <input type="text" name="nip_pengawas_1" id="nip_pengawas_1" class="form-control" placeholder="19800101... atau -">
                                 </div>
                             </div>
                             <div>
-                                <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--primary);">Pengawas II</h4>
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--primary);">
+                                    <i class="bi bi-person-check"></i> Pengawas II
+                                </h4>
+                                <?php if (!empty($gurus)): ?>
+                                    <div class="form-group" style="margin-bottom: 0.45rem;">
+                                        <label class="form-label" style="font-size: 0.74rem; color: var(--text-muted);">
+                                            Pilih Cepat dari Data Guru:
+                                        </label>
+                                        <select class="form-select select-guru-picker" onchange="autoFillGuru(2, this)" style="background: #f8fafc; font-size: 0.8rem; padding: 0.3rem 0.5rem;">
+                                            <option value="">-- Pilih Guru / Pengawas II --</option>
+                                            <?php foreach ($gurus as $g): ?>
+                                                <option value="<?= htmlspecialchars($g['nama']) ?>" data-nip="<?= htmlspecialchars($g['nip'] !== '-' ? $g['nip'] : '') ?>">
+                                                    <?= htmlspecialchars($g['nama']) ?> (<?= htmlspecialchars($g['nip'] ?: '-') ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="form-group">
                                     <label class="form-label" for="nama_pengawas_2">Nama Lengkap (Opsional)</label>
                                     <input type="text" name="nama_pengawas_2" id="nama_pengawas_2" class="form-control" placeholder="Nama pengawas 2">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="nip_pengawas_2">NIP (Opsional)</label>
-                                    <input type="text" name="nip_pengawas_2" id="nip_pengawas_2" class="form-control" placeholder="19850202...">
+                                    <label class="form-label" for="nip_pengawas_2">NIP / NIPPPK (Opsional)</label>
+                                    <input type="text" name="nip_pengawas_2" id="nip_pengawas_2" class="form-control" placeholder="19850202... atau -">
                                 </div>
                             </div>
                         </div>
@@ -427,6 +462,22 @@ window.SCHOOL_NAME = <?= json_encode($namaSekolah, JSON_UNESCAPED_UNICODE) ?>;
 <script src="/assets/js/signature-pad.js"></script>
 <script src="/assets/js/berita-acara.js"></script>
 <script>
+function autoFillGuru(num, el) {
+    const opt = el.options[el.selectedIndex];
+    if (opt && opt.value) {
+        const nameInput = document.getElementById('nama_pengawas_' + num);
+        const nipInput = document.getElementById('nip_pengawas_' + num);
+        if (nameInput) {
+            nameInput.value = opt.value;
+            nameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (nipInput) {
+            nipInput.value = opt.getAttribute('data-nip') || '';
+            nipInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
+}
+
 function confirmResetForm() {
     if (confirm('Apakah Anda yakin ingin mengosongkan kembali formulir Berita Acara?')) {
         document.getElementById('formBeritaAcara').reset();

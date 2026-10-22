@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
+
 $pageTitle = 'Kelola Data Kelas';
-require_once __DIR__ . '/layout_header.php';
 
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -66,6 +68,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /admin/kelas.php');
         exit;
     }
+
+    if ($action === 'delete_all') {
+        $countK = (int)dbValue("SELECT COUNT(*) FROM kelas");
+        $countS = (int)dbValue("SELECT COUNT(*) FROM siswa");
+        getDb()->exec("DELETE FROM siswa");
+        getDb()->exec("DELETE FROM kelas");
+        if (DB_TYPE === 'sqlite') {
+            getDb()->exec("DELETE FROM sqlite_sequence WHERE name IN ('kelas', 'siswa')");
+        }
+        log_activity('CLEAR_ALL_KELAS', "Menghapus seluruh kelas ({$countK}) dan siswa ({$countS}) untuk reset.");
+        set_flash('success', "Seluruh data kelas ({$countK} kelas) beserta siswanya berhasil dikosongkan.");
+        header('Location: /admin/kelas.php');
+        exit;
+    }
 }
 
 // Check edit mode
@@ -80,6 +96,8 @@ $classes = dbFetchAll("
     FROM kelas k 
     ORDER BY k.tingkat DESC, k.nama_kelas ASC
 ");
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <div class="page-header-card">
@@ -94,7 +112,19 @@ $classes = dbFetchAll("
             </p>
         </div>
     </div>
+    <div class="page-header-actions">
+        <?php if (!empty($classes)): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllKelas()" title="Kosongkan seluruh data kelas untuk persiapan periode baru">
+                <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Data Kelas</span>
+            </button>
+        <?php endif; ?>
+    </div>
 </div>
+
+<form id="formDeleteAllKelas" method="POST" action="/admin/kelas.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_all">
+</form>
 
 <div class="split-layout" style="height: auto;">
     <!-- Formulir Tambah / Edit Kelas -->
@@ -214,5 +244,16 @@ $classes = dbFetchAll("
         </div>
     </div>
 </div>
+
+<script>
+function confirmResetAllKelas() {
+    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data kelas (beserta seluruh data siswa di dalamnya) dari sistem untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formDeleteAllKelas').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

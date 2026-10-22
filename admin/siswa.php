@@ -1,6 +1,8 @@
 <?php
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
+
 $pageTitle = 'Kelola Data Siswa';
-require_once __DIR__ . '/layout_header.php';
 
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -70,6 +72,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /admin/siswa.php' . ($retClass > 0 ? "?class_id={$retClass}" : ''));
         exit;
     }
+
+    if ($action === 'delete_all') {
+        $filterClass = (int)($_POST['filter_class_id'] ?? 0);
+        if ($filterClass > 0) {
+            $count = (int)dbValue("SELECT COUNT(*) FROM siswa WHERE class_id = :cid", ['cid' => $filterClass]);
+            dbDelete('siswa', 'class_id = :cid', ['cid' => $filterClass]);
+            log_activity('CLEAR_CLASS_SISWA', "Menghapus seluruh siswa pada kelas ID #{$filterClass} ({$count} data)");
+            set_flash('success', "Seluruh data siswa pada kelas terpilih ({$count} siswa) berhasil dihapus.");
+            header('Location: /admin/siswa.php?class_id=' . $filterClass);
+            exit;
+        } else {
+            $count = (int)dbValue("SELECT COUNT(*) FROM siswa");
+            getDb()->exec("DELETE FROM siswa");
+            if (DB_TYPE === 'sqlite') {
+                getDb()->exec("DELETE FROM sqlite_sequence WHERE name = 'siswa'");
+            }
+            log_activity('CLEAR_ALL_SISWA', "Menghapus seluruh data siswa ({$count} data) untuk reset.");
+            set_flash('success', "Seluruh data siswa ({$count} siswa) berhasil dikosongkan.");
+            header('Location: /admin/siswa.php');
+            exit;
+        }
+    }
 }
 
 // Filter and edit mode
@@ -99,6 +123,10 @@ $students = dbFetchAll("
     WHERE {$whereSql} 
     ORDER BY k.nama_kelas ASC, s.nama ASC
 ", $params);
+
+$totalSiswaGlobal = (int)dbValue("SELECT COUNT(*) FROM siswa");
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <div class="page-header-card">
@@ -113,12 +141,24 @@ $students = dbFetchAll("
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/admin/import-siswa.php" class="btn btn-success btn-sm">
             <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel / CSV</span>
         </a>
+        <?php if ($totalSiswaGlobal > 0): ?>
+            <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllSiswa(<?= $selectedClassId ?>)" title="Kosongkan data siswa untuk persiapan ujian baru">
+                <i class="bi bi-trash3-fill"></i> 
+                <span><?= $selectedClassId > 0 ? 'Hapus Siswa Kelas Ini' : 'Hapus Semua Data Siswa' ?></span>
+            </button>
+        <?php endif; ?>
     </div>
 </div>
+
+<form id="formDeleteAllSiswa" method="POST" action="/admin/siswa.php" style="display: none;">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="delete_all">
+    <input type="hidden" name="filter_class_id" value="<?= $selectedClassId ?>">
+</form>
 
 <div class="split-layout" style="height: auto;">
     <!-- Form Tambah / Edit Siswa -->
@@ -276,5 +316,17 @@ $students = dbFetchAll("
         </div>
     </div>
 </div>
+
+<script>
+function confirmResetAllSiswa(classId) {
+    const targetText = classId > 0 ? "seluruh siswa pada KELAS INI" : "SELURUH data siswa di SEMUA KELAS";
+    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS " + targetText + " dari sistem untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
+    if (code === 'HAPUS') {
+        document.getElementById('formDeleteAllSiswa').submit();
+    } else if (code !== null) {
+        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

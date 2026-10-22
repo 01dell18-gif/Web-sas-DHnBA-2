@@ -14,6 +14,10 @@ if (is_dir($sessionDir) && is_writable($sessionDir)) {
     session_save_path($sessionDir);
 }
 
+if (!ob_get_level()) {
+    ob_start();
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

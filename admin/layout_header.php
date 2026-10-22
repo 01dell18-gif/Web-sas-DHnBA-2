@@ -68,6 +68,9 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         <a href="/admin/siswa.php" class="admin-menu-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
             <i class="bi bi-person-lines-fill"></i> <span>Data Siswa</span>
         </a>
+        <a href="/admin/guru.php" class="admin-menu-item <?= $currentScript === 'guru.php' ? 'active' : '' ?>">
+            <i class="bi bi-person-badge"></i> <span>Data Guru</span>
+        </a>
         <a href="/admin/import-siswa.php" class="admin-menu-item <?= $currentScript === 'import-siswa.php' ? 'active' : '' ?>">
             <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel / CSV</span>
         </a>
@@ -98,9 +101,6 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                 <i class="bi bi-people"></i> <span>Manajemen User</span>
             </a>
         <?php endif; ?>
-        <a href="/admin/password.php" class="admin-menu-item <?= $currentScript === 'password.php' ? 'active' : '' ?>">
-            <i class="bi bi-key"></i> <span>Ganti Password</span>
-        </a>
     </aside>
 
     <main class="admin-main">
