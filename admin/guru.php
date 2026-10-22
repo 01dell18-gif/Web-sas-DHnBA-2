@@ -143,7 +143,10 @@ require_once __DIR__ . '/layout_header.php';
             </p>
         </div>
     </div>
-    <div class="page-header-actions">
+    <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <a href="/admin/import-siswa.php?type=guru" class="btn btn-success btn-sm" title="Impor data guru dari format Excel .xls">
+            <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
+        </a>
         <?php if ($totalGuru > 0): ?>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllGuru()" title="Kosongkan seluruh data guru untuk persiapan ujian baru">
                 <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Data Guru</span>

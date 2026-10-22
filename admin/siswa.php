@@ -142,8 +142,8 @@ require_once __DIR__ . '/layout_header.php';
         </div>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-        <a href="/admin/import-siswa.php" class="btn btn-success btn-sm">
-            <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel / CSV</span>
+        <a href="/admin/import-siswa.php?type=siswa" class="btn btn-success btn-sm" title="Impor data siswa dari format Excel .xls">
+            <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
         </a>
         <?php if ($totalSiswaGlobal > 0): ?>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllSiswa(<?= $selectedClassId ?>)" title="Kosongkan data siswa untuk persiapan ujian baru">

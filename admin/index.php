@@ -151,7 +151,7 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
                 📊 Matriks Rekap Kehadiran Siswa
             </a>
             <a href="/admin/import-siswa.php" class="btn btn-secondary">
-                📥 Impor Data Siswa dari Excel/CSV
+                📥 Impor Excel (.xls) - Siswa & Guru
             </a>
             <a href="/admin/kelas.php" class="btn btn-secondary">
                 🏫 Kelola Data Kelas

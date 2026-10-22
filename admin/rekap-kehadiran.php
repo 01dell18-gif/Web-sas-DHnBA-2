@@ -95,7 +95,7 @@ require_once __DIR__ . '/layout_header.php';
     <div class="page-header-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
         <a href="/admin/export-rekap-excel.php?class_id=<?= $selectedClassId ?>&tahun_ajaran=<?= urlencode($selectedTahun) ?>&semester=<?= urlencode($selectedSemester) ?>" 
            class="btn btn-success btn-sm" title="Download Spreadsheet Excel">
-            <i class="bi bi-file-earmark-excel"></i> <span>Ekspor Excel (.xlsx)</span>
+            <i class="bi bi-file-earmark-excel"></i> <span>Ekspor Excel (.xls)</span>
         </a>
         <a href="/absensi.php" target="_blank" class="btn btn-primary btn-sm">
             <i class="bi bi-pencil-square"></i> <span>Buat Absensi ↗</span>
