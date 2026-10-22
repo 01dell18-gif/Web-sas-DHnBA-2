@@ -33,11 +33,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<div style="margin-bottom: 0.85rem;">
-    <h2>Ganti Password Akun</h2>
-    <p style="color: var(--text-muted); font-size: 0.8rem;">
-        Perbarui kata sandi akun <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Pengguna') ?></strong> (<?= is_admin() ? 'Administrator' : 'Operator' ?>) Anda untuk menjaga keamanan sistem.
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-key-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Ganti Password Akun</h1>
+            <p class="page-header-subtitle">
+                Perbarui kata sandi akun <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Pengguna') ?></strong> (<?= is_admin() ? 'Administrator' : 'Operator' ?>) Anda untuk menjaga keamanan sistem.
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="card" style="max-width: 520px;">

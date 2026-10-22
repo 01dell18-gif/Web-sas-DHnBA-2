@@ -164,45 +164,66 @@ $classes = dbFetchAll("SELECT * FROM kelas ORDER BY tingkat DESC, nama_kelas ASC
 require_once __DIR__ . '/layout_header.php';
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-        <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
-            📋 Arsip Berita Acara Ujian
-        </h1>
-        <p style="font-size: 0.8rem; color: var(--slate-600); margin: 0;">
-            Kelola, telusuri, dan unduh berkas PDF Berita Acara Pelaksanaan Ujian lengkap dengan foto dokumentasi dan tanda tangan pengawas.
-        </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-archive-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Arsip Berita Acara Ujian</h1>
+            <p class="page-header-subtitle">
+                Kelola, telusuri, dan unduh berkas PDF Berita Acara Pelaksanaan Ujian lengkap dengan foto dokumentasi dan tanda tangan pengawas.
+            </p>
+        </div>
     </div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <a href="/berita-acara.php" target="_blank" class="btn btn-primary" title="Buka Formulir Berita Acara">
-            📝 Buat Berita Acara Baru ↗
+    <div class="page-header-actions">
+        <a href="/berita-acara.php" target="_blank" class="btn btn-primary btn-sm" title="Buka Formulir Berita Acara">
+            <i class="bi bi-pencil-square"></i> <span>Buat Berita Acara ↗</span>
         </a>
     </div>
 </div>
 
 <!-- KARTU STATISTIK RINGKAS -->
-<div class="stats-grid" style="margin-bottom: 0.75rem;">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fef3c7; color: #b45309;">📋</div>
+<div class="stats-grid">
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #d97706, #f59e0b);"></div>
+        <div class="stat-icon stat-icon-amber">
+            <i class="bi bi-clipboard-data-fill"></i>
+        </div>
         <div>
             <div class="stat-value"><?= $totalDocs ?></div>
             <div class="stat-label">Total Arsip Berita Acara</div>
+            <span class="stat-meta-pill" style="background: #fffbeb; color: #b45309;">
+                <i class="bi bi-journal-check"></i> Terverifikasi
+            </span>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">🏫</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+        <div class="stat-icon stat-icon-indigo">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
         <div>
             <div class="stat-value" style="font-size: 1.15rem;">
                 X: <strong><?= $totalX ?></strong> | XI: <strong><?= $totalXI ?></strong> | XII: <strong><?= $totalXII ?></strong>
             </div>
-            <div class="stat-label">Distribusi per Tingkat</div>
+            <div class="stat-label">Distribusi Tingkat</div>
+            <span class="stat-meta-pill" style="background: #eef2ff; color: #4338ca;">
+                3 Tingkatan Kelas
+            </span>
         </div>
     </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #f1f5f9; color: #475569;">💾</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #64748b, #94a3b8);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569;">
+            <i class="bi bi-hdd-fill"></i>
+        </div>
         <div>
-            <div class="stat-value"><?= $totalSizeMB ?> <span style="font-size: 0.85rem; font-weight: normal; color: var(--slate-600);">MB</span></div>
+            <div class="stat-value"><?= $totalSizeMB ?> <span style="font-size: 0.825rem; font-weight: 600; color: var(--slate-500);">MB</span></div>
             <div class="stat-label">Total Ukuran PDF</div>
+            <span class="stat-meta-pill" style="background: #f1f5f9; color: #475569;">
+                Kapasitas Disk
+            </span>
         </div>
     </div>
 </div>

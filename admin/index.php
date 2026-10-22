@@ -17,31 +17,43 @@ $driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com');
 $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
 ?>
 
-<div style="margin-bottom: 0.75rem;">
-    <h2>Dashboard Administrator</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">
-        Selamat datang di sistem Generator Absensi dan Berita Acara Ujian <?= htmlspecialchars($namaSekolah) ?>.
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-speedometer2"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Dashboard Administrator</h1>
+            <p class="page-header-subtitle">
+                Selamat datang di sistem Generator Absensi dan Berita Acara Ujian <?= htmlspecialchars($namaSekolah) ?>.
+            </p>
+        </div>
+    </div>
+    <div class="page-header-actions">
+        <a href="/admin/rekonsiliasi.php" class="btn btn-secondary btn-sm">
+            <i class="bi bi-shield-check"></i> <span>Audit & Rekonsiliasi</span>
+        </a>
+    </div>
 </div>
 
 <?php if ($selisih > 0): ?>
-<div style="background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: 12px; padding: 0.65rem 0.85rem; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+<div style="background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 1px solid #fecdd3; border-left: 4px solid #e11d48; border-radius: 14px; padding: 0.85rem 1.15rem; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.08);">
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.2);">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
         <div>
-            <div style="font-weight: 700; color: #9f1239; font-size: 1rem;">
+            <div style="font-weight: 800; color: #9f1239; font-size: 0.95rem;">
                 Terdeteksi Selisih Jumlah Dokumen Ujian!
             </div>
-            <div style="color: #4c0519; font-size: 0.875rem; margin-top: 2px;">
+            <div style="color: #4c0519; font-size: 0.835rem; margin-top: 2px;">
                 Daftar Hadir: <strong><?= $totalAbsensi ?></strong> vs Berita Acara: <strong><?= $totalBeritaAcara ?></strong> (Selisih: <strong><?= $selisih ?> dokumen</strong>).
                 Ada sesi yang belum dibuat Berita Acara-nya atau pengawas menginput ganda.
             </div>
         </div>
     </div>
     <div>
-        <a href="/admin/rekonsiliasi.php?status=mismatch" class="btn btn-sm" style="background: #e11d48; color: white; border: none; font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);">
+        <a href="/admin/rekonsiliasi.php?status=mismatch" class="btn-action-glow btn-action-glow-indigo" style="background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 3px 10px rgba(225, 29, 72, 0.3);">
             <i class="bi bi-search"></i> Telusuri & Lihat Pelakunya ➔
         </a>
     </div>
@@ -49,44 +61,71 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
 <?php endif; ?>
 
 <div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon">🏫</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+        <div class="stat-icon stat-icon-indigo">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
         <div>
-            <div class="stat-value"><?= $aktifKelas ?> <span style="font-size: 0.8rem; color: var(--text-muted);">/ <?= $totalKelas ?></span></div>
+            <div class="stat-value"><?= $aktifKelas ?> <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">/ <?= $totalKelas ?></span></div>
             <div class="stat-label">Kelas Aktif / Total</div>
+            <span class="stat-meta-pill" style="background: #eef2ff; color: #4338ca;">
+                <i class="bi bi-check-circle"></i> Terdaftar
+            </span>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon">👨‍🎓</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #059669, #10b981);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669;">
+            <i class="bi bi-people-fill"></i>
+        </div>
         <div>
-            <div class="stat-value"><?= $aktifSiswa ?> <span style="font-size: 0.8rem; color: var(--text-muted);">/ <?= $totalSiswa ?></span></div>
+            <div class="stat-value"><?= $aktifSiswa ?> <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">/ <?= $totalSiswa ?></span></div>
             <div class="stat-label">Siswa Aktif / Total</div>
+            <span class="stat-meta-pill" style="background: #ecfdf5; color: #059669;">
+                <i class="bi bi-person-check"></i> Siap Ujian
+            </span>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">📑</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #0284c7, #38bdf8);"></div>
+        <div class="stat-icon stat-icon-sky">
+            <i class="bi bi-file-earmark-check-fill"></i>
+        </div>
         <div>
             <div class="stat-value"><?= $totalAbsensi ?></div>
             <div class="stat-label">Arsip Daftar Hadir</div>
+            <span class="stat-meta-pill" style="background: #f0f9ff; color: #0284c7;">
+                <i class="bi bi-archive"></i> Tersimpan
+            </span>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #fef3c7; color: #b45309;">📋</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #d97706, #f59e0b);"></div>
+        <div class="stat-icon stat-icon-amber">
+            <i class="bi bi-clipboard-data-fill"></i>
+        </div>
         <div>
             <div class="stat-value"><?= $totalBeritaAcara ?></div>
             <div class="stat-label">Arsip Berita Acara</div>
+            <span class="stat-meta-pill" style="background: #fffbeb; color: #b45309;">
+                <i class="bi bi-journal-check"></i> Terverifikasi
+            </span>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-icon" style="background: #e8f0fe; color: #1a73e8;">📁</div>
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #1a73e8, #4285f4);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #e8f0fe, #d2e3fc); color: #1a73e8;">
+            <i class="bi bi-google"></i>
+        </div>
         <div>
-            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 4px;">Google Drive</div>
-            <a href="<?= htmlspecialchars($driveUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-drive btn-sm">
-                Buka Folder ↗
+            <div style="font-size: 0.875rem; font-weight: 700; margin-bottom: 4px; color: var(--text-heading);">Google Drive</div>
+            <a href="<?= htmlspecialchars($driveUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-drive btn-sm" style="border-radius: 8px;">
+                Buka Cloud ↗
             </a>
         </div>
     </div>

@@ -55,22 +55,25 @@ foreach ($absensiSessions as $sess) {
 }
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-        <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
-            📑 Laporan Rekap Kehadiran Siswa
-        </h1>
-        <p style="font-size: 0.8rem; color: var(--slate-600);">
-            Rekapitulasi kehadiran ujian seluruh mata pelajaran per kelas (Format Resmi & Ekspor Excel).
-        </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-card-checklist"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Laporan Rekap Kehadiran Siswa</h1>
+            <p class="page-header-subtitle">
+                Rekapitulasi kehadiran ujian seluruh mata pelajaran per kelas (Format Resmi & Ekspor Excel).
+            </p>
+        </div>
     </div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <div class="page-header-actions">
         <a href="/admin/export-rekap-excel.php?class_id=<?= $selectedClassId ?>&tahun_ajaran=<?= urlencode($selectedTahun) ?>&semester=<?= urlencode($selectedSemester) ?>" 
-           class="btn btn-success" title="Download Spreadsheet Excel">
-            📊 Ekspor Excel (.xlsx)
+           class="btn btn-success btn-sm" title="Download Spreadsheet Excel">
+            <i class="bi bi-file-earmark-excel"></i> <span>Ekspor Excel (.xlsx)</span>
         </a>
-        <a href="/absensi.php" target="_blank" class="btn btn-primary">
-            ➕ Input / Buat Absensi Baru
+        <a href="/absensi.php" target="_blank" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil-square"></i> <span>Buat Absensi ↗</span>
         </a>
     </div>
 </div>

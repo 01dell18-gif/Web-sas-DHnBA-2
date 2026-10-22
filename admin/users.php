@@ -107,11 +107,18 @@ if ($editId > 0) {
 $users = dbFetchAll("SELECT * FROM users ORDER BY role ASC, username ASC");
 ?>
 
-<div style="margin-bottom: 0.75rem;">
-    <h2>Manajemen Pengguna & Hak Akses</h2>
-    <p style="color: var(--text-muted); font-size: 0.8rem;">
-        Kelola akun pengguna sistem dengan pembagian hak akses <strong>Administrator</strong> (Penuh) dan <strong>Operator</strong> (Operasional Ujian).
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Manajemen Pengguna & Hak Akses</h1>
+            <p class="page-header-subtitle">
+                Kelola akun pengguna sistem dengan pembagian hak akses <strong>Administrator</strong> (Penuh) dan <strong>Operator</strong> (Operasional Ujian).
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="split-layout" style="height: auto; align-items: flex-start; gap: 1rem;">

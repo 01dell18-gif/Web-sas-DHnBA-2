@@ -71,11 +71,18 @@ $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 ?>
 
-<div style="margin-bottom: 0.75rem;">
-    <h2>Pengaturan Identitas Sekolah & Kop Dokumen Resmi</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">
-        Kelola gambar kop surat resmi A4, identitas instansi, dan tautan folder Google Drive pengawas.
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-sliders"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Pengaturan Identitas Sekolah & Kop Dokumen</h1>
+            <p class="page-header-subtitle">
+                Kelola gambar kop surat resmi A4, identitas instansi, dan tautan folder Google Drive pengawas.
+            </p>
+        </div>
+    </div>
 </div>
 
 <form method="POST" action="/admin/pengaturan.php" enctype="multipart/form-data">

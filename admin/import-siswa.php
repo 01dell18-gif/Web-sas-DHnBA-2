@@ -150,11 +150,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/layout_header.php';
 ?>
 
-<div style="margin-bottom: 0.75rem;">
-    <h2>Impor Data Siswa</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">
-        Unggah data siswa dalam format Excel (.xlsx) atau CSV dengan pencocokan kelas otomatis.
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Impor Data Siswa Massal</h1>
+            <p class="page-header-subtitle">
+                Unggah data siswa dalam format Excel (.xlsx) atau CSV dengan pencocokan kelas otomatis.
+            </p>
+        </div>
+    </div>
 </div>
 
 <!-- Form Unggah Berkas -->

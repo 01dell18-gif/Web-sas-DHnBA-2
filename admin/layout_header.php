@@ -19,7 +19,7 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
 <body>
 
 <header class="navbar">
-    <div style="display: flex; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
         <button type="button" class="admin-mobile-toggle" id="btnToggleAdminMenu" onclick="toggleAdminMenu(event)" aria-label="Toggle Menu Admin">
             <i class="bi bi-list"></i>
         </button>
@@ -33,61 +33,73 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             </a>
         </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 0.65rem;">
-        <span class="admin-welcome-text" style="font-size: 0.825rem; color: var(--slate-600); display: flex; align-items: center; gap: 0.4rem;">
-            Halo, <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator') ?></strong>
-            <span class="badge <?= is_admin() ? 'badge-success' : 'badge-info' ?>" style="font-size: 0.68rem; padding: 2px 6px;">
-                <?= is_admin() ? '👑 Admin' : '🛡️ Operator' ?>
-            </span>
-        </span>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="user-profile-chip admin-welcome-text">
+            <div class="user-avatar-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="user-info-text">
+                <span class="user-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator') ?></span>
+                <span class="<?= is_admin() ? 'badge-role-admin' : 'badge-role-operator' ?>">
+                    <?= is_admin() ? '👑 Admin' : '🛡️ Operator' ?>
+                </span>
+            </div>
+        </div>
         <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
-            <i class="bi bi-globe2"></i> Web Publik
+            <i class="bi bi-globe2"></i> <span>Web Publik</span>
         </a>
-        <a href="/admin/logout.php" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
-            <i class="bi bi-box-arrow-right"></i> Keluar
+        <a href="/admin/logout.php" class="btn btn-danger-soft btn-sm" onclick="return confirm('Apakah Anda yakin ingin keluar dari sistem?')">
+            <i class="bi bi-box-arrow-right"></i> <span>Keluar</span>
         </a>
     </div>
 </header>
 
 <div class="admin-sidebar-layout">
     <aside class="admin-sidebar">
+        <div class="sidebar-section-title">RINGKASAN</div>
         <a href="/admin/index.php" class="admin-menu-item <?= $currentScript === 'index.php' ? 'active' : '' ?>">
-            <i class="bi bi-speedometer2"></i> Dashboard
+            <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
         </a>
+
+        <div class="sidebar-section-title">DATA MASTER</div>
         <a href="/admin/kelas.php" class="admin-menu-item <?= $currentScript === 'kelas.php' ? 'active' : '' ?>">
-            <i class="bi bi-mortarboard"></i> Data Kelas
+            <i class="bi bi-mortarboard"></i> <span>Data Kelas</span>
         </a>
         <a href="/admin/siswa.php" class="admin-menu-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
-            <i class="bi bi-person-lines-fill"></i> Data Siswa
+            <i class="bi bi-person-lines-fill"></i> <span>Data Siswa</span>
         </a>
         <a href="/admin/import-siswa.php" class="admin-menu-item <?= $currentScript === 'import-siswa.php' ? 'active' : '' ?>">
-            <i class="bi bi-file-earmark-spreadsheet"></i> Impor Excel / CSV
+            <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel / CSV</span>
         </a>
+
+        <div class="sidebar-section-title">DOKUMEN & AUDIT</div>
         <a href="/admin/rekap-kehadiran.php" class="admin-menu-item <?= $currentScript === 'rekap-kehadiran.php' ? 'active' : '' ?>">
-            <i class="bi bi-card-checklist"></i> Rekap Kehadiran Siswa
+            <i class="bi bi-card-checklist"></i> <span>Rekap Kehadiran</span>
         </a>
         <a href="/admin/absensi.php" class="admin-menu-item <?= $currentScript === 'absensi.php' ? 'active' : '' ?>">
-            <i class="bi bi-file-earmark-check"></i> Arsip Daftar Hadir
+            <i class="bi bi-file-earmark-check"></i> <span>Arsip Daftar Hadir</span>
         </a>
         <a href="/admin/berita-acara.php" class="admin-menu-item <?= $currentScript === 'berita-acara.php' ? 'active' : '' ?>">
-            <i class="bi bi-archive"></i> Arsip Berita Acara
+            <i class="bi bi-archive"></i> <span>Arsip Berita Acara</span>
         </a>
         <a href="/admin/rekonsiliasi.php" class="admin-menu-item <?= $currentScript === 'rekonsiliasi.php' ? 'active' : '' ?>">
-            <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
+            <i class="bi bi-shield-check"></i> <span>Rekonsiliasi Dokumen</span>
         </a>
+
+        <div class="sidebar-section-title">PENGATURAN</div>
         <?php if (is_admin()): ?>
             <a href="/admin/template-ujian.php" class="admin-menu-item <?= $currentScript === 'template-ujian.php' ? 'active' : '' ?>">
-                <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+                <i class="bi bi-file-earmark-richtext"></i> <span>Template Ujian</span>
             </a>
             <a href="/admin/pengaturan.php" class="admin-menu-item <?= $currentScript === 'pengaturan.php' ? 'active' : '' ?>">
-                <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+                <i class="bi bi-sliders"></i> <span>Pengaturan Kop & Drive</span>
             </a>
             <a href="/admin/users.php" class="admin-menu-item <?= $currentScript === 'users.php' ? 'active' : '' ?>">
-                <i class="bi bi-people"></i> Manajemen User
+                <i class="bi bi-people"></i> <span>Manajemen User</span>
             </a>
         <?php endif; ?>
         <a href="/admin/password.php" class="admin-menu-item <?= $currentScript === 'password.php' ? 'active' : '' ?>">
-            <i class="bi bi-key"></i> Ganti Password
+            <i class="bi bi-key"></i> <span>Ganti Password</span>
         </a>
     </aside>
 

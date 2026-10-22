@@ -46,28 +46,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #4657D9 0%, #253047 100%);
-            padding: 1rem;
+            background: radial-gradient(circle at 50% 20%, #312e81 0%, #0f172a 100%);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
+            pointer-events: none;
         }
         .login-card {
             width: 100%;
             max-width: 420px;
-            background: #ffffff;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            padding: 2.25rem;
-            box-shadow: 0 16px 36px -4px rgba(37, 48, 71, 0.2);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2.25rem 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .login-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.75rem;
         }
         .login-header img {
             width: 68px;
             height: 68px;
             object-fit: contain;
-            margin-bottom: 0.75rem;
-            border-radius: var(--radius-sm);
+            margin-bottom: 0.85rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffffff;
+            background: #ffffff;
         }
     </style>
 </head>

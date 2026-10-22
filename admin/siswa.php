@@ -101,16 +101,21 @@ $students = dbFetchAll("
 ", $params);
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-        <h2>Kelola Data Siswa</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-            Daftar siswa peserta ujian yang dikelompokkan per kelas.
-        </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Kelola Data Siswa Peserta Ujian</h1>
+            <p class="page-header-subtitle">
+                Daftar siswa peserta ujian yang dikelompokkan per kelas untuk absensi otomatis.
+            </p>
+        </div>
     </div>
-    <div style="display: flex; gap: 0.5rem;">
-        <a href="/admin/import-siswa.php" class="btn btn-success">
-            📥 Impor dari Excel / CSV
+    <div class="page-header-actions">
+        <a href="/admin/import-siswa.php" class="btn btn-success btn-sm">
+            <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel / CSV</span>
         </a>
     </div>
 </div>

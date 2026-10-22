@@ -79,11 +79,18 @@ if ($editId > 0) {
 $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
 ?>
 
-<div style="margin-bottom: 0.75rem;">
-    <h2>Kelola Template Ujian & Editor Redaksi Berita Acara</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">
-        Konfigurasi nama ujian, tahun ajaran, dan teks redaksi berita acara secara fleksibel dengan placeholder dinamis.
-    </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-file-earmark-richtext"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Template Ujian & Redaksi Berita Acara</h1>
+            <p class="page-header-subtitle">
+                Konfigurasi nama ujian, tahun ajaran, dan teks redaksi berita acara secara visual (WYSIWYG) dengan placeholder dinamis.
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="split-layout" style="height: auto; align-items: flex-start; gap: 0.75rem;">

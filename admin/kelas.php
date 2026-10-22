@@ -82,12 +82,17 @@ $classes = dbFetchAll("
 ");
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-        <h2>Kelola Data Kelas</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-            Daftar kelas aktif yang dapat dipilih oleh pengawas saat membuat dokumen absensi.
-        </p>
+<div class="page-header-card">
+    <div class="page-header-content">
+        <div class="page-header-icon-box">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div>
+            <h1 class="page-header-title">Kelola Data Kelas</h1>
+            <p class="page-header-subtitle">
+                Daftar kelas aktif yang dapat dipilih oleh pengawas saat membuat dokumen absensi dan berita acara.
+            </p>
+        </div>
     </div>
 </div>
 
