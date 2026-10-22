@@ -9,7 +9,7 @@ opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
 
 print("1. Testing homepage...")
 home = opener.open(f"{BASE}/").read().decode()
-assert "SMK NEGERI 1 KLUNGKUNG" in home
+assert "Generator Absensi" in home
 print("   [OK] Homepage loaded!")
 
 print("2. Testing api/get-students.php?class_id=15...")
@@ -37,6 +37,7 @@ pages = [
     '/admin/rekonsiliasi.php',
     '/admin/template-ujian.php',
     '/admin/pengaturan.php',
+    '/admin/users.php',
     '/admin/password.php'
 ]
 for p in pages:

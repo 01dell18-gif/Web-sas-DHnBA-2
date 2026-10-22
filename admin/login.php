@@ -20,9 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $user['id'];
         $_SESSION['admin_user'] = $user['username'];
-        $_SESSION['admin_name'] = $user['nama_lengkap'] ?: 'Administrator';
+        $_SESSION['admin_name'] = $user['nama_lengkap'] ?: ($user['role'] === 'admin' ? 'Administrator' : 'Operator');
+        $_SESSION['admin_role'] = $user['role'] ?? 'admin';
         
-        log_activity('LOGIN_SUCCESS', "Admin {$username} berhasil login.");
+        log_activity('LOGIN_SUCCESS', "User {$username} ({$user['role']}) berhasil login.");
         header('Location: /admin/index.php');
         exit;
     } else {
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <?php if ($error): ?>
-        <div class="alert alert-danger" style="margin-bottom: 1.25rem; font-size: 0.85rem;">
+        <div class="alert alert-danger" style="margin-bottom: 0.7rem; font-size: 0.85rem;">
             <i class="bi bi-exclamation-triangle-fill"></i> <?= htmlspecialchars($error) ?>
         </div>
     <?php endif; ?>

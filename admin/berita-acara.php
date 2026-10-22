@@ -164,12 +164,12 @@ $classes = dbFetchAll("SELECT * FROM kelas ORDER BY tingkat DESC, nama_kelas ASC
 require_once __DIR__ . '/layout_header.php';
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
+        <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
             📋 Arsip Berita Acara Ujian
         </h1>
-        <p style="font-size: 0.9rem; color: var(--slate-600); margin: 0;">
+        <p style="font-size: 0.8rem; color: var(--slate-600); margin: 0;">
             Kelola, telusuri, dan unduh berkas PDF Berita Acara Pelaksanaan Ujian lengkap dengan foto dokumentasi dan tanda tangan pengawas.
         </p>
     </div>
@@ -181,7 +181,7 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- KARTU STATISTIK RINGKAS -->
-<div class="stats-grid" style="margin-bottom: 1.5rem;">
+<div class="stats-grid" style="margin-bottom: 0.75rem;">
     <div class="stat-card">
         <div class="stat-icon" style="background: #fef3c7; color: #b45309;">📋</div>
         <div>
@@ -208,8 +208,8 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- BILAH UNDUH CEPAT (ZIP) -->
-<div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid #b45309; background: #fffbeb;">
-    <div class="card-body" style="padding: 1rem 1.25rem;">
+<div class="card" style="margin-bottom: 0.75rem; border-left: 4px solid #b45309; background: #fffbeb;">
+    <div class="card-body" style="padding: 0.65rem 0.85rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
                 <strong style="color: #b45309; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem;">
@@ -247,7 +247,7 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <!-- FORMULIR FILTER & PENCARIAN -->
-<div class="card" style="margin-bottom: 1.5rem;">
+<div class="card" style="margin-bottom: 0.75rem;">
     <div class="card-header">
         <span class="card-title">🔍 Filter Data Arsip Berita Acara</span>
     </div>

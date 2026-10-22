@@ -101,7 +101,7 @@ $students = dbFetchAll("
 ", $params);
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
     <div>
         <h2>Kelola Data Siswa</h2>
         <p style="color: var(--text-muted); font-size: 0.9rem;">

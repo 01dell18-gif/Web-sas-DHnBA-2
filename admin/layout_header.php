@@ -33,9 +33,12 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             </a>
         </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <span class="admin-welcome-text" style="font-size: 0.85rem; color: var(--slate-600);">
-            Halo, <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator SAS SMKN 1 Klungkung') ?></strong>
+    <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span class="admin-welcome-text" style="font-size: 0.825rem; color: var(--slate-600); display: flex; align-items: center; gap: 0.4rem;">
+            Halo, <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator') ?></strong>
+            <span class="badge <?= is_admin() ? 'badge-success' : 'badge-info' ?>" style="font-size: 0.68rem; padding: 2px 6px;">
+                <?= is_admin() ? '👑 Admin' : '🛡️ Operator' ?>
+            </span>
         </span>
         <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
             <i class="bi bi-globe2"></i> Web Publik
@@ -72,12 +75,17 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         <a href="/admin/rekonsiliasi.php" class="admin-menu-item <?= $currentScript === 'rekonsiliasi.php' ? 'active' : '' ?>">
             <i class="bi bi-shield-check"></i> Rekonsiliasi Dokumen
         </a>
-        <a href="/admin/template-ujian.php" class="admin-menu-item <?= $currentScript === 'template-ujian.php' ? 'active' : '' ?>">
-            <i class="bi bi-file-earmark-richtext"></i> Template Ujian
-        </a>
-        <a href="/admin/pengaturan.php" class="admin-menu-item <?= $currentScript === 'pengaturan.php' ? 'active' : '' ?>">
-            <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
-        </a>
+        <?php if (is_admin()): ?>
+            <a href="/admin/template-ujian.php" class="admin-menu-item <?= $currentScript === 'template-ujian.php' ? 'active' : '' ?>">
+                <i class="bi bi-file-earmark-richtext"></i> Template Ujian
+            </a>
+            <a href="/admin/pengaturan.php" class="admin-menu-item <?= $currentScript === 'pengaturan.php' ? 'active' : '' ?>">
+                <i class="bi bi-sliders"></i> Pengaturan Kop & Drive
+            </a>
+            <a href="/admin/users.php" class="admin-menu-item <?= $currentScript === 'users.php' ? 'active' : '' ?>">
+                <i class="bi bi-people"></i> Manajemen User
+            </a>
+        <?php endif; ?>
         <a href="/admin/password.php" class="admin-menu-item <?= $currentScript === 'password.php' ? 'active' : '' ?>">
             <i class="bi bi-key"></i> Ganti Password
         </a>

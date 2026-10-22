@@ -91,6 +91,27 @@ function require_admin(): void {
     }
 }
 
+function get_current_user_role(): string {
+    return $_SESSION['admin_role'] ?? 'admin';
+}
+
+function is_admin(): bool {
+    return is_admin_logged_in() && (($_SESSION['admin_role'] ?? 'admin') === 'admin');
+}
+
+function is_operator(): bool {
+    return is_admin_logged_in() && (($_SESSION['admin_role'] ?? '') === 'operator');
+}
+
+function require_admin_role(): void {
+    require_admin();
+    if (!is_admin()) {
+        set_flash('danger', 'Akses ditolak. Fitur ini hanya dapat diakses oleh Administrator.');
+        header('Location: /admin/index.php');
+        exit;
+    }
+}
+
 /**
  * Settings helpers
  */

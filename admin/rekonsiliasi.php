@@ -90,7 +90,7 @@ foreach ($sessions as $key => $sess) {
 }
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
     <div>
         <h2><i class="bi bi-shield-check" style="color: var(--primary);"></i> Audit & Rekonsiliasi Dokumen</h2>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">
@@ -108,7 +108,7 @@ foreach ($sessions as $key => $sess) {
 </div>
 
 <!-- Kartu Ringkasan Status -->
-<div class="stats-grid" style="margin-bottom: 1.5rem;">
+<div class="stats-grid" style="margin-bottom: 0.75rem;">
     <div class="stat-card" style="border-left: 4px solid var(--primary);">
         <div class="stat-icon" style="background: #eef0fd; color: var(--primary); font-size: 1.4rem;">
             <i class="bi bi-collection"></i>
@@ -161,8 +161,8 @@ foreach ($sessions as $key => $sess) {
 </div>
 
 <!-- Filter & Tab Cepat -->
-<div class="card" style="margin-bottom: 1.5rem;">
-    <div class="card-body" style="padding: 1rem 1.25rem;">
+<div class="card" style="margin-bottom: 0.75rem;">
+    <div class="card-body" style="padding: 0.65rem 0.85rem;">
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 0.85rem;">
             <a href="?status=mismatch" 
                class="btn btn-sm <?= $statusFilter === 'mismatch' ? 'btn-danger' : 'btn-secondary' ?>">

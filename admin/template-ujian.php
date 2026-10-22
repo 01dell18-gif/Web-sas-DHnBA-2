@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Template Ujian & Redaksi';
 require_once __DIR__ . '/layout_header.php';
+require_admin_role();
 
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -78,14 +79,14 @@ if ($editId > 0) {
 $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
 ?>
 
-<div style="margin-bottom: 1.5rem;">
+<div style="margin-bottom: 0.75rem;">
     <h2>Kelola Template Ujian & Editor Redaksi Berita Acara</h2>
     <p style="color: var(--text-muted); font-size: 0.9rem;">
         Konfigurasi nama ujian, tahun ajaran, dan teks redaksi berita acara secara fleksibel dengan placeholder dinamis.
     </p>
 </div>
 
-<div class="split-layout" style="height: auto; align-items: flex-start; gap: 1.5rem;">
+<div class="split-layout" style="height: auto; align-items: flex-start; gap: 0.75rem;">
     <!-- KOLOM KIRI: DAFTAR TEMPLATE UJIAN -->
     <div style="flex: 0 0 380px; min-width: 320px;">
         <div class="card" style="position: sticky; top: 1rem;">
@@ -183,7 +184,7 @@ $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
                     </div>
 
                     <!-- 2. PALET PLACEHOLDER UTAMA (Bisa diklik untuk menyisipkan ke textarea/editor aktif) -->
-                    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1.25rem;">
+                    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 0.7rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <span style="font-size: 0.85rem; font-weight: 700; color: var(--slate-800);">
                                 💡 Klik Tag Placeholder untuk Menyisipkan ke Editor Aktif:

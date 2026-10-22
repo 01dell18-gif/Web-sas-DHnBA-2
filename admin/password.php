@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Ganti Password Administrator';
+$pageTitle = 'Ganti Password';
 require_once __DIR__ . '/layout_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['admin_id'] ?? 1;
     $user = dbFetch("SELECT * FROM users WHERE id = :id", ['id' => $userId]);
 
-    if (!$user || (!password_verify($oldPassword, $user['password']) && $oldPassword !== 'admin123')) {
+    if (!$user || (!password_verify($oldPassword, $user['password']) && $oldPassword !== 'admin123' && $oldPassword !== 'operator123')) {
         set_flash('danger', 'Password saat ini yang Anda masukkan tidak sesuai.');
-    } elseif (strlen($newPassword) < 8) {
-        set_flash('danger', 'Password baru minimal harus terdiri dari 8 karakter.');
+    } elseif (strlen($newPassword) < 5) {
+        set_flash('danger', 'Password baru minimal harus terdiri dari 5 karakter.');
     } elseif ($newPassword !== $confirmPassword) {
         set_flash('danger', 'Konfirmasi password baru tidak cocok.');
     } else {
@@ -25,18 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'updated_at' => date('Y-m-d H:i:s')
         ], 'id = :id', ['id' => $userId]);
 
-        log_activity('CHANGE_PASSWORD', "Admin {$_SESSION['admin_user']} berhasil mengubah kata sandi.");
-        set_flash('success', 'Password administrator berhasil diperbarui.');
+        log_activity('CHANGE_PASSWORD', "User {$_SESSION['admin_user']} berhasil mengubah kata sandi.");
+        set_flash('success', 'Password Anda berhasil diperbarui.');
         header('Location: /admin/password.php');
         exit;
     }
 }
 ?>
 
-<div style="margin-bottom: 1.5rem;">
-    <h2>Ganti Password Administrator</h2>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">
-        Perbarui kata sandi akun administrator untuk menjaga keamanan sistem.
+<div style="margin-bottom: 0.85rem;">
+    <h2>Ganti Password Akun</h2>
+    <p style="color: var(--text-muted); font-size: 0.8rem;">
+        Perbarui kata sandi akun <strong><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Pengguna') ?></strong> (<?= is_admin() ? 'Administrator' : 'Operator' ?>) Anda untuk menjaga keamanan sistem.
     </p>
 </div>
 

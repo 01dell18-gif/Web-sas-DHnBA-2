@@ -161,6 +161,19 @@ if (!$userCount) {
     echo "Default user 'admin' (password: admin123) seeded.\n";
 }
 
+$operatorCount = dbValue("SELECT COUNT(*) FROM users WHERE username = 'operator'");
+if (!$operatorCount) {
+    dbInsert('users', [
+        'username' => 'operator',
+        'password' => password_hash('operator123', PASSWORD_BCRYPT),
+        'nama_lengkap' => 'Operator SAS SMKN 1 Klungkung',
+        'role' => 'operator',
+        'created_at' => date('Y-m-d H:i:s'),
+        'updated_at' => date('Y-m-d H:i:s')
+    ]);
+    echo "Default user 'operator' (password: operator123) seeded.\n";
+}
+
 // --- SEED SETTINGS ---
 $defaultSettings = [
     'nama_sekolah' => 'SMK NEGERI 1 KLUNGKUNG',

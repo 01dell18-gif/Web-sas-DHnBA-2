@@ -17,7 +17,7 @@ $driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com');
 $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
 ?>
 
-<div style="margin-bottom: 1.5rem;">
+<div style="margin-bottom: 0.75rem;">
     <h2>Dashboard Administrator</h2>
     <p style="color: var(--text-muted); font-size: 0.9rem;">
         Selamat datang di sistem Generator Absensi dan Berita Acara Ujian <?= htmlspecialchars($namaSekolah) ?>.
@@ -25,9 +25,9 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
 </div>
 
 <?php if ($selisih > 0): ?>
-<div style="background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);">
+<div style="background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: 12px; padding: 0.65rem 0.85rem; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.08);">
     <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0;">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
         <div>
@@ -52,7 +52,7 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
     <div class="stat-card">
         <div class="stat-icon">🏫</div>
         <div>
-            <div class="stat-value"><?= $aktifKelas ?> <span style="font-size: 0.9rem; color: var(--text-muted);">/ <?= $totalKelas ?></span></div>
+            <div class="stat-value"><?= $aktifKelas ?> <span style="font-size: 0.8rem; color: var(--text-muted);">/ <?= $totalKelas ?></span></div>
             <div class="stat-label">Kelas Aktif / Total</div>
         </div>
     </div>
@@ -60,7 +60,7 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
     <div class="stat-card">
         <div class="stat-icon">👨‍🎓</div>
         <div>
-            <div class="stat-value"><?= $aktifSiswa ?> <span style="font-size: 0.9rem; color: var(--text-muted);">/ <?= $totalSiswa ?></span></div>
+            <div class="stat-value"><?= $aktifSiswa ?> <span style="font-size: 0.8rem; color: var(--text-muted);">/ <?= $totalSiswa ?></span></div>
             <div class="stat-label">Siswa Aktif / Total</div>
         </div>
     </div>
@@ -120,9 +120,14 @@ $logs = dbFetchAll("SELECT * FROM activity_logs ORDER BY id DESC LIMIT 10");
             <a href="/admin/siswa.php" class="btn btn-secondary">
                 👨‍🎓 Kelola Data Siswa
             </a>
-            <a href="/admin/template-ujian.php" class="btn btn-secondary">
-                📝 Atur Template & Redaksi Berita Acara
-            </a>
+            <?php if (is_admin()): ?>
+                <a href="/admin/template-ujian.php" class="btn btn-secondary">
+                    📝 Atur Template & Redaksi Berita Acara
+                </a>
+                <a href="/admin/users.php" class="btn btn-secondary">
+                    👥 Manajemen User & Hak Akses
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -55,12 +55,12 @@ foreach ($absensiSessions as $sess) {
 }
 ?>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 1rem;">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
+        <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.25rem;">
             📑 Laporan Rekap Kehadiran Siswa
         </h1>
-        <p style="font-size: 0.9rem; color: var(--slate-600);">
+        <p style="font-size: 0.8rem; color: var(--slate-600);">
             Rekapitulasi kehadiran ujian seluruh mata pelajaran per kelas (Format Resmi & Ekspor Excel).
         </p>
     </div>
@@ -76,7 +76,7 @@ foreach ($absensiSessions as $sess) {
 </div>
 
 <!-- Filter Kelas & Periode -->
-<div class="card" style="margin-bottom: 1.5rem;">
+<div class="card" style="margin-bottom: 0.75rem;">
     <div class="card-body" style="padding: 1.25rem;">
         <form method="GET" action="/admin/rekap-kehadiran.php" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
             <div style="flex: 1; min-width: 200px;">
@@ -116,7 +116,7 @@ foreach ($absensiSessions as $sess) {
 <!-- Tampilan Lembar Rekap Matrix -->
 <div class="card">
     <div class="card-body" style="padding: 1.5rem;">
-        <div style="text-align: center; margin-bottom: 1.5rem; text-transform: uppercase;">
+        <div style="text-align: center; margin-bottom: 0.75rem; text-transform: uppercase;">
             <h2 style="font-size: 1.25rem; font-weight: 800; color: #000; margin: 0 0 4px 0; letter-spacing: 0.5px;">
                 REKAP KEHADIRAN SISWA
             </h2>

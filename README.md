@@ -26,10 +26,16 @@ Lalu buka peramban ke: `http://localhost:8080/`
 
 ---
 
-## 🔑 Kredensial Akses Administrator
-* **URL Login:** `http://localhost:8080/admin/login.php`
-* **Username:** `admin`
-* **Password:** `admin123`
+## 🔑 Kredensial Akses Pengguna Sistem
+Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
+* **1. Administrator (Hak Akses Penuh Seluruh Sistem):**
+  * **Username:** `admin`
+  * **Password:** `admin123`
+  * *Hak Akses:* Dashboard, Data Kelas, Data Siswa, Impor Siswa, Rekap Nilai/Kehadiran, Cetak/Unduh Arsip, Rekonsiliasi Dokumen, Editor Template Ujian WYSIWYG, Pengaturan Kop & Drive, dan Manajemen User.
+* **2. Operator (Hak Akses Operasional Ujian):**
+  * **Username:** `operator`
+  * **Password:** `operator123`
+  * *Hak Akses:* Dashboard, Data Kelas, Data Siswa, Impor Siswa, Rekap Nilai/Kehadiran, Cetak/Unduh Arsip, Rekonsiliasi Dokumen, dan Ganti Password Pribadi.
 
 ---
 
@@ -45,22 +51,23 @@ Lalu buka peramban ke: `http://localhost:8080/`
 | `/generate-berita-acara.php` | Backend generator PDF 2 halaman Berita Acara + Lampiran Bukti Foto Pelaksanaan. |
 | `/api/get-students.php` | Endpoint JSON API untuk mengambil daftar siswa terdaftar berdasarkan `class_id`. |
 
-### 2. Panel Administrator (`/admin/`)
-| Menu / Berkas | Fungsi & Fitur Utama |
-|---|---|
-| `/admin/index.php` | **Dashboard Administrator:** Statistik total kelas, total siswa, arsip absensi, arsip berita acara, folder Google Drive, alert selisih dokumen ujian, pintasan cepat, dan log aktivitas login/transaksi. |
-| `/admin/kelas.php` | **Kelola Data Kelas:** Tambah, edit, hapus kelas, toggle status aktif/nonaktif, dan ringkasan jumlah siswa terdaftar per kelas. |
-| `/admin/siswa.php` | **Kelola Data Siswa:** Tambah, edit, hapus, toggle aktif siswa, filter siswa berdasarkan kelas. |
-| `/admin/import-siswa.php` | **Impor Siswa Excel / CSV:** Impor massal data siswa dari Excel (.xlsx) atau CSV dengan pencocokan kelas otomatis, serta download template CSV. |
-| `/admin/template-ujian.php` | **Template Ujian & Editor Redaksi:** Konfigurasi template ujian, nama ujian, tahun ajaran, dan editor WYSIWYG berita acara dengan palet tag placeholder interaktif (`[nama_ujian]`, `[tahun_ajaran]`, `[hari]`, `[tanggal]`, `[mata_pelajaran]`, `[kelas]`, `[ruang]`, `[peserta_hadir]`, `[sekolah]`, dll). |
-| `/admin/absensi.php` | **Arsip Daftar Hadir:** Filter pencarian multi-kategori (tingkat, kelas, tanggal, kata kunci), unduh single PDF, preview inline tab baru, modal detail dokumen, checkbox aksi batch, dan **Unduh Sekaligus File .ZIP** (per tingkat, per kelas, per tanggal, atau pilihan khusus). |
-| `/admin/berita-acara.php` | **Arsip Berita Acara:** Filter pencarian, single download/view, galeri foto dokumentasi interaktif, unduh paket arsip .ZIP, dan modal detail dokumen. |
-| `/admin/rekap-kehadiran.php` | **Laporan Rekap Kehadiran:** Matriks kehadiran lengkap seluruh mata pelajaran per siswa pada kelas yang dipilih, rekapitulasi total H, D, I, S, A, dan tombol ekspor. |
-| `/admin/export-rekap-excel.php` | **Ekspor Excel:** Menghasilkan spreadsheet resmi rekap kehadiran siswa per kelas berformat `.xls` / `.xlsx`. |
-| `/admin/rekonsiliasi.php` | **Audit & Rekonsiliasi Dokumen:** Pencocokan silang otomatis antara Arsip Daftar Hadir dan Berita Acara untuk melacak sesi ujian yang belum lengkap atau terinput ganda. |
-| `/admin/pengaturan.php` | **Pengaturan Identitas & Kop Surat:** Unggah gambar kop surat resmi (banner full header horizontal), ganti logo tunggal, nama sekolah, alamat, kontak, dan URL Google Drive pengawas. |
-| `/admin/password.php` | **Ganti Password:** Ubah password akun administrator dengan enkripsi bcrypt. |
-| `/admin/logout.php` | Mengakhiri sesi administrator secara aman. |
+### 2. Panel Administrator & Operator (`/admin/`)
+| Menu / Berkas | Hak Akses | Fungsi & Fitur Utama |
+|---|:---:|---|
+| `/admin/index.php` | Admin & Operator | **Dashboard:** Statistik total kelas, siswa, arsip absensi, berita acara, Google Drive, alert selisih dokumen, pintasan cepat, dan log aktivitas. |
+| `/admin/kelas.php` | Admin & Operator | **Kelola Data Kelas:** Tambah, edit, hapus kelas, toggle status aktif/nonaktif, dan ringkasan siswa per kelas. |
+| `/admin/siswa.php` | Admin & Operator | **Kelola Data Siswa:** Tambah, edit, hapus, toggle aktif siswa, dan filter siswa per kelas. |
+| `/admin/import-siswa.php` | Admin & Operator | **Impor Siswa Excel / CSV:** Impor massal data siswa dari file Excel/CSV dengan pencocokan kelas otomatis. |
+| `/admin/rekap-kehadiran.php` | Admin & Operator | **Laporan Rekap Kehadiran:** Matriks kehadiran lengkap seluruh mata pelajaran per siswa pada kelas yang dipilih. |
+| `/admin/export-rekap-excel.php` | Admin & Operator | **Ekspor Excel:** Menghasilkan spreadsheet resmi rekap kehadiran siswa per kelas berformat `.xls` / `.xlsx`. |
+| `/admin/absensi.php` | Admin & Operator | **Arsip Daftar Hadir:** Filter pencarian multi-kategori, unduh single PDF, preview inline, modal detail, dan **Unduh Sekaligus File .ZIP**. |
+| `/admin/berita-acara.php` | Admin & Operator | **Arsip Berita Acara:** Filter pencarian, single download/view, galeri foto dokumentasi interaktif, dan unduh paket arsip .ZIP. |
+| `/admin/rekonsiliasi.php` | Admin & Operator | **Audit & Rekonsiliasi Dokumen:** Pencocokan silang otomatis antara Arsip Daftar Hadir dan Berita Acara untuk melacak sesi yang belum dibuat atau terinput ganda. |
+| `/admin/template-ujian.php` | **Khusus Admin** | **Template Ujian & Editor WYSIWYG:** Konfigurasi template ujian, nama ujian, tahun ajaran, dan editor WYSIWYG berita acara dengan palet tag placeholder interaktif serta live simulasi pratinjau teks. |
+| `/admin/pengaturan.php` | **Khusus Admin** | **Pengaturan Identitas & Kop Surat:** Unggah kop surat resmi, ganti logo, nama sekolah, alamat, kontak, dan URL Google Drive. |
+| `/admin/users.php` | **Khusus Admin** | **Manajemen User:** Tambah, edit, ganti password, dan hapus pengguna dengan pembagian peran Admin vs Operator. |
+| `/admin/password.php` | Admin & Operator | **Ganti Password:** Ubah kata sandi akun masing-masing pengguna dengan enkripsi bcrypt. |
+| `/admin/logout.php` | Admin & Operator | Mengakhiri sesi pengguna secara aman. |
 
 ---
 

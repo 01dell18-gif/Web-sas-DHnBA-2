@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/layout_header.php';
 ?>
 
-<div style="margin-bottom: 1.5rem;">
+<div style="margin-bottom: 0.75rem;">
     <h2>Impor Data Siswa</h2>
     <p style="color: var(--text-muted); font-size: 0.9rem;">
         Unggah data siswa dalam format Excel (.xlsx) atau CSV dengan pencocokan kelas otomatis.
@@ -178,7 +178,7 @@ require_once __DIR__ . '/layout_header.php';
                 </div>
             </div>
 
-            <div style="background: var(--slate-50); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--slate-50); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 0.7rem;">
                 <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--slate-800);">
                     Format Kolom yang Dibutuhkan:
                 </div>

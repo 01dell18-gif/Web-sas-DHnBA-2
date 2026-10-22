@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `updated_at` DATETIME NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMKN 1 Klungkung', 'admin', '2026-10-22 03:03:04', '2026-10-22 03:03:04');
+(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMKN 1 Klungkung', 'admin', '2026-10-22 03:03:04', '2026-10-22 03:03:04'),
+(2, 'operator', '$2y$10$tZ2R4GkEev86wG67x7y3rOq0iB/QfV/b9oZl1K54aH7p8.6PZJ4rG', 'Operator SAS SMKN 1 Klungkung', 'operator', '2026-10-22 03:03:04', '2026-10-22 03:03:04');
 
 
 DROP TABLE IF EXISTS `pengaturan`;

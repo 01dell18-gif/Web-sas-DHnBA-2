@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Pengaturan Identitas & Kop Surat';
 require_once __DIR__ . '/layout_header.php';
+require_admin_role();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -70,7 +71,7 @@ $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 ?>
 
-<div style="margin-bottom: 1.5rem;">
+<div style="margin-bottom: 0.75rem;">
     <h2>Pengaturan Identitas Sekolah & Kop Dokumen Resmi</h2>
     <p style="color: var(--text-muted); font-size: 0.9rem;">
         Kelola gambar kop surat resmi A4, identitas instansi, dan tautan folder Google Drive pengawas.
@@ -83,7 +84,7 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
         <!-- Pengaturan Kop Gambar Utama & Identitas -->
         <div style="flex: 1;">
             <!-- 1. KOP SURAT GAMBAR RESMI (UTAMA) -->
-            <div class="card" style="border-top: 4px solid var(--primary); margin-bottom: 1.5rem;">
+            <div class="card" style="border-top: 4px solid var(--primary); margin-bottom: 0.75rem;">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <span class="card-title">📜 Gambar Kop Surat Sekolah Lengkap (Rekomendasi Utama)</span>
                     <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">Full Header Banner</span>
@@ -95,7 +96,7 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 
                     <div class="form-group">
                         <label class="form-label">Mode Kop Dokumen:</label>
-                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                             <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem;">
                                 <input type="radio" name="kop_mode" value="image" <?= $kopMode === 'image' ? 'checked' : '' ?>>
                                 <strong>Gunakan Gambar Kop Lengkap</strong> (Rekomendasi)
@@ -184,7 +185,7 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
         <!-- Pengaturan Samping: Logo & Google Drive -->
         <div style="flex: 0 0 440px;">
             <!-- Link Google Drive -->
-            <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card" style="margin-bottom: 0.75rem;">
                 <div class="card-header">
                     <span class="card-title">📁 Folder Google Drive Pengawas</span>
                 </div>
@@ -213,12 +214,12 @@ $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
             </div>
 
             <!-- Logo Sekolah (Untuk Fallback) -->
-            <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card" style="margin-bottom: 0.75rem;">
                 <div class="card-header">
                     <span class="card-title">🖼️ Logo Instansi (Cadangan Mode Teks)</span>
                 </div>
                 <div class="card-body">
-                    <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 0.7rem;">
                         <div style="width: 75px; height: 75px; border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; background: #fff; padding: 4px;">
                             <img src="/<?= htmlspecialchars($logoPath) ?>?v=<?= time() ?>" alt="Logo Saat Ini" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         </div>
