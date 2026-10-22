@@ -79,25 +79,29 @@ if ((isset($_GET['action']) && $_GET['action'] === 'download_zip') || (isset($_P
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $docs = dbFetchAll("SELECT * FROM berita_acara WHERE id IN ({$placeholders})", $ids);
 
-        $tmpZip = tempnam(sys_get_temp_dir(), 'zip');
-        $zip = new ZipArchive();
-        if ($zip->open($tmpZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            foreach ($docs as $d) {
-                if (!empty($d['pdf_path'])) {
-                    $p = BASE_PATH . '/' . $d['pdf_path'];
-                    if (file_exists($p)) {
-                        $zip->addFile($p, basename($p));
-                    }
+        $filesToZip = [];
+        foreach ($docs as $d) {
+            if (!empty($d['pdf_path'])) {
+                $p = BASE_PATH . '/' . $d['pdf_path'];
+                if (file_exists($p)) {
+                    $filesToZip[basename($p)] = $p;
                 }
             }
-            $zip->close();
+        }
 
-            header('Content-Type: application/zip');
-            header('Content-Disposition: attachment; filename="' . $zipFilename . '"');
-            header('Content-Length: ' . filesize($tmpZip));
-            readfile($tmpZip);
-            @unlink($tmpZip);
-            exit;
+        if (!empty($filesToZip)) {
+            $tmpZip = tempnam(sys_get_temp_dir(), 'zip');
+            if (create_zip_archive($tmpZip, $filesToZip)) {
+                while (ob_get_level()) { ob_end_clean(); }
+                header_remove('Pragma');
+                header_remove('Expires');
+                header('Content-Type: application/zip');
+                header('Content-Disposition: attachment; filename="' . $zipFilename . '"');
+                header('Content-Length: ' . filesize($tmpZip));
+                readfile($tmpZip);
+                @unlink($tmpZip);
+                exit;
+            }
         }
     }
     set_flash('danger', 'Tidak ada berkas yang ditemukan untuk diunduh.');

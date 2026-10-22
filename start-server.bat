@@ -29,5 +29,5 @@ echo.
 
 start http://localhost:8080/
 
-"%PHP_BIN%" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=gd -S 127.0.0.1:8080
+"%PHP_BIN%" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=zip -d extension=gd -S 127.0.0.1:8080
 pause

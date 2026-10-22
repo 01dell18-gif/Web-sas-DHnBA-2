@@ -177,8 +177,15 @@ require_once __DIR__ . '/layout_header.php';
                         <label class="form-label" for="password">
                             <?= $editUser ? 'Ganti Password (Kosongkan jika tetap)' : 'Password <span class="required">*</span>' ?>
                         </label>
-                        <input type="password" name="password" id="password" class="form-control" 
-                               placeholder="<?= $editUser ? 'Masukkan password baru...' : 'Minimal 5 karakter' ?>" <?= $editUser ? '' : 'required' ?>>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <input type="password" name="password" id="password" class="form-control" style="padding-right: 42px;"
+                                   placeholder="<?= $editUser ? 'Masukkan password baru...' : 'Minimal 5 karakter' ?>" <?= $editUser ? '' : 'required' ?>>
+                            <button type="button" id="btnToggleFormPassword" onclick="toggleFormPasswordVisibility()" 
+                                    style="position: absolute; right: 8px; background: none; border: none; color: var(--slate-500); cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: color 0.15s ease;" 
+                                    title="Lihat Password">
+                                <i id="iconToggleFormPassword" class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
@@ -317,6 +324,23 @@ function togglePasswordVisibility(userId) {
         iconEl.classList.remove('bi-eye-slash');
         iconEl.classList.add('bi-eye');
         iconEl.parentElement.title = "Lihat Password";
+    }
+}
+
+function toggleFormPasswordVisibility() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('iconToggleFormPassword');
+    if (!input || !icon) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+        icon.parentElement.title = "Sembunyikan Password";
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+        icon.parentElement.title = "Lihat Password";
     }
 }
 </script>

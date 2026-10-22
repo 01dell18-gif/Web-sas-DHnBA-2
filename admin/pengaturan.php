@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Pengaturan Identitas & Kop Surat';
-require_once __DIR__ . '/layout_header.php';
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
 require_admin_role();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -69,6 +70,8 @@ $kopWebsite = get_setting('kop_website', 'Website: smkn1klungkung.sch.id');
 $driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <div class="page-header-card">

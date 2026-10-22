@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Template Ujian & Redaksi';
-require_once __DIR__ . '/layout_header.php';
+require_once __DIR__ . '/../config/functions.php';
+require_admin();
 require_admin_role();
 
 // Handle POST actions
@@ -77,6 +78,8 @@ if ($editId > 0) {
 }
 
 $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
+
+require_once __DIR__ . '/layout_header.php';
 ?>
 
 <div class="page-header-card">

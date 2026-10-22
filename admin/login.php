@@ -116,7 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="form-group">
             <label class="form-label" for="password">Password</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password" required>
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" name="password" id="password" class="form-control" style="padding-right: 42px;" placeholder="Masukkan password" required>
+                <button type="button" onclick="toggleLoginPassword()" 
+                        style="position: absolute; right: 8px; background: none; border: none; color: var(--slate-500); cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;" 
+                        title="Lihat Password">
+                    <i id="iconLoginPassword" class="bi bi-eye"></i>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem; padding: 0.75rem;">
@@ -130,6 +137,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
     </div>
 </div>
+
+<script>
+function toggleLoginPassword() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('iconLoginPassword');
+    if (!input || !icon) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+        icon.parentElement.title = "Sembunyikan Password";
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+        icon.parentElement.title = "Lihat Password";
+    }
+}
+</script>
 
 </body>
 </html>

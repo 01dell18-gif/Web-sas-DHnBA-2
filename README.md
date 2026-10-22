@@ -90,21 +90,30 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
      - 📑 **Arsip Berita Acara:** Reset Hapus Semua Arsip Berita Acara
      - ⚖️ **Rekonsiliasi Dokumen:** Reset Hapus Seluruh Dokumen Audit
      - 📊 **Rekap Kehadiran:** Reset Hapus Presensi Kelas Tertentu
-3. **Kolom Password dengan Fitur Intip/Lihat Password pada Manajemen Pengguna:**
-   - Tabel *Daftar Pengguna Terdaftar* di menu **Manajemen Pengguna & Hak Akses** kini menyertakan kolom **Password**.
-   - Secara bawaan, kata sandi ditampilkan dalam format titik-titik tersamarkan (`••••••••`) demi privasi dan keamanan visual.
-   - Di samping kata sandi disediakan tombol ikon mata (`👁️` / `bi-eye`). Saat diklik, kata sandi pengguna langsung ditampilkan dalam teks biasa (*plain text*) dan ikon berubah menjadi `bi-eye-slash` untuk menyembunyikannya kembali jika diklik ulang.
+3. **Fitur Intip/Lihat Password Interaktif (Ikon Mata 👁️):**
+   - **Tabel Pengguna:** Tabel *Daftar Pengguna Terdaftar* di menu **Manajemen Pengguna & Hak Akses** menyertakan kolom **Password** dengan titik-titik tersamarkan (`••••••••`) dan tombol ikon mata (`👁️` / `bi-eye`) untuk toggle melihat password pengguna secara langsung.
+   - **Formulir Tambah/Edit Pengguna:** Input kolom password pada form kartu *Tambah Pengguna Baru* kini dilengkapi tombol mata (`👁️`) interaktif di dalam field untuk melihat teks password yang sedang diketik sebelum disimpan.
+   - **Formulir Login Admin:** Input password pada halaman login juga dilengkapi tombol mata (`👁️`) untuk kenyamanan saat mengetik kata sandi.
    - Sinkronisasi kolom `password_plain` otomatis tersimpan pada basis data SQLite (`database/sas.sqlite`) dan skema MySQL (`database/database_mysql.sql`) saat penambahan maupun pembaruan data pengguna.
-4. **Dropdown Unduh ZIP Per Tingkat:**
+4. **Unduh Sekaligus Berupa File ZIP (Universal ZIP Generator):**
+   - Mengatasi masalah `Fatal error: Class "ZipArchive" not found` yang muncul saat mengunduh ZIP (Per Tingkat, Per Kelas, atau Per Tanggal) pada sistem PHP tanpa ekstensi zip.
+   - Dibuat fungsi universal `create_zip_archive()` di `config/functions.php`:
+     - Secara otomatis mendeteksi dan menggunakan ekstensi native `ZipArchive` bila tersedia.
+     - Menyediakan mesin fallback murni **Pure-PHP PKZIP Packer** berstandar RFC tanpa dependensi modul eksternal, sehingga pembuatan file `.zip` dijamin 100% berhasil di seluruh komputer/server lokal.
+     - Script `start-server.bat` juga telah diperbarui dengan argumen `-d extension=zip` untuk mengaktifkan dukungan native zip bawaan XAMPP.
+5. **Perbaikan Redirection Header pada Pengaturan Kop & Drive:**
+   - Memperbaiki peringatan `Warning: Cannot modify header information - headers already sent` pada saat menyimpan perubahan di menu **Pengaturan Kop & Drive** (`/admin/pengaturan.php`) dan **Template Ujian** (`/admin/template-ujian.php`).
+   - Struktur file disesuaikan agar pemrosesan formulir POST dan pengalihan URL (`header('Location: ...')`) dieksekusi sebelum output HTML `layout_header.php` dimuat.
+6. **Dropdown Unduh ZIP Per Tingkat:**
    - Masalah clipping / terpotong akibat `overflow: hidden` pada `.card` telah diperbaiki menggunakan class `.card-overflow-visible` dan `z-index: 1050;` sehingga seluruh opsi tingkat (X, XI, XII) tampil utuh dan jelas.
-5. **Modal Pop-up Unduh ZIP Top-Aligned:**
+7. **Modal Pop-up Unduh ZIP Top-Aligned:**
    - Modal unduh *Per Kelas* dan *Per Tanggal* kini tampil langsung di bagian atas layar (`align-items: flex-start; padding-top: 50px;`) dengan animasi *modalTopSlide*, memudahkan pengguna tanpa harus mencari ke bagian tengah/bawah dokumen yang panjang.
-6. **Format Matriks Rekap Kehadiran Siswa:**
+8. **Format Matriks Rekap Kehadiran Siswa:**
    - Judul kolom mata pelajaran diputar 180° secara vertikal (`writing-mode: vertical-rl; transform: rotate(180deg)`), dilengkapi baris sub-header tanggal pelaksanaan (`dd/mm/yyyy`).
    - Kolom terakhir menampilkan **PERSENTASE KEHADIRAN** dengan formula resmi `(Hadir + Dispensasi) / Total Mapel × 100%`.
    - Kode sel presensi menggunakan palet warna lembut (`H` hijau `#15803d`/`#dcfce7`, `D` biru, `I` kuning, `S` ungu, `A` merah, `-` abu-abu).
    - Dilengkapi kartu kelola mata pelajaran terdaftar (*chips* dengan tombol hapus ❌) serta modal input/perbarui mapel dengan pintasan `✅ Set Semua Hadir`.
-7. **Standardisasi Ikon Aksi & Format Excel (.xls):**
+9. **Standardisasi Ikon Aksi & Format Excel (.xls):**
    - Seluruh tabel master dan arsip menggunakan kelompok tombol ikon yang seragam (`.action-btn-group`).
    - Seluruh fitur ekspor dan impor distandarisasikan ke format `.xls` dengan tipe MIME `application/vnd.ms-excel` dan styling `mso-number-format: "\@"` untuk melindungi angka NIS/NIP agar nol di depan tidak hilang.
 

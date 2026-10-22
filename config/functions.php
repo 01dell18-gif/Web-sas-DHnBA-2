@@ -193,3 +193,77 @@ function terbilang($n): string {
     if ($n < 1000000) return terbilang((int)($n / 1000)) . " ribu" . ($n % 1000 !== 0 ? " " . terbilang($n % 1000) : "");
     return (string)$n;
 }
+
+/**
+ * Universal ZIP Creator: Uses ZipArchive if available, falls back to pure PHP PKZIP packer.
+ * Guarantees zero fatal errors even if extension=zip is not loaded in PHP.
+ */
+function create_zip_archive(string $zipFilePath, array $files): bool {
+    // Mode 1: Native PHP ZipArchive if extension loaded
+    if (class_exists('ZipArchive')) {
+        $zip = new ZipArchive();
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($files as $name => $path) {
+                if (file_exists($path)) {
+                    $entryName = is_string($name) ? $name : basename($path);
+                    $zip->addFile($path, $entryName);
+                }
+            }
+            $zip->close();
+            if (file_exists($zipFilePath) && filesize($zipFilePath) > 0) {
+                return true;
+            }
+        }
+    }
+
+    // Mode 2: Pure PHP PKZIP Packer (No extensions required)
+    $time = time();
+    $dtime = ((date('H', $time) << 11) | (date('i', $time) << 5) | (date('s', $time) >> 1)) & 0xFFFF;
+    $ddate = (((date('Y', $time) - 1980) << 9) | (date('m', $time) << 5) | date('d', $time)) & 0xFFFF;
+
+    $datasec = [];
+    $ctrl_dir = [];
+    $offset = 0;
+
+    foreach ($files as $name => $path) {
+        if (!file_exists($path)) continue;
+        $entryName = is_string($name) ? $name : basename($path);
+        $entryName = str_replace('\\', '/', $entryName);
+        $data = file_get_contents($path);
+        $unc_len = strlen($data);
+        $crc = crc32($data);
+
+        if (function_exists('gzdeflate')) {
+            $c_data = gzdeflate($data);
+            $c_len = strlen($c_data);
+            $method = 8;
+        } else {
+            $c_data = $data;
+            $c_len = $unc_len;
+            $method = 0;
+        }
+
+        // Local header: 30 bytes + name + data
+        $fr = pack('VvvvvvVVVvv', 0x04034b50, 20, 0, $method, $dtime, $ddate, $crc, $c_len, $unc_len, strlen($entryName), 0);
+        $fr .= $entryName . $c_data;
+        $datasec[] = $fr;
+
+        // Central directory record: 46 bytes + name
+        $cdrec = pack('VvvvvvvVVVvvvvvVV', 0x02014b50, 20, 20, 0, $method, $dtime, $ddate, $crc, $c_len, $unc_len, strlen($entryName), 0, 0, 0, 0, 32, $offset);
+        $cdrec .= $entryName;
+        $ctrl_dir[] = $cdrec;
+
+        $offset += strlen($fr);
+    }
+
+    if (empty($datasec)) return false;
+
+    $ctrldir_data = implode('', $ctrl_dir);
+    $data_data = implode('', $datasec);
+
+    // End of central directory record: 22 bytes
+    $eocd = pack('VvvvvVVv', 0x06054b50, 0, 0, count($ctrl_dir), count($ctrl_dir), strlen($ctrldir_data), strlen($data_data), 0);
+
+    return (file_put_contents($zipFilePath, $data_data . $ctrldir_data . $eocd) !== false);
+}
+
