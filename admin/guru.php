@@ -558,12 +558,11 @@ function showGuruToast(msg) {
 }
 
 function confirmResetAllGuru() {
-    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data guru dari sistem untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formDeleteAllGuru').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formDeleteAllGuru',
+        'Hapus Semua Data Guru',
+        'PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data guru dari sistem untuk memulai dari awal.'
+    );
 }
 </script>
 

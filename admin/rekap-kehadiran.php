@@ -566,12 +566,11 @@ function setAllModalStatus(status) {
 }
 
 function confirmResetClassAbsensi(cid, className) {
-    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data presensi/daftar hadir kelas " + className + " dari sistem.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formResetClassAbsensi').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formResetClassAbsensi',
+        'Hapus Presensi Kelas ' + className,
+        'PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data presensi/daftar hadir kelas ' + className + ' dari sistem.'
+    );
 }
 </script>
 

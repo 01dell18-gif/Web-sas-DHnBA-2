@@ -11,14 +11,15 @@ CREATE TABLE IF NOT EXISTS `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(50) UNIQUE NOT NULL,
     `password` VARCHAR(255) NOT NULL,
+    `password_plain` VARCHAR(255) DEFAULT '',
     `nama_lengkap` VARCHAR(100) DEFAULT '',
     `role` VARCHAR(20) DEFAULT 'admin',
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMKN', 'admin', '2026-10-22 03:03:04', '2026-10-22 05:22:33'),
-(2, 'operator', '$2y$10$frHJGKF5ZNQ9PgEga0gGQeCN9QJJeTxwfvmcGSKUx14CpTmKFjB9m', 'Operator SAS SMK', 'operator', '2026-10-22 03:47:12', '2026-10-22 04:44:07');
+INSERT INTO `users` (`id`, `username`, `password`, `password_plain`, `nama_lengkap`, `role`, `created_at`, `updated_at`) VALUES
+(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'admin123', 'Administrator SAS SMKN', 'admin', '2026-10-22 03:03:04', '2026-10-22 05:22:33'),
+(2, 'operator', '$2y$10$frHJGKF5ZNQ9PgEga0gGQeCN9QJJeTxwfvmcGSKUx14CpTmKFjB9m', 'operator123', 'Operator SAS SMK', 'operator', '2026-10-22 03:47:12', '2026-10-22 04:44:07');
 
 
 DROP TABLE IF EXISTS `pengaturan`;

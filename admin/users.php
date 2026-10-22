@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $newId = dbInsert('users', [
                     'username' => $username,
                     'password' => password_hash($password, PASSWORD_BCRYPT),
+                    'password_plain' => $password,
                     'nama_lengkap' => $nama,
                     'role' => $role,
                     'created_at' => date('Y-m-d H:i:s'),
@@ -69,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         exit;
                     }
                     $data['password'] = password_hash($password, PASSWORD_BCRYPT);
+                    $data['password_plain'] = $password;
                 }
 
                 dbUpdate('users', $data, 'id = :id', ['id' => $id]);
@@ -224,6 +226,7 @@ require_once __DIR__ . '/layout_header.php';
                             <tr>
                                 <th style="width: 40px; text-align: center;">No</th>
                                 <th>Username</th>
+                                <th>Password</th>
                                 <th>Nama Lengkap</th>
                                 <th style="text-align: center;">Hak Akses</th>
                                 <th>Tanggal Dibuat</th>
@@ -242,6 +245,15 @@ require_once __DIR__ . '/layout_header.php';
                                             <?php if ((int)$u['id'] === (int)$_SESSION['admin_id']): ?>
                                                 <span class="badge badge-info" style="font-size: 0.65rem; padding: 1px 5px; margin-left: 3px;">Anda</span>
                                             <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 2px 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem;">
+                                            <span id="passText_<?= $u['id'] ?>" data-password="<?= htmlspecialchars($u['password_plain'] ?: 'admin123') ?>" style="min-width: 65px; display: inline-block;">••••••••</span>
+                                            <button type="button" class="btn-icon-action btn-icon-view" style="width: 24px; height: 24px; font-size: 0.75rem; padding: 0; display: inline-flex; align-items: center; justify-content: center;" 
+                                                    onclick="togglePasswordVisibility(<?= $u['id'] ?>)" title="Lihat / Sembunyikan Password">
+                                                <i id="passIcon_<?= $u['id'] ?>" class="bi bi-eye"></i>
+                                            </button>
                                         </div>
                                     </td>
                                     <td>
@@ -288,5 +300,25 @@ require_once __DIR__ . '/layout_header.php';
         </div>
     </div>
 </div>
+
+<script>
+function togglePasswordVisibility(userId) {
+    const textEl = document.getElementById('passText_' + userId);
+    const iconEl = document.getElementById('passIcon_' + userId);
+    if (!textEl || !iconEl) return;
+    const realPass = textEl.getAttribute('data-password');
+    if (textEl.textContent === '••••••••') {
+        textEl.textContent = realPass;
+        iconEl.classList.remove('bi-eye');
+        iconEl.classList.add('bi-eye-slash');
+        iconEl.parentElement.title = "Sembunyikan Password";
+    } else {
+        textEl.textContent = '••••••••';
+        iconEl.classList.remove('bi-eye-slash');
+        iconEl.classList.add('bi-eye');
+        iconEl.parentElement.title = "Lihat Password";
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

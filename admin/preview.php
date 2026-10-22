@@ -13,14 +13,14 @@ if ($type === 'berita-acara' || $type === 'berita_acara' || $type === 'ba') {
     $table = 'berita_acara';
     $docTypeName = 'Berita Acara Ujian';
     $docBadge = 'BA';
-    $streamUrl = "/admin/berita-acara.php?action=view_single&id={$id}&raw=1";
+    $streamUrl = "/admin/berita-acara.php?action=view_single&id={$id}";
     $downloadUrl = "/admin/berita-acara.php?action=download_single&id={$id}";
     $doc = dbFetch("SELECT * FROM berita_acara WHERE id = :id", ['id' => $id]);
 } else {
     $table = 'absensi';
     $docTypeName = 'Daftar Hadir Ujian';
     $docBadge = 'DH';
-    $streamUrl = "/admin/absensi.php?action=view_single&id={$id}&raw=1";
+    $streamUrl = "/admin/absensi.php?action=view_single&id={$id}";
     $downloadUrl = "/admin/absensi.php?action=download_single&id={$id}";
     $doc = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
 }
@@ -261,6 +261,9 @@ $title = $doc ? "Pratinjau {$docTypeName} - {$doc['nama_kelas']} ({$doc['mata_pe
                 <?php endif; ?>
 
                 <?php if ($fileExists): ?>
+                    <a href="<?= $streamUrl ?>" target="_blank" class="btn-preview btn-preview-secondary" title="Buka PDF di Tab Baru Terpisah">
+                        <i class="bi bi-box-arrow-up-right"></i> <span>Tab Baru</span>
+                    </a>
                     <button type="button" class="btn-preview btn-preview-secondary" onclick="printPdfDocument()" title="Cetak / Print Langsung Dokumen">
                         <i class="bi bi-printer-fill"></i> <span>Cetak</span>
                     </button>
@@ -284,7 +287,20 @@ $title = $doc ? "Pratinjau {$docTypeName} - {$doc['nama_kelas']} ({$doc['mata_pe
                     </button>
                 </div>
             <?php else: ?>
-                <iframe id="pdfFrame" class="preview-iframe" src="<?= $streamUrl ?>" title="Pratinjau PDF"></iframe>
+                <object id="pdfObject" data="<?= $streamUrl ?>#toolbar=1&navpanes=1" type="application/pdf" style="width: 100%; height: 100%; border: none; display: block;">
+                    <iframe id="pdfFrame" class="preview-iframe" src="<?= $streamUrl ?>" title="Pratinjau PDF">
+                        <div class="error-container">
+                            <div class="error-icon"><i class="bi bi-file-earmark-pdf"></i></div>
+                            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #fff;">Pratinjau Memerlukan Buka Tab Langsung</h2>
+                            <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1.5rem;">
+                                Browser Anda memerlukan akses tab langsung untuk merender dokumen PDF ini.
+                            </p>
+                            <a href="<?= $streamUrl ?>" target="_blank" class="btn-preview btn-preview-primary">
+                                <i class="bi bi-box-arrow-up-right"></i> Buka Dokumen Langsung di Tab Baru
+                            </a>
+                        </div>
+                    </iframe>
+                </object>
             <?php endif; ?>
         </main>
 

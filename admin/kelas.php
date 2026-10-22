@@ -253,12 +253,11 @@ require_once __DIR__ . '/layout_header.php';
 
 <script>
 function confirmResetAllKelas() {
-    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data kelas (beserta seluruh data siswa di dalamnya) dari sistem untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formDeleteAllKelas').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formDeleteAllKelas',
+        'Hapus Semua Data Kelas',
+        'PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH data kelas beserta seluruh data siswa di dalamnya dari sistem untuk memulai dari awal.'
+    );
 }
 </script>
 

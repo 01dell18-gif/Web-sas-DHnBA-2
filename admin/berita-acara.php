@@ -25,25 +25,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_single') {
 // Handle Single View Inline / PDF Stream
 if (isset($_GET['action']) && $_GET['action'] === 'view_single') {
     $id = (int)($_GET['id'] ?? 0);
-    if (!isset($_GET['raw'])) {
-        header("Location: /admin/preview.php?type=berita_acara&id={$id}");
-        exit;
-    }
     $rec = dbFetch("SELECT * FROM berita_acara WHERE id = :id", ['id' => $id]);
     if ($rec && !empty($rec['pdf_path'])) {
         $fullPath = BASE_PATH . '/' . $rec['pdf_path'];
         if (file_exists($fullPath)) {
             while (ob_get_level()) { ob_end_clean(); }
+            header_remove('Pragma');
+            header_remove('Expires');
             header('Content-Type: application/pdf');
-            header('Content-Disposition: inline');
-            header('X-Content-Type-Options: nosniff');
-            header('Cache-Control: public, max-age=3600');
+            header('Content-Disposition: inline; filename="' . basename($fullPath) . '"');
+            header('Content-Transfer-Encoding: binary');
+            header('Accept-Ranges: bytes');
+            header('Cache-Control: private, max-age=0, must-revalidate');
             header('Content-Length: ' . filesize($fullPath));
             readfile($fullPath);
             exit;
         }
     }
-    die('Berkas PDF tidak ditemukan di server.');
+    set_flash('danger', 'Berkas PDF tidak ditemukan di server.');
+    header('Location: /admin/berita-acara.php');
+    exit;
 }
 
 // Handle ZIP Download
@@ -495,8 +496,8 @@ require_once __DIR__ . '/layout_header.php';
                                                class="btn-icon-action btn-icon-download" title="Unduh PDF Berita Acara">
                                                 <i class="bi bi-download"></i>
                                             </a>
-                                            <a href="/admin/preview.php?type=berita_acara&id=<?= $doc['id'] ?>" target="_blank"
-                                               class="btn-icon-action btn-icon-view" title="Buka Pratinjau di Tab Baru">
+                                            <a href="/admin/berita-acara.php?action=view_single&id=<?= $doc['id'] ?>" target="_blank"
+                                               class="btn-icon-action btn-icon-view" title="Buka Pratinjau Dokumen di Tab Baru">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             <button type="button" class="btn-icon-action btn-icon-detail" 
@@ -679,7 +680,7 @@ function showRecordDetail(doc) {
         </table>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
             <a href="/admin/berita-acara.php?action=download_single&id=${doc.id}" class="btn btn-primary btn-sm">📥 Unduh PDF</a>
-            <a href="/admin/preview.php?type=berita_acara&id=${doc.id}" target="_blank" class="btn btn-secondary btn-sm">👁️ Buka Pratinjau Tab Baru</a>
+            <a href="/admin/berita-acara.php?action=view_single&id=${doc.id}" target="_blank" class="btn btn-secondary btn-sm">👁️ Buka Pratinjau Tab Baru</a>
         </div>
     `;
     document.getElementById('modalDetailContent').innerHTML = content;
@@ -687,12 +688,11 @@ function showRecordDetail(doc) {
 }
 
 function confirmResetAllBA() {
-    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH berkas arsip berita acara (database, file PDF, dan foto kegiatan) dari server untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formDeleteAllBA').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formDeleteAllBA',
+        'Hapus Seluruh Arsip Berita Acara',
+        'PERINGATAN: Tindakan ini akan MENGHAPUS SELURUH berkas arsip berita acara (database, file PDF, dan foto kegiatan) dari server untuk memulai dari awal.'
+    );
 }
 </script>
 

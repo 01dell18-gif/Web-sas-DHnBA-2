@@ -433,12 +433,11 @@ require_once __DIR__ . '/layout_header.php';
 
 <script>
 function confirmResetAllDocuments() {
-    const code = prompt("PERINGATAN TINGKAT TINGGI: Tindakan ini akan MENGHAPUS SELURUH dokumen Daftar Hadir dan Berita Acara dari sistem.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formResetAllDocs').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formResetAllDocs',
+        'Hapus Seluruh Dokumen Ujian',
+        'PERINGATAN TINGKAT TINGGI: Tindakan ini akan MENGHAPUS SELURUH dokumen Daftar Hadir dan Berita Acara dari sistem untuk memulai dari awal.'
+    );
 }
 </script>
 

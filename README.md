@@ -68,27 +68,45 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 | `/admin/rekonsiliasi.php` | Admin & Operator | **Audit & Rekonsiliasi Dokumen:** Pencocokan silang otomatis antara Arsip Daftar Hadir dan Berita Acara untuk melacak sesi yang belum dibuat atau terinput ganda, serta tombol Hapus Seluruh Dokumen Audit. |
 | `/admin/template-ujian.php` | **Khusus Admin** | **Template Ujian & Editor WYSIWYG:** Konfigurasi template ujian, nama ujian, tahun ajaran, dan editor WYSIWYG berita acara dengan palet tag placeholder interaktif serta live simulasi pratinjau teks. |
 | `/admin/pengaturan.php` | **Khusus Admin** | **Pengaturan Identitas & Kop Surat:** Unggah kop surat resmi, ganti logo, nama sekolah, alamat, kontak, dan URL Google Drive. |
-| `/admin/users.php` | **Khusus Admin** | **Manajemen User:** Tambah, edit, ganti password, dan hapus pengguna dengan pembagian peran Admin vs Operator. |
+| `/admin/users.php` | **Khusus Admin** | **Manajemen Pengguna & Hak Akses:** Tambah, edit, dan hapus pengguna dengan pembagian peran Admin vs Operator. Dilengkapi kolom **Password** pada tabel *Daftar Pengguna Terdaftar* dengan ikon mata (`👁️`) untuk toggle melihat password secara interaktif. |
 | `/admin/password.php` | Admin & Operator | **Ganti Password Akun:** Ubah kata sandi akun masing-masing pengguna dengan enkripsi bcrypt. |
 | `/admin/logout.php` | Admin & Operator | Mengakhiri sesi pengguna secara aman. |
 
 ---
 
 ## 🎨 Pembaruan Desain & UI/UX Terkini
-1. **Dropdown Unduh ZIP Per Tingkat:**
+1. **Pratinjau Dokumen Tab Baru (Ikon Mata 👁️ Langsung Tampil Utuh):**
+   - Memperbaiki masalah halaman pratinjau yang sebelumnya tampil kosong/blank akibat pembatasan rendering PDF di dalam `<iframe>` pada peramban berbasis Chromium (Google Chrome / Microsoft Edge).
+   - Ikon mata (`👁️`) kini langsung membuka dokumen PDF resmi secara *native* di tab baru (`/admin/absensi.php?action=view_single&id=...` dan `/admin/berita-acara.php?action=view_single&id=...`) dengan header `application/pdf; inline` dan pembersihan cache limiter. Dokumen A4 tampil 100% utuh, jernih, dan responsif dengan fitur bawaan peramban (zoom, navigasi halaman, cetak, pencarian teks, dan unduh).
+   - Halaman `/admin/preview.php` juga disempurnakan dengan fallback tag `<object>` dan `<embed>` serta tombol cepat *Buka Tab Baru*.
+2. **Popup Konfirmasi "Lanjut / Tidak" untuk Tombol Hapus Semua Data:**
+   - Menghilangkan dialog `prompt()` bawaan peramban yang mengharuskan mengetik teks kata sandi/kata kunci secara manual.
+   - Menggantikannya dengan modal dialog konfirmasi modern dan elegan (`#modalConfirmResetGlobal`) dengan ikon peringatan tingkat tinggi dan dua pilihan tombol tegas: **"Lanjut"** (berwarna merah untuk melanjutkan penghapusan) dan **"Tidak"** (berwarna abu-abu untuk membatalkan).
+   - Diterapkan secara menyeluruh di semua modul:
+     - 👨‍🏫 **Data Guru:** Reset Hapus Semua Guru
+     - 🏫 **Data Kelas:** Reset Hapus Semua Kelas
+     - 👨‍🎓 **Data Siswa:** Reset Hapus Semua Siswa
+     - 📋 **Arsip Daftar Hadir:** Reset Hapus Semua Arsip Daftar Hadir
+     - 📑 **Arsip Berita Acara:** Reset Hapus Semua Arsip Berita Acara
+     - ⚖️ **Rekonsiliasi Dokumen:** Reset Hapus Seluruh Dokumen Audit
+     - 📊 **Rekap Kehadiran:** Reset Hapus Presensi Kelas Tertentu
+3. **Kolom Password dengan Fitur Intip/Lihat Password pada Manajemen Pengguna:**
+   - Tabel *Daftar Pengguna Terdaftar* di menu **Manajemen Pengguna & Hak Akses** kini menyertakan kolom **Password**.
+   - Secara bawaan, kata sandi ditampilkan dalam format titik-titik tersamarkan (`••••••••`) demi privasi dan keamanan visual.
+   - Di samping kata sandi disediakan tombol ikon mata (`👁️` / `bi-eye`). Saat diklik, kata sandi pengguna langsung ditampilkan dalam teks biasa (*plain text*) dan ikon berubah menjadi `bi-eye-slash` untuk menyembunyikannya kembali jika diklik ulang.
+   - Sinkronisasi kolom `password_plain` otomatis tersimpan pada basis data SQLite (`database/sas.sqlite`) dan skema MySQL (`database/database_mysql.sql`) saat penambahan maupun pembaruan data pengguna.
+4. **Dropdown Unduh ZIP Per Tingkat:**
    - Masalah clipping / terpotong akibat `overflow: hidden` pada `.card` telah diperbaiki menggunakan class `.card-overflow-visible` dan `z-index: 1050;` sehingga seluruh opsi tingkat (X, XI, XII) tampil utuh dan jelas.
-2. **Modal Pop-up Unduh ZIP Top-Aligned:**
+5. **Modal Pop-up Unduh ZIP Top-Aligned:**
    - Modal unduh *Per Kelas* dan *Per Tanggal* kini tampil langsung di bagian atas layar (`align-items: flex-start; padding-top: 50px;`) dengan animasi *modalTopSlide*, memudahkan pengguna tanpa harus mencari ke bagian tengah/bawah dokumen yang panjang.
-3. **Format Matriks Rekap Kehadiran Siswa:**
+6. **Format Matriks Rekap Kehadiran Siswa:**
    - Judul kolom mata pelajaran diputar 180° secara vertikal (`writing-mode: vertical-rl; transform: rotate(180deg)`), dilengkapi baris sub-header tanggal pelaksanaan (`dd/mm/yyyy`).
    - Kolom terakhir menampilkan **PERSENTASE KEHADIRAN** dengan formula resmi `(Hadir + Dispensasi) / Total Mapel × 100%`.
    - Kode sel presensi menggunakan palet warna lembut (`H` hijau `#15803d`/`#dcfce7`, `D` biru, `I` kuning, `S` ungu, `A` merah, `-` abu-abu).
    - Dilengkapi kartu kelola mata pelajaran terdaftar (*chips* dengan tombol hapus ❌) serta modal input/perbarui mapel dengan pintasan `✅ Set Semua Hadir`.
-4. **Standardisasi Ikon Aksi & Format Excel (.xls):**
+7. **Standardisasi Ikon Aksi & Format Excel (.xls):**
    - Seluruh tabel master dan arsip menggunakan kelompok tombol ikon yang seragam (`.action-btn-group`).
    - Seluruh fitur ekspor dan impor distandarisasikan ke format `.xls` dengan tipe MIME `application/vnd.ms-excel` dan styling `mso-number-format: "\@"` untuk melindungi angka NIS/NIP agar nol di depan tidak hilang.
-5. **Pratinjau Tab Baru (Ikon Mata 👁️):**
-   - Mengarahkan ke viewer dokumen `/admin/preview.php` lengkap dengan tombol cetak langsung, unduh PDF, dan galeri drawer foto dokumentasi.
 
 ---
 

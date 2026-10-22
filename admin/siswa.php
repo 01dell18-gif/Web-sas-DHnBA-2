@@ -326,12 +326,11 @@ require_once __DIR__ . '/layout_header.php';
 <script>
 function confirmResetAllSiswa(classId) {
     const targetText = classId > 0 ? "seluruh siswa pada KELAS INI" : "SELURUH data siswa di SEMUA KELAS";
-    const code = prompt("PERINGATAN: Tindakan ini akan MENGHAPUS " + targetText + " dari sistem untuk memulai dari awal.\n\nKetik 'HAPUS' (huruf besar) untuk melanjutkan:");
-    if (code === 'HAPUS') {
-        document.getElementById('formDeleteAllSiswa').submit();
-    } else if (code !== null) {
-        alert("Konfirmasi batal: Kata kunci tidak sesuai.");
-    }
+    showConfirmResetModal(
+        'formDeleteAllSiswa',
+        'Hapus Semua Data Siswa',
+        'PERINGATAN: Tindakan ini akan MENGHAPUS ' + targetText + ' dari sistem secara permanen untuk memulai dari awal.'
+    );
 }
 </script>
 
