@@ -22,15 +22,22 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_single') {
     exit;
 }
 
-// Handle Single View Inline
+// Handle Single View Inline / PDF Stream
 if (isset($_GET['action']) && $_GET['action'] === 'view_single') {
     $id = (int)($_GET['id'] ?? 0);
+    if (!isset($_GET['raw'])) {
+        header("Location: /admin/preview.php?type=absensi&id={$id}");
+        exit;
+    }
     $rec = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
     if ($rec && !empty($rec['pdf_path'])) {
         $fullPath = BASE_PATH . '/' . $rec['pdf_path'];
         if (file_exists($fullPath)) {
+            while (ob_get_level()) { ob_end_clean(); }
             header('Content-Type: application/pdf');
-            header('Content-Disposition: inline; filename="' . basename($fullPath) . '"');
+            header('Content-Disposition: inline');
+            header('X-Content-Type-Options: nosniff');
+            header('Cache-Control: public, max-age=3600');
             header('Content-Length: ' . filesize($fullPath));
             readfile($fullPath);
             exit;
@@ -470,8 +477,8 @@ require_once __DIR__ . '/layout_header.php';
                                                class="btn-icon-action btn-icon-download" title="Unduh PDF Daftar Hadir">
                                                 <i class="bi bi-download"></i>
                                             </a>
-                                            <a href="/admin/absensi.php?action=view_single&id=<?= $doc['id'] ?>" target="_blank"
-                                               class="btn-icon-action btn-icon-view" title="Buka PDF di Tab Baru">
+                                            <a href="/admin/preview.php?type=absensi&id=<?= $doc['id'] ?>" target="_blank"
+                                               class="btn-icon-action btn-icon-view" title="Buka Pratinjau di Tab Baru">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             <button type="button" class="btn-icon-action btn-icon-detail" 
@@ -613,7 +620,7 @@ function showRecordDetail(doc) {
         </table>
         <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
             <a href="/admin/absensi.php?action=download_single&id=${doc.id}" class="btn btn-primary btn-sm">📥 Unduh PDF</a>
-            <a href="/admin/absensi.php?action=view_single&id=${doc.id}" target="_blank" class="btn btn-secondary btn-sm">👁️ Lihat Tab Baru</a>
+            <a href="/admin/preview.php?type=absensi&id=${doc.id}" target="_blank" class="btn btn-secondary btn-sm">👁️ Buka Pratinjau Tab Baru</a>
         </div>
     `;
     document.getElementById('modalDetailContent').innerHTML = content;

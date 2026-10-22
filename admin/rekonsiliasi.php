@@ -374,7 +374,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <?php if (!empty($s['dh'])): ?>
                                     <?php foreach ($s['dh'] as $d): ?>
                                         <div>
-                                            <a href="/admin/absensi.php?action=view_single&id=<?= $d['id'] ?>" target="_blank" class="doc-chip doc-chip-dh" title="Buka PDF Daftar Hadir #<?= $d['id'] ?>">
+                                            <a href="/admin/preview.php?type=absensi&id=<?= $d['id'] ?>" target="_blank" class="doc-chip doc-chip-dh" title="Buka PDF Daftar Hadir #<?= $d['id'] ?>">
                                                 <i class="bi bi-file-earmark-check"></i>
                                                 <span>DH #<?= $d['id'] ?></span>
                                                 <span class="doc-chip-sub">(<?= htmlspecialchars($d['nama_pengawas_1']) ?>)</span>
@@ -391,7 +391,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <?php if (!empty($s['ba'])): ?>
                                     <?php foreach ($s['ba'] as $b): ?>
                                         <div>
-                                            <a href="/admin/berita-acara.php?action=view_single&id=<?= $b['id'] ?>" target="_blank" class="doc-chip doc-chip-ba" title="Buka PDF Berita Acara #<?= $b['id'] ?>">
+                                            <a href="/admin/preview.php?type=berita_acara&id=<?= $b['id'] ?>" target="_blank" class="doc-chip doc-chip-ba" title="Buka PDF Berita Acara #<?= $b['id'] ?>">
                                                 <i class="bi bi-clipboard-data"></i>
                                                 <span>BA #<?= $b['id'] ?></span>
                                                 <span class="doc-chip-sub">(<?= htmlspecialchars($b['nama_pengawas_1']) ?>)</span>
