@@ -48,16 +48,24 @@ for p in pages:
 
 print("5. Testing Guru pickers in Absensi & Berita Acara...")
 abs_content = opener.open(f"{BASE}/absensi.php").read().decode()
-assert "select-guru-picker" in abs_content
-assert "autoFillGuru" in abs_content
-print("   [OK] absensi.php has autoFillGuru and teacher dropdown!")
+assert "input-guru-search" in abs_content
+assert "list_guru_pengawas" in abs_content
+assert "handleGuruSearch" in abs_content
+print("   [OK] absensi.php has unified typable Nama Lengkap with datalist & auto-search!")
 
 ba_content = opener.open(f"{BASE}/berita-acara.php").read().decode()
-assert "select-guru-picker" in ba_content
-assert "autoFillGuru" in ba_content
-print("   [OK] berita-acara.php has autoFillGuru and teacher dropdown!")
+assert "input-guru-search" in ba_content
+assert "list_guru_pengawas" in ba_content
+assert "handleGuruSearch" in ba_content
+print("   [OK] berita-acara.php has unified typable Nama Lengkap with datalist & auto-search!")
 
-print("6. Testing Reset Buttons presence...")
+print("6. Testing Guru Status Quick Access (Ceklis)...")
+guru_content = opener.open(f"{BASE}/admin/guru.php").read().decode()
+assert "ceklis-status-guru" in guru_content
+assert "quickToggleGuru" in guru_content
+print("   [OK] admin/guru.php has fast-access status checkbox (ceklis)!")
+
+print("7. Testing Reset Buttons presence...")
 kelas_content = opener.open(f"{BASE}/admin/kelas.php").read().decode()
 assert "confirmResetAllKelas" in kelas_content
 print("   [OK] admin/kelas.php has confirmResetAllKelas button!")

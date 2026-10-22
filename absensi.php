@@ -202,24 +202,17 @@ $defaultTpl = $templates[0] ?? [
                                 <h4 style="font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--primary);">
                                     <i class="bi bi-person-check-fill"></i> Pengawas I
                                 </h4>
-                                <?php if (!empty($gurus)): ?>
-                                    <div class="form-group" style="margin-bottom: 0.45rem;">
-                                        <label class="form-label" style="font-size: 0.74rem; color: var(--text-muted);">
-                                            Pilih Cepat dari Data Guru:
-                                        </label>
-                                        <select class="form-select select-guru-picker" onchange="autoFillGuru(1, this)" style="background: #f8fafc; font-size: 0.8rem; padding: 0.3rem 0.5rem;">
-                                            <option value="">-- Pilih Guru / Pengawas I --</option>
-                                            <?php foreach ($gurus as $g): ?>
-                                                <option value="<?= htmlspecialchars($g['nama']) ?>" data-nip="<?= htmlspecialchars($g['nip'] !== '-' ? $g['nip'] : '') ?>">
-                                                    <?= htmlspecialchars($g['nama']) ?> (<?= htmlspecialchars($g['nip'] ?: '-') ?>)
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                <?php endif; ?>
                                 <div class="form-group">
-                                    <label class="form-label" for="nama_pengawas_1">Nama Lengkap <span class="required">*</span></label>
-                                    <input type="text" name="nama_pengawas_1" id="nama_pengawas_1" class="form-control" placeholder="Nama pengawas 1" required>
+                                    <label class="form-label" for="nama_pengawas_1">
+                                        Nama Lengkap <span class="required">*</span>
+                                        <span style="font-weight: normal; font-size: 0.72rem; color: var(--text-muted);">(Ketik nama / pilih guru)</span>
+                                    </label>
+                                    <input type="text" name="nama_pengawas_1" id="nama_pengawas_1" list="list_guru_pengawas" 
+                                           class="form-control input-guru-search" 
+                                           placeholder="Ketik untuk mencari atau pilih guru..." 
+                                           autocomplete="off" required 
+                                           oninput="handleGuruSearch(1, this)" 
+                                           onchange="handleGuruSearch(1, this)">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="nip_pengawas_1">NIP / NIPPPK (Opsional)</label>
@@ -230,24 +223,17 @@ $defaultTpl = $templates[0] ?? [
                                 <h4 style="font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--primary);">
                                     <i class="bi bi-person-check"></i> Pengawas II
                                 </h4>
-                                <?php if (!empty($gurus)): ?>
-                                    <div class="form-group" style="margin-bottom: 0.45rem;">
-                                        <label class="form-label" style="font-size: 0.74rem; color: var(--text-muted);">
-                                            Pilih Cepat dari Data Guru:
-                                        </label>
-                                        <select class="form-select select-guru-picker" onchange="autoFillGuru(2, this)" style="background: #f8fafc; font-size: 0.8rem; padding: 0.3rem 0.5rem;">
-                                            <option value="">-- Pilih Guru / Pengawas II --</option>
-                                            <?php foreach ($gurus as $g): ?>
-                                                <option value="<?= htmlspecialchars($g['nama']) ?>" data-nip="<?= htmlspecialchars($g['nip'] !== '-' ? $g['nip'] : '') ?>">
-                                                    <?= htmlspecialchars($g['nama']) ?> (<?= htmlspecialchars($g['nip'] ?: '-') ?>)
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                <?php endif; ?>
                                 <div class="form-group">
-                                    <label class="form-label" for="nama_pengawas_2">Nama Lengkap (Opsional)</label>
-                                    <input type="text" name="nama_pengawas_2" id="nama_pengawas_2" class="form-control" placeholder="Nama pengawas 2">
+                                    <label class="form-label" for="nama_pengawas_2">
+                                        Nama Lengkap (Opsional)
+                                        <span style="font-weight: normal; font-size: 0.72rem; color: var(--text-muted);">(Ketik nama / pilih guru)</span>
+                                    </label>
+                                    <input type="text" name="nama_pengawas_2" id="nama_pengawas_2" list="list_guru_pengawas" 
+                                           class="form-control input-guru-search" 
+                                           placeholder="Ketik untuk mencari atau pilih guru..." 
+                                           autocomplete="off" 
+                                           oninput="handleGuruSearch(2, this)" 
+                                           onchange="handleGuruSearch(2, this)">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="nip_pengawas_2">NIP / NIPPPK (Opsional)</label>
@@ -255,6 +241,15 @@ $defaultTpl = $templates[0] ?? [
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Datalist Master Guru untuk Pencarian Cepat Langsung di Kolom Nama -->
+                        <datalist id="list_guru_pengawas">
+                            <?php foreach ($gurus as $g): ?>
+                                <option value="<?= htmlspecialchars($g['nama']) ?>">
+                                    <?= htmlspecialchars($g['nip'] && $g['nip'] !== '-' ? 'NIP. ' . $g['nip'] : 'Guru / Pengawas') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </datalist>
 
                         <!-- Mode Tanda Tangan -->
                         <div class="form-group" style="margin-top: 1rem;">
@@ -447,21 +442,32 @@ $defaultTpl = $templates[0] ?? [
 <script src="/assets/js/signature-pad.js"></script>
 <script src="/assets/js/absensi.js"></script>
 <script>
-function autoFillGuru(num, el) {
-    const opt = el.options[el.selectedIndex];
-    if (opt && opt.value) {
-        const nameInput = document.getElementById('nama_pengawas_' + num);
+window.GURU_DATA = <?= json_encode(array_column($gurus, 'nip', 'nama'), JSON_UNESCAPED_UNICODE) ?>;
+
+function handleGuruSearch(num, el) {
+    const val = el.value.trim();
+    if (window.GURU_DATA && window.GURU_DATA.hasOwnProperty(val)) {
         const nipInput = document.getElementById('nip_pengawas_' + num);
-        if (nameInput) {
-            nameInput.value = opt.value;
-            nameInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
         if (nipInput) {
-            nipInput.value = opt.getAttribute('data-nip') || '';
+            const nipVal = window.GURU_DATA[val];
+            nipInput.value = (nipVal && nipVal !== '-') ? nipVal : '';
             nipInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
     }
 }
+function autoFillGuru(num, el) {
+    handleGuruSearch(num, el);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.input-guru-search').forEach(inp => {
+        inp.addEventListener('focus', function() {
+            if (this.showPicker) {
+                try { this.showPicker(); } catch(e) {}
+            }
+        });
+    });
+});
 
 function applyExamTemplate(tplId) {
     const select = document.getElementById('selectTemplate');
