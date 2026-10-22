@@ -788,6 +788,121 @@ textarea.form-control {
     width: 100%;
 }
 
+/* =========================================================
+   Standardized Action Icon Buttons (Edit & Hapus Konsisten)
+   ========================================================= */
+.action-btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    vertical-align: middle;
+}
+.action-btn-group form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+
+.btn-icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 6px;
+    font-size: 0.925rem;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.btn-icon-action i {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+/* Tombol Edit: Kotak putih/slate dengan border halus & ikon pensil */
+.btn-icon-edit {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.btn-icon-edit:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+/* Tombol Hapus: Kotak soft pink/red dengan border & ikon tong sampah merah */
+.btn-icon-delete {
+    background: #fff1f2;
+    border: 1px solid #ffe4e6;
+    color: #e11d48;
+    box-shadow: 0 1px 2px rgba(225, 29, 72, 0.04);
+}
+.btn-icon-delete:hover {
+    background: #ffe4e6;
+    border-color: #fecdd3;
+    color: #be123c;
+    box-shadow: 0 2px 5px rgba(225, 29, 72, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Tombol View: Soft blue */
+.btn-icon-view {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    color: #2563eb;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.04);
+}
+.btn-icon-view:hover {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Tombol Download: Soft emerald */
+.btn-icon-download {
+    background: #ecfdf5;
+    border: 1px solid #d1fae5;
+    color: #059669;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.04);
+}
+.btn-icon-download:hover {
+    background: #d1fae5;
+    border-color: #a7f3d0;
+    color: #047857;
+    box-shadow: 0 2px 5px rgba(5, 150, 105, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Tombol Detail/Search: Soft slate */
+.btn-icon-detail {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    box-shadow: 0 1px 2px rgba(71, 85, 105, 0.04);
+}
+.btn-icon-detail:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    color: #1e293b;
+    box-shadow: 0 2px 5px rgba(71, 85, 105, 0.12);
+    transform: translateY(-1px);
+}
+
 /* Tombol Aksi Formulir */
 .form-actions {
     display: flex;

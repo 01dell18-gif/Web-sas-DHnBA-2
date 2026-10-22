@@ -405,7 +405,7 @@ require_once __DIR__ . '/layout_header.php';
                             <th style="text-align: center;">Rekap Kehadiran</th>
                             <th>Pengawas</th>
                             <th style="text-align: right; width: 90px;">Ukuran PDF</th>
-                            <th style="text-align: center; width: 170px;">Aksi</th>
+                            <th style="text-align: center; width: 160px;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -465,26 +465,26 @@ require_once __DIR__ . '/layout_header.php';
                                         <?= round($doc['file_size'] / 1024) ?> KB
                                     </td>
                                     <td style="text-align: center; white-space: nowrap;">
-                                        <div style="display: inline-flex; gap: 4px;">
+                                        <div class="action-btn-group">
                                             <a href="/admin/absensi.php?action=download_single&id=<?= $doc['id'] ?>" 
-                                               class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Unduh PDF Daftar Hadir">
-                                                📥 Unduh
+                                               class="btn-icon-action btn-icon-download" title="Unduh PDF Daftar Hadir">
+                                                <i class="bi bi-download"></i>
                                             </a>
                                             <a href="/admin/absensi.php?action=view_single&id=<?= $doc['id'] ?>" target="_blank"
-                                               class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Lihat di Tab Baru">
-                                                👁️
+                                               class="btn-icon-action btn-icon-view" title="Buka PDF di Tab Baru">
+                                                <i class="bi bi-eye"></i>
                                             </a>
-                                            <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" 
-                                                     title="Lihat Detail" onclick='showRecordDetail(<?= json_encode($doc, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
-                                                🔍
+                                            <button type="button" class="btn-icon-action btn-icon-detail" 
+                                                     title="Lihat Detail Dokumen" onclick='showRecordDetail(<?= json_encode($doc, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                                                <i class="bi bi-search"></i>
                                             </button>
-                                            <form method="POST" action="/admin/absensi.php" style="display: inline;" 
+                                            <form method="POST" action="/admin/absensi.php" style="display: inline; margin: 0;" 
                                                   onsubmit="return confirm('Hapus dokumen daftar hadir <?= htmlspecialchars($doc['nama_kelas'], ENT_QUOTES) ?> - <?= htmlspecialchars($doc['mata_pelajaran'], ENT_QUOTES) ?>?')">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="id" value="<?= $doc['id'] ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm" style="padding: 4px 8px; font-size: 0.75rem;" title="Hapus Dokumen">
-                                                    🗑️
+                                                <button type="submit" class="btn-icon-action btn-icon-delete" title="Hapus Dokumen">
+                                                    <i class="bi bi-trash3"></i>
                                                 </button>
                                             </form>
                                         </div>

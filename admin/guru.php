@@ -311,7 +311,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th>NIP / NIPPPK</th>
                                 <th>Jabatan</th>
                                 <th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>
-                                <th style="text-align: right; width: 120px;">Aksi</th>
+                                <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -359,19 +359,21 @@ require_once __DIR__ . '/layout_header.php';
                                                 </span>
                                             </label>
                                         </td>
-                                        <td style="text-align: right; white-space: nowrap;">
-                                            <a href="/admin/guru.php?edit=<?= $g['id'] ?>" class="btn btn-secondary btn-sm" title="Edit Data Guru">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <form method="POST" action="/admin/guru.php" style="display: inline;" 
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data guru <?= htmlspecialchars(addslashes($g['nama'])) ?>?')">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="id" value="<?= $g['id'] ?>">
-                                                <button type="submit" class="btn btn-danger-soft btn-sm" title="Hapus Guru">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                        <td style="text-align: center; white-space: nowrap;">
+                                            <div class="action-btn-group">
+                                                <a href="/admin/guru.php?edit=<?= $g['id'] ?>" class="btn-icon-action btn-icon-edit" title="Edit Data Guru">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form method="POST" action="/admin/guru.php" style="display: inline; margin: 0;" 
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus data guru <?= htmlspecialchars(addslashes($g['nama'])) ?>?')">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="id" value="<?= $g['id'] ?>">
+                                                    <button type="submit" class="btn-icon-action btn-icon-delete" title="Hapus Guru">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

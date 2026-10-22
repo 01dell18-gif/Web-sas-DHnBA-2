@@ -107,7 +107,7 @@ $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
                             <tr>
                                 <th>Nama Template</th>
                                 <th style="text-align: center;">Status</th>
-                                <th style="text-align: right;">Aksi</th>
+                                <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -133,19 +133,21 @@ $templates = dbFetchAll("SELECT * FROM template_ujian ORDER BY id DESC");
                                             </button>
                                         </form>
                                     </td>
-                                    <td style="text-align: right; vertical-align: middle; white-space: nowrap;">
-                                        <a href="/admin/template-ujian.php?edit=<?= $t['id'] ?>" class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.775rem;">
-                                            ✏️ Edit
-                                        </a>
-                                        <form method="POST" action="/admin/template-ujian.php" style="display: inline;" 
-                                              onsubmit="return confirm('Hapus template ujian ini?')">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= $t['id'] ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm" style="padding: 4px 8px; font-size: 0.775rem;">
-                                                🗑️
-                                            </button>
-                                        </form>
+                                    <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
+                                        <div class="action-btn-group">
+                                            <a href="/admin/template-ujian.php?edit=<?= $t['id'] ?>" class="btn-icon-action btn-icon-edit" title="Edit Template & Redaksi">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="POST" action="/admin/template-ujian.php" style="display: inline; margin: 0;" 
+                                                  onsubmit="return confirm('Hapus template ujian ini?')">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="<?= $t['id'] ?>">
+                                                <button type="submit" class="btn-icon-action btn-icon-delete" title="Hapus Template">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

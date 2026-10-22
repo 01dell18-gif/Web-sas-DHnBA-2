@@ -199,7 +199,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th>Program Keahlian</th>
                                 <th style="text-align: center;">Jumlah Siswa</th>
                                 <th style="text-align: center;">Status</th>
-                                <th style="text-align: right;">Aksi</th>
+                                <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -225,15 +225,21 @@ require_once __DIR__ . '/layout_header.php';
                                             </button>
                                         </form>
                                     </td>
-                                    <td style="text-align: right; white-space: nowrap;">
-                                        <a href="/admin/kelas.php?edit=<?= $c['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
-                                        <form method="POST" action="/admin/kelas.php" style="display: inline;" 
-                                              onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                        </form>
+                                    <td style="text-align: center; white-space: nowrap;">
+                                        <div class="action-btn-group">
+                                            <a href="/admin/kelas.php?edit=<?= $c['id'] ?>" class="btn-icon-action btn-icon-edit" title="Edit Kelas">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="POST" action="/admin/kelas.php" style="display: inline; margin: 0;" 
+                                                  onsubmit="return confirm('Peringatan: Menghapus kelas akan menghapus seluruh data siswa di kelas ini. Lanjutkan?')">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="<?= $c['id'] ?>">
+                                                <button type="submit" class="btn-icon-action btn-icon-delete" title="Hapus Kelas">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

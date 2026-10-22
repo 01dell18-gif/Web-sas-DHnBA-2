@@ -227,7 +227,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th>Nama Lengkap</th>
                                 <th style="text-align: center;">Hak Akses</th>
                                 <th>Tanggal Dibuat</th>
-                                <th style="text-align: right; width: 120px;">Aksi</th>
+                                <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -257,25 +257,27 @@ require_once __DIR__ . '/layout_header.php';
                                     <td style="font-size: 0.75rem; color: var(--text-muted);">
                                         <?= !empty($u['created_at']) ? date('d/m/Y H:i', strtotime($u['created_at'])) : '-' ?>
                                     </td>
-                                    <td style="text-align: right; white-space: nowrap;">
-                                        <a href="/admin/users.php?edit=<?= $u['id'] ?>" class="btn btn-secondary btn-sm" title="Edit Pengguna">
-                                            <i class="bi bi-pencil"></i> Edit
-                                        </a>
-                                        <?php if ((int)$u['id'] !== (int)$_SESSION['admin_id']): ?>
-                                            <form method="POST" action="/admin/users.php" style="display: inline;" 
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun <?= htmlspecialchars($u['username']) ?>?')">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus Pengguna">
-                                                    <i class="bi bi-trash"></i>
+                                    <td style="text-align: center; white-space: nowrap;">
+                                        <div class="action-btn-group">
+                                            <a href="/admin/users.php?edit=<?= $u['id'] ?>" class="btn-icon-action btn-icon-edit" title="Edit Pengguna">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <?php if ((int)$u['id'] !== (int)$_SESSION['admin_id']): ?>
+                                                <form method="POST" action="/admin/users.php" style="display: inline; margin: 0;" 
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun <?= htmlspecialchars($u['username']) ?>?')">
+                                                    <?= csrf_field() ?>
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                                                    <button type="submit" class="btn-icon-action btn-icon-delete" title="Hapus Pengguna">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            <?php else: ?>
+                                                <button type="button" class="btn-icon-action btn-icon-delete" disabled title="Tidak dapat menghapus akun sendiri (sedang login)">
+                                                    <i class="bi bi-lock"></i>
                                                 </button>
-                                            </form>
-                                        <?php else: ?>
-                                            <button type="button" class="btn btn-secondary btn-sm" disabled title="Tidak dapat menghapus akun sendiri" style="opacity: 0.4;">
-                                                <i class="bi bi-lock"></i>
-                                            </button>
-                                        <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
