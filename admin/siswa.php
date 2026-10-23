@@ -20,19 +20,21 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
     }
 
     $students = dbFetchAll("
-        SELECT s.*, k.nama_kelas 
+        SELECT s.*, k.nama_kelas,
+               COALESCE(NULLIF(s.program_keahlian, ''), k.program_keahlian, '-') AS display_program_keahlian
         FROM siswa s 
         LEFT JOIN kelas k ON s.class_id = k.id 
         WHERE {$whereSql} 
         ORDER BY k.nama_kelas ASC, s.nama ASC
     ", $params);
 
-    $headers = ['No', 'Kelas', 'NIS', 'NISN', 'Nama Siswa', 'Status'];
+    $headers = ['No', 'Kelas', 'Program Keahlian', 'NIS', 'NISN', 'Nama Siswa', 'Status'];
     $rows = [];
     foreach ($students as $idx => $st) {
         $rows[] = [
             $idx + 1,
             $st['nama_kelas'] ?? '-',
+            $st['display_program_keahlian'] ?? '-',
             $st['nis'] ?: '-',
             $st['nisn'] ?: '-',
             $st['nama'],
@@ -40,16 +42,16 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
         ];
     }
     log_activity('EXPORT_EXCEL', "Mengekspor data siswa ke format Excel (.xls) [{$titleSuffix}]");
-    export_excel_xls("Data_Siswa_{$titleSuffix}_" . date('Ymd_His') . ".xls", $headers, $rows, [2, 3]);
+    export_excel_xls("Data_Siswa_{$titleSuffix}_" . date('Ymd_His') . ".xls", $headers, $rows, [3, 4]);
 }
 
 // Handle Download Template Excel (.xls)
 if (isset($_GET['action']) && $_GET['action'] === 'template_excel') {
-    $headers = ['NIS', 'NISN', 'Nama Siswa', 'Kelas'];
+    $headers = ['NIS', 'NISN', 'Nama Siswa', 'Kelas', 'Program Keahlian'];
     $sampleRows = [
-        ['13741', '0061234567', 'I Putu Gede Pratama', 'XII RPL 1'],
-        ['13742', '0061234568', 'Ni Kadek Ayu Lestari', 'XII TKJ'],
-        ['13743', '-', 'I Made Arya Wijaya', 'XII DKV']
+        ['13741', '0061234567', 'I Putu Gede Pratama', 'XII RPL 1', 'Rekayasa Perangkat Lunak'],
+        ['13742', '0061234568', 'Ni Kadek Ayu Lestari', 'XII TKJ', 'Teknik Komputer dan Jaringan'],
+        ['13743', '-', 'I Made Arya Wijaya', 'XII DKV', 'Desain Komunikasi Visual']
     ];
     export_excel_xls("template_impor_siswa.xls", $headers, $sampleRows, [0, 1]);
 }
@@ -103,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     $headerMap['nis'] = $idx;
                                 } elseif (strpos($val, 'kelas') !== false || strpos($val, 'rombel') !== false) {
                                     $headerMap['kelas'] = $idx;
+                                } elseif (strpos($val, 'keahlian') !== false || strpos($val, 'jurusan') !== false || strpos($val, 'program') !== false) {
+                                    $headerMap['program_keahlian'] = $idx;
                                 }
                             }
                             continue; // Lewati baris header
@@ -114,22 +118,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $kelasName = '';
                     $nis = '';
                     $nisn = '';
+                    $programKeahlian = '';
 
                     if ($headerMap !== null && isset($headerMap['nama'])) {
                         $nama = $cols[$headerMap['nama']] ?? '';
                         $kelasName = isset($headerMap['kelas']) ? ($cols[$headerMap['kelas']] ?? '') : '';
                         $nis = isset($headerMap['nis']) ? ($cols[$headerMap['nis']] ?? '') : '';
                         $nisn = isset($headerMap['nisn']) ? ($cols[$headerMap['nisn']] ?? '') : '';
+                        $programKeahlian = isset($headerMap['program_keahlian']) ? ($cols[$headerMap['program_keahlian']] ?? '') : '';
                     } else {
-                        // Heuristik posisi: jika col 0 adalah nomor urut
-                        if (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
-                            // Format export: No, Kelas, NIS, NISN, Nama
+                        // Heuristik posisi
+                        if (count($cols) >= 6 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            // Format export baru: No, Kelas, Program Keahlian, NIS, NISN, Nama
+                            $kelasName = $cols[1] ?? '';
+                            $programKeahlian = $cols[2] ?? '';
+                            $nis = $cols[3] ?? '';
+                            $nisn = $cols[4] ?? '';
+                            $nama = $cols[5] ?? '';
+                        } elseif (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            // Format export lama: No, Kelas, NIS, NISN, Nama
                             $kelasName = $cols[1] ?? '';
                             $nis = $cols[2] ?? '';
                             $nisn = $cols[3] ?? '';
                             $nama = $cols[4] ?? '';
+                        } elseif (count($cols) >= 5) {
+                            // Format template baru: NIS, NISN, Nama, Kelas, Program Keahlian
+                            $nis = $cols[0] ?? '';
+                            $nisn = $cols[1] ?? '';
+                            $nama = $cols[2] ?? '';
+                            $kelasName = $cols[3] ?? '';
+                            $programKeahlian = $cols[4] ?? '';
                         } elseif (count($cols) >= 4) {
-                            // Format template: NIS, NISN, Nama, Kelas
+                            // Format template lama: NIS, NISN, Nama, Kelas
                             $nis = $cols[0] ?? '';
                             $nisn = $cols[1] ?? '';
                             $nama = $cols[2] ?? '';
@@ -148,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $kelasName = trim((string)$kelasName);
                     $nis = trim((string)$nis);
                     $nisn = trim((string)$nisn);
+                    $programKeahlian = trim((string)$programKeahlian);
 
                     if ($nama === '' || in_array(strtolower($nama), ['nama', 'nama siswa', 'nama lengkap', 'no', 'nomor'])) {
                         continue;
@@ -166,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $newCid = dbInsert('kelas', [
                             'nama_kelas' => $kelasName,
                             'tingkat' => $tingkat,
-                            'program_keahlian' => '',
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
@@ -174,6 +195,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $classCache[$uname] = $newCid;
                     }
                     $cid = $classCache[$uname];
+
+                    // Fallback program keahlian dari master kelas jika di file kosong
+                    if ($programKeahlian === '') {
+                        $kProg = dbValue("SELECT program_keahlian FROM kelas WHERE id = :cid", ['cid' => $cid]);
+                        if (!empty($kProg)) {
+                            $programKeahlian = (string)$kProg;
+                        }
+                    }
 
                     // Cek apakah siswa sudah ada di kelas ini
                     $existing = null;
@@ -194,6 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'updated_at' => date('Y-m-d H:i:s')
                         ], 'id = :id', ['id' => $existing['id']]);
@@ -205,6 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
@@ -235,6 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = trim($_POST['nama'] ?? '');
         $nis = trim($_POST['nis'] ?? '');
         $nisn = trim($_POST['nisn'] ?? '');
+        $programKeahlian = trim($_POST['program_keahlian'] ?? '');
         $aktif = isset($_POST['aktif']) ? 1 : 0;
 
         if ($classId <= 0 && $namaKelasBaru !== '') {
@@ -249,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $classId = dbInsert('kelas', [
                     'nama_kelas' => $namaKelasBaru,
                     'tingkat' => $tingkat,
-                    'program_keahlian' => '',
+                    'program_keahlian' => $programKeahlian,
                     'aktif' => 1,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
@@ -258,6 +290,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             $className = (string)dbValue("SELECT nama_kelas FROM kelas WHERE id = :id", ['id' => $classId]);
+        }
+
+        // Jika program keahlian kosong namun kelas dipilih, inherit dari master kelas
+        if ($programKeahlian === '' && $classId > 0) {
+            $kProg = dbValue("SELECT program_keahlian FROM kelas WHERE id = :id", ['id' => $classId]);
+            if (!empty($kProg)) {
+                $programKeahlian = (string)$kProg;
+            }
         }
 
         if ($classId <= 0 || $nama === '') {
@@ -270,6 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'nama' => $nama,
                     'nis' => $nis,
                     'nisn' => $nisn,
+                    'program_keahlian' => $programKeahlian,
                     'aktif' => $aktif,
                     'updated_at' => date('Y-m-d H:i:s')
                 ], 'id = :id', ['id' => $id]);
@@ -282,6 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'nama' => $nama,
                     'nis' => $nis,
                     'nisn' => $nisn,
+                    'program_keahlian' => $programKeahlian,
                     'aktif' => $aktif,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
@@ -369,14 +411,19 @@ if ($selectedClassId > 0) {
 }
 
 $students = dbFetchAll("
-    SELECT s.*, k.nama_kelas 
+    SELECT s.*, k.nama_kelas,
+           COALESCE(NULLIF(s.program_keahlian, ''), k.program_keahlian, '-') AS display_program_keahlian
     FROM siswa s 
     LEFT JOIN kelas k ON s.class_id = k.id 
     WHERE {$whereSql} 
     ORDER BY k.nama_kelas ASC, s.nama ASC
 ", $params);
 
+// Stat cards metrics (sesuai menu Data Guru & Pengawas Ujian)
 $totalSiswaGlobal = (int)dbValue("SELECT COUNT(*) FROM siswa");
+$aktifSiswaCount = (int)dbValue("SELECT COUNT(*) FROM siswa WHERE aktif = 1");
+$nisSiswaCount = (int)dbValue("SELECT COUNT(*) FROM siswa WHERE ((nis IS NOT NULL AND nis != '' AND nis != '-') OR (nisn IS NOT NULL AND nisn != '' AND nisn != '-'))");
+$nonaktifSiswaCount = (int)dbValue("SELECT COUNT(*) FROM siswa WHERE aktif = 0");
 
 require_once __DIR__ . '/layout_header.php';
 ?>
@@ -415,6 +462,65 @@ require_once __DIR__ . '/layout_header.php';
     <input type="hidden" name="filter_class_id" value="<?= $selectedClassId ?>">
 </form>
 
+<!-- Stat Cards -->
+<div class="stats-grid">
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+        <div class="stat-icon stat-icon-indigo">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $totalSiswaGlobal ?></div>
+            <div class="stat-label">Total Data Siswa</div>
+            <span class="stat-meta-pill" style="background: #eef2ff; color: #4338ca;">
+                <i class="bi bi-check-circle"></i> Terdaftar
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #059669, #10b981);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669;">
+            <i class="bi bi-person-check-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $aktifSiswaCount ?></div>
+            <div class="stat-label">Siswa Aktif</div>
+            <span class="stat-meta-pill" style="background: #ecfdf5; color: #059669;">
+                Ikut Ujian
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #0284c7, #38bdf8);"></div>
+        <div class="stat-icon stat-icon-sky">
+            <i class="bi bi-card-text"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $nisSiswaCount ?></div>
+            <div class="stat-label">Memiliki NIS / NISN</div>
+            <span class="stat-meta-pill" style="background: #f0f9ff; color: #0284c7;">
+                Identitas Lengkap
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #64748b, #94a3b8);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569;">
+            <i class="bi bi-person-slash"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $nonaktifSiswaCount ?></div>
+            <div class="stat-label">Siswa Nonaktif</div>
+            <span class="stat-meta-pill" style="background: #f1f5f9; color: #475569;">
+                Tidak Ditampilkan
+            </span>
+        </div>
+    </div>
+</div>
+
 <div class="split-layout" style="height: auto;">
     <!-- Form Tambah / Edit Siswa -->
     <div style="flex: 0 0 360px;">
@@ -440,7 +546,9 @@ require_once __DIR__ . '/layout_header.php';
                         <select name="class_id" id="class_id" class="form-select" <?= empty($classes) ? '' : 'required' ?>>
                             <option value="">-- Pilih Kelas --</option>
                             <?php foreach ($classes as $c): ?>
-                                <option value="<?= $c['id'] ?>" <?= ($editStudent ? $editStudent['class_id'] : $selectedClassId) == $c['id'] ? 'selected' : '' ?>>
+                                <option value="<?= $c['id'] ?>" 
+                                        data-program="<?= htmlspecialchars($c['program_keahlian'] ?? '') ?>" 
+                                        <?= ($editStudent ? $editStudent['class_id'] : $selectedClassId) == $c['id'] ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($c['nama_kelas']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -469,6 +577,15 @@ require_once __DIR__ . '/layout_header.php';
                         <label class="form-label" for="nisn">NISN</label>
                         <input type="text" name="nisn" id="nisn" class="form-control" 
                                value="<?= htmlspecialchars($editStudent['nisn'] ?? '') ?>" placeholder="Opsional">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="program_keahlian">Program Keahlian</label>
+                        <input type="text" name="program_keahlian" id="program_keahlian" class="form-control" 
+                               value="<?= htmlspecialchars($editStudent['program_keahlian'] ?? '') ?>" placeholder="Contoh: Rekayasa Perangkat Lunak / Akuntansi">
+                        <small class="text-muted" style="font-size: 0.76rem; display: block; margin-top: 3px;">
+                            <i class="bi bi-info-circle"></i> Otomatis terisi saat memilih kelas, atau dapat disesuaikan manual.
+                        </small>
                     </div>
 
                     <div class="form-group">
@@ -530,6 +647,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th style="width: 90px;">NIS</th>
                                 <th>Nama Lengkap</th>
                                 <th>Kelas</th>
+                                <th>Program Keahlian</th>
                                 <th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>
                                 <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
@@ -537,7 +655,7 @@ require_once __DIR__ . '/layout_header.php';
                         <tbody>
                             <?php if (empty($students)): ?>
                                 <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
                                         Tidak ada data siswa ditemukan.
                                     </td>
                                 </tr>
@@ -548,6 +666,16 @@ require_once __DIR__ . '/layout_header.php';
                                         <td><?= htmlspecialchars($s['nis'] ?: '-') ?></td>
                                         <td><strong><?= htmlspecialchars($s['nama']) ?></strong></td>
                                         <td><span class="badge badge-info"><?= htmlspecialchars($s['nama_kelas'] ?? '-') ?></span></td>
+                                        <td>
+                                            <?php $progK = !empty($s['program_keahlian']) ? $s['program_keahlian'] : ($s['display_program_keahlian'] ?? '-'); ?>
+                                            <?php if ($progK !== '-' && $progK !== ''): ?>
+                                                <span class="badge" style="background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; font-weight: 500; font-size: 0.8rem; padding: 0.25rem 0.5rem;">
+                                                    <i class="bi bi-mortarboard" style="color: #6366f1; margin-right: 4px;"></i><?= htmlspecialchars($progK) ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span style="color: #94a3b8;">-</span>
+                                            <?php endif; ?>
+                                        </td>
                                         <td style="text-align: center;">
                                             <label class="ceklis-status-pill <?= $s['aktif'] ? 'is-active' : 'is-inactive' ?>" 
                                                    id="ceklis_box_siswa_<?= $s['id'] ?>" 
@@ -774,6 +902,23 @@ function toggleNewClassInput() {
     }
 }
 window.toggleNewClassInput = toggleNewClassInput;
+
+// Auto-fill Program Keahlian saat kelas dipilih
+document.addEventListener('DOMContentLoaded', function() {
+    var classSel = document.getElementById('class_id');
+    var progInp = document.getElementById('program_keahlian');
+    if (classSel && progInp) {
+        classSel.addEventListener('change', function() {
+            var opt = classSel.options[classSel.selectedIndex];
+            if (opt && opt.dataset && opt.dataset.program) {
+                var p = opt.dataset.program.trim();
+                if (p !== '') {
+                    progInp.value = p;
+                }
+            }
+        });
+    }
+});
 </script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

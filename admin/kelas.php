@@ -6,6 +6,8 @@ $pageTitle = 'Kelola Data Kelas';
 
 $totalSiswaGlobal = (int)dbValue("SELECT COUNT(*) FROM siswa");
 $totalClassesAll = (int)dbValue("SELECT COUNT(*) FROM kelas");
+$aktifClassesCount = (int)dbValue("SELECT COUNT(*) FROM kelas WHERE aktif = 1");
+$nonaktifClassesCount = (int)dbValue("SELECT COUNT(*) FROM kelas WHERE aktif = 0");
 $totalClassesWithStudents = (int)dbValue("SELECT COUNT(DISTINCT class_id) FROM siswa WHERE class_id > 0");
 
 // Handle POST actions
@@ -275,6 +277,65 @@ require_once __DIR__ . '/layout_header.php';
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="delete_all">
 </form>
+
+<!-- Stat Cards -->
+<div class="stats-grid">
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+        <div class="stat-icon stat-icon-indigo">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $totalClassesAll ?></div>
+            <div class="stat-label">Total Data Kelas</div>
+            <span class="stat-meta-pill" style="background: #eef2ff; color: #4338ca;">
+                <i class="bi bi-check-circle"></i> Terdaftar
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #059669, #10b981);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669;">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $aktifClassesCount ?></div>
+            <div class="stat-label">Kelas Aktif</div>
+            <span class="stat-meta-pill" style="background: #ecfdf5; color: #059669;">
+                Dapat Dipilih Publik
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #0284c7, #38bdf8);"></div>
+        <div class="stat-icon stat-icon-sky">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $totalSiswaGlobal ?></div>
+            <div class="stat-label">Total Siswa Terdaftar</div>
+            <span class="stat-meta-pill" style="background: #f0f9ff; color: #0284c7;">
+                Terhubung di Kelas
+            </span>
+        </div>
+    </div>
+
+    <div class="stat-card-modern">
+        <div class="stat-accent-bar" style="background: linear-gradient(90deg, #64748b, #94a3b8);"></div>
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569;">
+            <i class="bi bi-slash-circle-fill"></i>
+        </div>
+        <div>
+            <div class="stat-value"><?= $nonaktifClassesCount ?></div>
+            <div class="stat-label">Kelas Nonaktif</div>
+            <span class="stat-meta-pill" style="background: #f1f5f9; color: #475569;">
+                Tidak Ditampilkan
+            </span>
+        </div>
+    </div>
+</div>
 
 <div class="split-layout" style="height: auto;">
     <!-- Formulir Tambah / Edit Kelas -->

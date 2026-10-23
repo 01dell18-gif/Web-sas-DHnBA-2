@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `siswa` (
     `nis` VARCHAR(30) DEFAULT '',
     `nisn` VARCHAR(30) DEFAULT '',
     `nama` VARCHAR(150) NOT NULL,
+    `program_keahlian` VARCHAR(100) DEFAULT '',
     `aktif` TINYINT(1) DEFAULT 1,
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL,

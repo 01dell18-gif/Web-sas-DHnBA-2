@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `siswa` (
     `nis` VARCHAR(30) DEFAULT '',
     `nisn` VARCHAR(30) DEFAULT '',
     `nama` VARCHAR(150) NOT NULL,
+    `program_keahlian` VARCHAR(100) DEFAULT '',
     `aktif` TINYINT(1) DEFAULT 1,
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL,
@@ -599,7 +600,13 @@ INSERT INTO `activity_logs` (`id`, `waktu`, `aktivitas`, `keterangan`, `ip_addre
 (382, '2026-10-23 06:31:35', 'TOGGLE_KELAS', 'Mengubah status aktif kelas ID #2 menjadi 1', '127.0.0.1'),
 (383, '2026-10-23 06:31:48', 'LOGIN_SUCCESS', 'User admin (admin) berhasil login.', '127.0.0.1'),
 (384, '2026-10-23 06:31:48', 'CREATE_SISWA', 'Menambahkan siswa baru I Putu Test Siswa (ID #3)', '127.0.0.1'),
-(385, '2026-10-23 06:31:48', 'UPDATE_KELAS', 'Memperbarui kelas XII RPL 1 menjadi XII REKAYASA PERANGKAT LUNAK (ID #3). Seluruh 1 siswa otomatis diperbarui ke kelas baru.', '127.0.0.1');
+(385, '2026-10-23 06:31:48', 'UPDATE_KELAS', 'Memperbarui kelas XII RPL 1 menjadi XII REKAYASA PERANGKAT LUNAK (ID #3). Seluruh 1 siswa otomatis diperbarui ke kelas baru.', '127.0.0.1'),
+(386, '2026-10-23 06:34:16', 'IMPORT_SISWA', 'Mengimpor 258 data siswa baru dan memperbarui 0 data dari berkas Data_Siswa_Semua_Kelas_20261022_084236.xls.', '127.0.0.1'),
+(387, '2026-10-23 06:34:21', 'SYNC_KELAS_SISWA', 'Menyinkronkan daftar kelas langsung dari data siswa peserta ujian. 0 kelas baru ditambahkan.', '127.0.0.1'),
+(388, '2026-10-23 06:37:58', 'UPDATE_KELAS', 'Memperbarui kelas XII AK menjadi XII AK (ID #4). Seluruh 28 siswa otomatis diperbarui ke kelas baru.', '127.0.0.1'),
+(389, '2026-10-23 06:39:19', 'CLEAR_ALL_SISWA', 'Menghapus seluruh data siswa (258 data) untuk reset.', '127.0.0.1'),
+(390, '2026-10-23 06:39:24', 'SYNC_KELAS_SISWA', 'Menyinkronkan daftar kelas langsung dari data siswa peserta ujian. 0 kelas baru ditambahkan.', '127.0.0.1'),
+(391, '2026-10-23 06:39:27', 'CLEAR_ALL_KELAS', 'Menghapus seluruh kelas (11) dan siswa (0) untuk reset.', '127.0.0.1');
 
 
 SET FOREIGN_KEY_CHECKS = 1;

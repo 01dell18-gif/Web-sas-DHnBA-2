@@ -130,6 +130,7 @@ if (isset($_GET['template'])) {
                 <th>NISN</th>
                 <th>Nama Siswa</th>
                 <th>Kelas</th>
+                <th>Program Keahlian</th>
             </tr>
         </thead>
         <tbody>
@@ -138,18 +139,21 @@ if (isset($_GET['template'])) {
                 <td class="text-cell">0061234567</td>
                 <td>I Putu Gede Pratama</td>
                 <td>XII TKJ</td>
+                <td>Teknik Komputer dan Jaringan</td>
             </tr>
             <tr>
                 <td class="text-cell">13742</td>
                 <td class="text-cell">0061234568</td>
                 <td>Ni Kadek Ayu Lestari</td>
                 <td>XII TKJ</td>
+                <td>Teknik Komputer dan Jaringan</td>
             </tr>
             <tr>
                 <td class="text-cell">13743</td>
                 <td class="text-cell">-</td>
                 <td>I Made Arya Wijaya</td>
                 <td>XII RPL 1</td>
+                <td>Rekayasa Perangkat Lunak</td>
             </tr>
         </tbody>
     </table>
@@ -471,6 +475,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     $headerMap['nis'] = $idx;
                                 } elseif (strpos($val, 'kelas') !== false || strpos($val, 'rombel') !== false) {
                                     $headerMap['kelas'] = $idx;
+                                } elseif (strpos($val, 'keahlian') !== false || strpos($val, 'jurusan') !== false || strpos($val, 'program') !== false) {
+                                    $headerMap['program_keahlian'] = $idx;
                                 }
                             }
                             continue; // Lewati header
@@ -481,18 +487,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $kelasName = '';
                     $nis = '';
                     $nisn = '';
+                    $programKeahlian = '';
 
                     if ($headerMap !== null && isset($headerMap['nama'])) {
                         $nama = $cols[$headerMap['nama']] ?? '';
                         $kelasName = isset($headerMap['kelas']) ? ($cols[$headerMap['kelas']] ?? '') : '';
                         $nis = isset($headerMap['nis']) ? ($cols[$headerMap['nis']] ?? '') : '';
                         $nisn = isset($headerMap['nisn']) ? ($cols[$headerMap['nisn']] ?? '') : '';
+                        $programKeahlian = isset($headerMap['program_keahlian']) ? ($cols[$headerMap['program_keahlian']] ?? '') : '';
                     } else {
-                        if (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                        if (count($cols) >= 6 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            // Format export: No, Kelas, Program Keahlian, NIS, NISN, Nama
+                            $kelasName = $cols[1] ?? '';
+                            $programKeahlian = $cols[2] ?? '';
+                            $nis = $cols[3] ?? '';
+                            $nisn = $cols[4] ?? '';
+                            $nama = $cols[5] ?? '';
+                        } elseif (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            // Format export lama: No, Kelas, NIS, NISN, Nama
                             $kelasName = $cols[1] ?? '';
                             $nis = $cols[2] ?? '';
                             $nisn = $cols[3] ?? '';
                             $nama = $cols[4] ?? '';
+                        } elseif (count($cols) >= 5) {
+                            // Format template: NIS, NISN, Nama, Kelas, Program Keahlian
+                            $nis = $cols[0] ?? '';
+                            $nisn = $cols[1] ?? '';
+                            $nama = $cols[2] ?? '';
+                            $kelasName = $cols[3] ?? '';
+                            $programKeahlian = $cols[4] ?? '';
                         } elseif (count($cols) >= 4) {
                             $nis = $cols[0] ?? '';
                             $nisn = $cols[1] ?? '';
@@ -512,6 +535,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $kelasName = trim((string)$kelasName);
                     $nis = trim((string)$nis);
                     $nisn = trim((string)$nisn);
+                    $programKeahlian = trim((string)$programKeahlian);
 
                     if ($nama === '' || in_array(strtolower($nama), ['nama', 'nama siswa', 'nama lengkap', 'no', 'nomor'])) {
                         continue;
@@ -529,7 +553,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $newCid = dbInsert('kelas', [
                             'nama_kelas' => $kelasName,
                             'tingkat' => $tingkat,
-                            'program_keahlian' => '',
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
@@ -537,6 +561,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $classCache[$uname] = $newCid;
                     }
                     $cid = $classCache[$uname];
+
+                    // Fallback program keahlian dari master kelas jika di file kosong
+                    if ($programKeahlian === '') {
+                        $kProg = dbValue("SELECT program_keahlian FROM kelas WHERE id = :cid", ['cid' => $cid]);
+                        if (!empty($kProg)) {
+                            $programKeahlian = (string)$kProg;
+                        }
+                    }
 
                     $existing = null;
                     if ($nis !== '' && $nis !== '-') {
@@ -556,6 +588,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'updated_at' => date('Y-m-d H:i:s')
                         ], 'id = :id', ['id' => $existing['id']]);
@@ -567,6 +600,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
+                            'program_keahlian' => $programKeahlian,
                             'aktif' => 1,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
