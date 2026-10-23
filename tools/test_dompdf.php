@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/dompdf/autoload.inc.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();

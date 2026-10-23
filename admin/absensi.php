@@ -7,9 +7,13 @@ require_admin();
 if (isset($_GET['action']) && $_GET['action'] === 'download_single') {
     $id = (int)($_GET['id'] ?? 0);
     $rec = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
-    if ($rec && !empty($rec['pdf_path'])) {
-        $fullPath = BASE_PATH . '/' . $rec['pdf_path'];
-        if (file_exists($fullPath)) {
+    if ($rec) {
+        $fullPath = !empty($rec['pdf_path']) ? BASE_PATH . '/' . $rec['pdf_path'] : '';
+        if (empty($fullPath) || !file_exists($fullPath)) {
+            $fullPath = generate_absensi_pdf_file($rec['id']);
+        }
+        if ($fullPath && file_exists($fullPath)) {
+            while (ob_get_level()) { ob_end_clean(); }
             header('Content-Type: application/pdf');
             header('Content-Disposition: attachment; filename="' . basename($fullPath) . '"');
             header('Content-Length: ' . filesize($fullPath));
@@ -26,9 +30,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_single') {
 if (isset($_GET['action']) && $_GET['action'] === 'view_single') {
     $id = (int)($_GET['id'] ?? 0);
     $rec = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
-    if ($rec && !empty($rec['pdf_path'])) {
-        $fullPath = BASE_PATH . '/' . $rec['pdf_path'];
-        if (file_exists($fullPath)) {
+    if ($rec) {
+        $fullPath = !empty($rec['pdf_path']) ? BASE_PATH . '/' . $rec['pdf_path'] : '';
+        if (empty($fullPath) || !file_exists($fullPath)) {
+            $fullPath = generate_absensi_pdf_file($rec['id']);
+        }
+        if ($fullPath && file_exists($fullPath)) {
             while (ob_get_level()) { ob_end_clean(); }
             header_remove('Pragma');
             header_remove('Expires');
@@ -81,11 +88,12 @@ if ((isset($_GET['action']) && $_GET['action'] === 'download_zip') || (isset($_P
 
         $filesToZip = [];
         foreach ($docs as $d) {
-            if (!empty($d['pdf_path'])) {
-                $p = BASE_PATH . '/' . $d['pdf_path'];
-                if (file_exists($p)) {
-                    $filesToZip[basename($p)] = $p;
-                }
+            $p = !empty($d['pdf_path']) ? BASE_PATH . '/' . $d['pdf_path'] : '';
+            if (empty($p) || !file_exists($p)) {
+                $p = generate_absensi_pdf_file($d['id']);
+            }
+            if ($p && file_exists($p)) {
+                $filesToZip[basename($p)] = $p;
             }
         }
 

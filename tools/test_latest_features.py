@@ -34,12 +34,30 @@ for page in ['guru.php', 'kelas.php', 'siswa.php', 'absensi.php', 'berita-acara.
     print(f"[OK] {page} verified: Uses showConfirmResetModal with Lanjut/Tidak popup!")
 
 # 4. Test PDF direct streaming for Absensi and Berita Acara
-res_ba = opener.open('http://127.0.0.1:8081/admin/berita-acara.php?action=view_single&id=109')
+import sqlite3
+test_conn = sqlite3.connect('database/sas.sqlite')
+ba_row = test_conn.execute("SELECT id FROM berita_acara LIMIT 1").fetchone()
+ba_test_id = ba_row[0] if ba_row else 1
+test_conn.close()
+
+res_ba = opener.open(f'http://127.0.0.1:8081/admin/berita-acara.php?action=view_single&id={ba_test_id}')
 assert res_ba.status == 200, "Berita Acara direct stream failed"
 assert 'application/pdf' in res_ba.headers.get('Content-Type', ''), "Berita Acara content type not application/pdf"
 ba_bytes = res_ba.read()
 assert ba_bytes.startswith(b'%PDF-'), "Berita Acara stream does not start with %PDF-"
 print(f"[OK] admin/berita-acara.php view_single: direct PDF stream verified ({len(ba_bytes)} bytes)!")
+
+dh_test_conn = sqlite3.connect('database/sas.sqlite')
+dh_row = dh_test_conn.execute("SELECT id FROM absensi LIMIT 1").fetchone()
+dh_test_id = dh_row[0] if dh_row else 3
+dh_test_conn.close()
+
+res_dh = opener.open(f'http://127.0.0.1:8081/admin/absensi.php?action=view_single&id={dh_test_id}')
+assert res_dh.status == 200, "Absensi direct stream failed"
+assert 'application/pdf' in res_dh.headers.get('Content-Type', ''), "Absensi content type not application/pdf"
+dh_bytes = res_dh.read()
+assert dh_bytes.startswith(b'%PDF-'), "Absensi stream does not start with %PDF-"
+print(f"[OK] admin/absensi.php view_single: direct PDF stream verified ({len(dh_bytes)} bytes)!")
 
 # 5. Verify eye icon links in table rows
 ba_html = opener.open('http://127.0.0.1:8081/admin/berita-acara.php').read().decode('utf-8')

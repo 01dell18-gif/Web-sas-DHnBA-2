@@ -5,7 +5,7 @@ conn = sqlite3.connect('database/sas.sqlite')
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
-tables = ['users', 'pengaturan', 'template_ujian', 'kelas', 'siswa', 'guru', 'absensi', 'berita_acara', 'activity_logs']
+tables = ['users', 'pengaturan', 'template_ujian', 'kelas', 'siswa', 'guru', 'mapel', 'absensi', 'berita_acara', 'activity_logs']
 
 sql_lines = [
     "-- ========================================================",
@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(50) UNIQUE NOT NULL,
     `password` VARCHAR(255) NOT NULL,
+    `password_plain` VARCHAR(255) DEFAULT '',
     `nama_lengkap` VARCHAR(100) DEFAULT '',
     `role` VARCHAR(20) DEFAULT 'admin',
     `created_at` DATETIME NULL,
@@ -62,6 +63,18 @@ CREATE TABLE IF NOT EXISTS `guru` (
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL,
     KEY `idx_guru_nama` (`nama`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+""",
+    'mapel': """
+CREATE TABLE IF NOT EXISTS `mapel` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `kode_mapel` VARCHAR(50) DEFAULT '',
+    `nama_mapel` VARCHAR(150) NOT NULL,
+    `kelompok` VARCHAR(50) DEFAULT 'Kejuruan',
+    `aktif` TINYINT(1) DEFAULT 1,
+    `created_at` DATETIME NULL,
+    `updated_at` DATETIME NULL,
+    KEY `idx_nama_mapel` (`nama_mapel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """,
     'template_ujian': """

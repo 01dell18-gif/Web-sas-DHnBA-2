@@ -383,7 +383,7 @@ require_once __DIR__ . '/layout_header.php';
                                             </span>
                                         </td>
                                         <td style="text-align: center;">
-                                            <label class="ceklis-status-pill <?= $g['aktif'] ? 'is-active' : 'is-inactive' ?>" 
+                                            <label class="ceklis-status-pill ceklis-status-guru <?= $g['aktif'] ? 'is-active' : 'is-inactive' ?>" 
                                                    id="ceklis_box_guru_<?= $g['id'] ?>" 
                                                    title="Klik ceklis untuk mengubah status aktif/nonaktif guru ini">
                                                 <input type="checkbox" 

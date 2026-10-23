@@ -145,6 +145,28 @@ $db->exec("CREATE TABLE IF NOT EXISTS activity_logs (
     ip_address VARCHAR(50) DEFAULT '127.0.0.1'
 );");
 
+// 9. Table guru
+$db->exec("CREATE TABLE IF NOT EXISTS guru (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nama VARCHAR(150) NOT NULL,
+    nip VARCHAR(50) DEFAULT '-',
+    jabatan VARCHAR(100) DEFAULT 'Guru / Pengawas',
+    aktif INTEGER DEFAULT 1,
+    created_at DATETIME,
+    updated_at DATETIME
+);");
+
+// 10. Table mapel
+$db->exec("CREATE TABLE IF NOT EXISTS mapel (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kode_mapel VARCHAR(50) DEFAULT '',
+    nama_mapel VARCHAR(150) NOT NULL,
+    kelompok VARCHAR(50) DEFAULT 'Kejuruan',
+    aktif INTEGER DEFAULT 1,
+    created_at DATETIME,
+    updated_at DATETIME
+);");
+
 echo "Tables created successfully!\n\n";
 
 // --- SEED ADMIN USER ---

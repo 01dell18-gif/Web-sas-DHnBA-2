@@ -510,5 +510,450 @@ function parse_spreadsheet_rows(string $filePath, bool $includeHeader = true): a
     return $rows;
 }
 
+/**
+ * Auto-generate and cache physical PDF for an Absensi record if missing
+ */
+function generate_absensi_pdf_file(int $id): ?string {
+    $rec = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
+    if (!$rec) return null;
+
+    if (file_exists(BASE_PATH . '/vendor/autoload.php')) {
+        require_once BASE_PATH . '/vendor/autoload.php';
+    } elseif (file_exists(BASE_PATH . '/vendor/dompdf/autoload.inc.php')) {
+        require_once BASE_PATH . '/vendor/dompdf/autoload.inc.php';
+    }
+    if (!class_exists('Dompdf\Dompdf')) return null;
+
+    $namaUjian = $rec['nama_ujian'] ?: 'Sumatif Akhir Semester (SAS) Ganjil';
+    $tahunAjaran = $rec['tahun_ajaran'] ?: '2026/2027';
+    $tanggalUjian = $rec['tanggal_ujian'] ?: date('Y-m-d');
+    $mataPelajaran = $rec['mata_pelajaran'] ?: 'Mata Pelajaran';
+    $sesi = $rec['sesi'] ?: '1';
+    $ruang = $rec['ruang'] ?: 'Ruang Ujian';
+    $jamMulai = $rec['jam_mulai'] ?: '07:30';
+    $jamSelesai = $rec['jam_selesai'] ?: '09:30';
+    $namaKelas = $rec['nama_kelas'] ?: 'Kelas';
+    $namaPengawas1 = $rec['nama_pengawas_1'] ?: '-';
+    $nipPengawas1 = $rec['nip_pengawas_1'] ?: '';
+    $namaPengawas2 = $rec['nama_pengawas_2'] ?: '';
+    $nipPengawas2 = $rec['nip_pengawas_2'] ?: '';
+    $ttd1 = $rec['ttd_pengawas_1'] ?: '';
+    $ttd2 = $rec['ttd_pengawas_2'] ?: '';
+
+    $studentsList = json_decode($rec['data_siswa'] ?? '[]', true) ?: [];
+    if (empty($studentsList) && !empty($rec['class_id'])) {
+        $stDb = dbFetchAll("SELECT id, nis, nama FROM siswa WHERE class_id = :cid ORDER BY nama ASC", ['cid' => $rec['class_id']]);
+        foreach ($stDb as $s) {
+            $studentsList[] = [
+                'id' => $s['id'],
+                'nis' => $s['nis'],
+                'nama' => $s['nama'],
+                'status' => 'Hadir'
+            ];
+        }
+    }
+
+    $hadir = (int)($rec['peserta_hadir'] ?: count($studentsList));
+    $dispensasi = (int)($rec['peserta_dispensasi'] ?: 0);
+    $izin = (int)($rec['peserta_izin'] ?: 0);
+    $sakit = (int)($rec['peserta_sakit'] ?: 0);
+    $tidakHadir = (int)($rec['peserta_tidak_hadir'] ?: 0);
+    $totalPeserta = (int)($rec['total_peserta'] ?: count($studentsList));
+
+    $kopPath = BASE_PATH . '/' . get_setting('kop_image_path', 'assets/img/kop-header.png');
+    $kopBase64 = '';
+    if (file_exists($kopPath)) {
+        $type = pathinfo($kopPath, PATHINFO_EXTENSION);
+        $data = file_get_contents($kopPath);
+        $kopBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
+    $hariTanggalIndo = format_date_indo($tanggalUjian);
+    $hariArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    $hariName = $hariArr[date('w', strtotime($tanggalUjian))] ?? '';
+
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Daftar Hadir - <?= htmlspecialchars($namaKelas) ?> - <?= htmlspecialchars($mataPelajaran) ?></title>
+    <style>
+        @page { size: A4 portrait; margin: 12mm 15mm 12mm 15mm; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #000; margin: 0; padding: 0; line-height: 1.3; }
+        .kop { text-align: center; margin-bottom: 8px; }
+        .kop img { width: 100%; max-height: 95px; }
+        .doc-title { text-align: center; font-weight: bold; font-size: 11.5pt; line-height: 1.25; margin-bottom: 12px; text-transform: uppercase; }
+        .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 9pt; }
+        .meta-table td { padding: 2px 1px; vertical-align: top; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 8.5pt; }
+        .data-table th, .data-table td { border: 1px solid #000; padding: 4px 6px; }
+        .data-table th { background-color: #f1f3f9; text-align: center; font-weight: bold; }
+        .rekap-box { border: 1px solid #000; padding: 6px 10px; margin-bottom: 14px; page-break-inside: avoid; }
+        .rekap-table { width: 100%; border-collapse: collapse; margin-top: 4px; text-align: center; font-size: 8.5pt; }
+        .rekap-table td { border: 1px solid #000; padding: 3px 6px; }
+        .signature-table { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: avoid; font-size: 9pt; }
+        .signature-table td { text-align: center; vertical-align: top; padding: 4px; }
+        .sig-space { height: 55px; }
+        .sig-img { max-height: 50px; max-width: 130px; }
+    </style>
+    </head>
+    <body>
+    <div class="kop">
+        <?php if ($kopBase64): ?>
+            <img src="<?= $kopBase64 ?>">
+        <?php else: ?>
+            <div style="font-size: 13pt; font-weight: bold;">SMK NEGERI 1 KLUNGKUNG</div>
+            <div style="font-size: 9pt;">Generator Absensi & Berita Acara Ujian</div>
+            <hr style="border-top: 2px solid #000; margin-top: 4px;">
+        <?php endif; ?>
+    </div>
+    <div class="doc-title">
+        DAFTAR HADIR PESERTA UJIAN<br>
+        <?= htmlspecialchars($namaUjian) ?><br>
+        TAHUN AJARAN <?= htmlspecialchars($tahunAjaran) ?>
+    </div>
+    <table class="meta-table">
+        <tr>
+            <td style="width: 16%;">Hari / Tanggal</td>
+            <td style="width: 2%;">:</td>
+            <td style="width: 38%;"><strong><?= htmlspecialchars($hariName ? "{$hariName}, {$hariTanggalIndo}" : $hariTanggalIndo) ?></strong></td>
+            <td style="width: 14%;">Kelas</td>
+            <td style="width: 2%;">:</td>
+            <td style="width: 28%;"><strong><?= htmlspecialchars($namaKelas) ?></strong></td>
+        </tr>
+        <tr>
+            <td>Mata Pelajaran</td>
+            <td>:</td>
+            <td><strong><?= htmlspecialchars($mataPelajaran) ?></strong></td>
+            <td>Sesi / Ruang</td>
+            <td>:</td>
+            <td><?= htmlspecialchars($sesi) ?> / <?= htmlspecialchars($ruang) ?></td>
+        </tr>
+        <tr>
+            <td>Waktu Ujian</td>
+            <td>:</td>
+            <td><?= htmlspecialchars($jamMulai) ?> - <?= htmlspecialchars($jamSelesai) ?> WITA</td>
+            <td></td><td></td><td></td>
+        </tr>
+    </table>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th style="width: 30px;">No</th>
+                <th style="width: 90px;">NIS</th>
+                <th>Nama Peserta Didik</th>
+                <th style="width: 110px;">Kehadiran</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($studentsList as $idx => $st): ?>
+            <tr>
+                <td style="text-align: center;"><?= $idx + 1 ?></td>
+                <td style="text-align: center;"><?= htmlspecialchars($st['nis'] ?: '-') ?></td>
+                <td><?= htmlspecialchars($st['nama']) ?></td>
+                <td style="text-align: center; font-weight: <?= ($st['status'] ?? 'Hadir') !== 'Hadir' ? 'bold' : 'normal' ?>; color: <?= ($st['status'] ?? 'Hadir') !== 'Hadir' ? '#dc2626' : '#000' ?>;">
+                    <?= htmlspecialchars($st['status'] ?? 'Hadir') ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="rekap-box">
+        <strong>Rekapitulasi Kehadiran:</strong>
+        <table class="rekap-table">
+            <tr>
+                <td>Hadir: <strong><?= $hadir ?></strong></td>
+                <td>Dispensasi: <strong><?= $dispensasi ?></strong></td>
+                <td>Izin: <strong><?= $izin ?></strong></td>
+                <td>Sakit: <strong><?= $sakit ?></strong></td>
+                <td>Tidak Hadir: <strong><?= $tidakHadir ?></strong></td>
+                <td style="background-color: #f8fafc;">Total Peserta: <strong><?= $totalPeserta ?></strong></td>
+            </tr>
+        </table>
+    </div>
+    <table class="signature-table">
+        <tr>
+            <td style="width: 50%;">
+                Pengawas I,
+                <div class="sig-space">
+                    <?php if ($ttd1 && strpos($ttd1, 'data:image') === 0): ?>
+                        <img src="<?= $ttd1 ?>" class="sig-img">
+                    <?php endif; ?>
+                </div>
+                <strong><u><?= htmlspecialchars($namaPengawas1) ?></u></strong><br>
+                <?= $nipPengawas1 && $nipPengawas1 !== '-' ? 'NIP. ' . htmlspecialchars($nipPengawas1) : '' ?>
+            </td>
+            <td style="width: 50%;">
+                Pengawas II,
+                <div class="sig-space">
+                    <?php if ($ttd2 && strpos($ttd2, 'data:image') === 0): ?>
+                        <img src="<?= $ttd2 ?>" class="sig-img">
+                    <?php endif; ?>
+                </div>
+                <strong><u><?= htmlspecialchars($namaPengawas2 ?: '-') ?></u></strong><br>
+                <?= $nipPengawas2 && $nipPengawas2 !== '-' ? 'NIP. ' . htmlspecialchars($nipPengawas2) : '' ?>
+            </td>
+        </tr>
+    </table>
+    </body>
+    </html>
+    <?php
+    $html = ob_get_clean();
+
+    $options = new Dompdf\Options();
+    $options->set('isRemoteEnabled', true);
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('chroot', BASE_PATH);
+
+    $dompdf = new Dompdf\Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $pdfOutput = $dompdf->output();
+
+    $cleanMapel = preg_replace('/[^a-zA-Z0-9_\-]/', ' ', $mataPelajaran);
+    $cleanMapel = trim(preg_replace('/\s+/', ' ', $cleanMapel));
+    $filename = "DH-SAS GANJIL 26-27-{$namaKelas}-{$cleanMapel}-{$tanggalUjian}.pdf";
+    $dir = BASE_PATH . '/storage/absensi';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    $fullPath = $dir . '/' . $filename;
+    file_put_contents($fullPath, $pdfOutput);
+
+    dbUpdate('absensi', [
+        'pdf_path' => "storage/absensi/{$filename}",
+        'file_size' => strlen($pdfOutput)
+    ], 'id = :id', ['id' => $id]);
+
+    return $fullPath;
+}
+
+/**
+ * Auto-generate and cache physical PDF for a Berita Acara record if missing
+ */
+function generate_berita_acara_pdf_file(int $id): ?string {
+    $rec = dbFetch("SELECT * FROM berita_acara WHERE id = :id", ['id' => $id]);
+    if (!$rec) return null;
+
+    if (file_exists(BASE_PATH . '/vendor/autoload.php')) {
+        require_once BASE_PATH . '/vendor/autoload.php';
+    } elseif (file_exists(BASE_PATH . '/vendor/dompdf/autoload.inc.php')) {
+        require_once BASE_PATH . '/vendor/dompdf/autoload.inc.php';
+    }
+    if (!class_exists('Dompdf\Dompdf')) return null;
+
+    $templateId = (int)($rec['template_id'] ?: 1);
+    $tpl = dbFetch("SELECT * FROM template_ujian WHERE id = :id", ['id' => $templateId]);
+    if (!$tpl) {
+        $tpl = dbFetch("SELECT * FROM template_ujian WHERE aktif = 1 LIMIT 1");
+    }
+
+    $namaUjian = $rec['nama_ujian'] ?: 'Sumatif Akhir Semester (SAS) Ganjil';
+    $tahunAjaran = $rec['tahun_ajaran'] ?: '2026/2027';
+    $tanggalUjian = $rec['tanggal_ujian'] ?: date('Y-m-d');
+    $mataPelajaran = $rec['mata_pelajaran'] ?: 'Mata Pelajaran';
+    $namaKelas = $rec['nama_kelas'] ?: 'Kelas';
+    $ruang = $rec['ruang'] ?: 'Ruang Ujian';
+    $jamMulai = $rec['jam_mulai'] ?: '07:30';
+    $jamSelesai = $rec['jam_selesai'] ?: '09:30';
+    $seharusnya = (int)($rec['peserta_seharusnya'] ?: 0);
+    $hadir = (int)($rec['peserta_hadir'] ?: 0);
+    $tidakHadir = (int)($rec['peserta_tidak_hadir'] ?: 0);
+    $blangkoBA = (int)($rec['blangko_berita_acara'] ?: 1);
+    $blangkoDH = (int)($rec['blangko_daftar_hadir'] ?: 1);
+    $catatan = $rec['catatan_pelaksanaan'] ?: 'Pelaksanaan ujian berjalan tertib, aman, dan lancar tanpa kendala teknis.';
+    $namaPengawas1 = $rec['nama_pengawas_1'] ?: '-';
+    $nipPengawas1 = $rec['nip_pengawas_1'] ?: '';
+    $namaPengawas2 = $rec['nama_pengawas_2'] ?: '';
+    $nipPengawas2 = $rec['nip_pengawas_2'] ?: '';
+    $ttd1 = $rec['ttd_pengawas_1'] ?: '';
+    $ttd2 = $rec['ttd_pengawas_2'] ?: '';
+
+    $savedPhotos = [];
+    if (!empty($rec['foto_dokumentasi'])) {
+        $photos = json_decode($rec['foto_dokumentasi'], true);
+        if (is_array($photos)) {
+            $savedPhotos = $photos;
+        }
+    }
+
+    $namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+    $kopPath = BASE_PATH . '/' . get_setting('kop_image_path', 'assets/img/kop-header.png');
+    $kopBase64 = '';
+    if (file_exists($kopPath)) {
+        $type = pathinfo($kopPath, PATHINFO_EXTENSION);
+        $data = file_get_contents($kopPath);
+        $kopBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
+
+    $timestamp = strtotime($tanggalUjian);
+    $hariArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    $bulanArr = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    $hari = $hariArr[date('w', $timestamp)] ?? '';
+    $tglNum = (int)date('j', $timestamp);
+    $blnName = $bulanArr[(int)date('n', $timestamp)] ?? '';
+    $thnNum = date('Y', $timestamp);
+    $tglTeks = terbilang($tglNum);
+    $thnTeks = terbilang($thnNum);
+
+    $vars = [
+        'nama_ujian' => $namaUjian,
+        'tahun_ajaran' => $tahunAjaran,
+        'hari' => $hari,
+        'tanggal' => (string)$tglNum,
+        'tanggal_teks' => $tglTeks,
+        'bulan' => $blnName,
+        'tahun' => (string)$thnNum,
+        'tahun_teks' => $thnTeks,
+        'jam_mulai' => $jamMulai,
+        'jam_selesai' => $jamSelesai,
+        'sekolah' => $namaSekolah,
+        'mata_pelajaran' => $mataPelajaran,
+        'kelas' => $namaKelas,
+        'ruang' => $ruang,
+        'peserta_seharusnya' => (string)$seharusnya,
+        'peserta_hadir' => (string)$hadir,
+        'peserta_tidak_hadir' => (string)$tidakHadir,
+        'blangko_berita_acara' => (string)$blangkoBA,
+        'blangko_daftar_hadir' => (string)$blangkoDH,
+        'catatan_pelaksanaan' => $catatan
+    ];
+
+    $rawRedaksi = $tpl['redaksi_isi'] ?? '';
+    foreach ($vars as $k => $v) {
+        $valHtml = ($k === 'catatan_pelaksanaan') ? nl2br(htmlspecialchars($v)) : htmlspecialchars($v);
+        $rawRedaksi = str_ireplace('[' . $k . ']', $valHtml, $rawRedaksi);
+    }
+
+    $judulDoc = $tpl['judul_berita_acara'] ?? "BERITA ACARA\r\nPENYELENGGARAAN SUMATIF AKHIR SEMESTER (SAS) GANJIL\r\nTAHUN AJARAN [tahun_ajaran]";
+    foreach ($vars as $k => $v) {
+        $judulDoc = str_ireplace('[' . $k . ']', htmlspecialchars($v), $judulDoc);
+    }
+    $judulDocHtml = nl2br($judulDoc);
+
+    $photoBase64List = [];
+    foreach ($savedPhotos as $rel) {
+        $full = BASE_PATH . '/' . $rel;
+        if (file_exists($full)) {
+            $pType = pathinfo($full, PATHINFO_EXTENSION);
+            $pData = file_get_contents($full);
+            $photoBase64List[] = 'data:image/' . $pType . ';base64,' . base64_encode($pData);
+        }
+    }
+
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Berita Acara - <?= htmlspecialchars($namaKelas) ?> - <?= htmlspecialchars($mataPelajaran) ?></title>
+    <style>
+        @page { size: A4 portrait; margin: 12mm 15mm 12mm 15mm; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; color: #000; margin: 0; padding: 0; line-height: 1.4; }
+        .kop { text-align: center; margin-bottom: 8px; }
+        .kop img { width: 100%; max-height: 95px; }
+        .doc-title { text-align: center; font-weight: bold; font-size: 11.5pt; line-height: 1.3; margin-bottom: 14px; text-transform: uppercase; }
+        .redaksi-body { font-size: 9.5pt; line-height: 1.5; text-align: justify; }
+        .redaksi-body ol, .redaksi-body ul { margin-top: 4px; margin-bottom: 8px; padding-left: 20px; }
+        .redaksi-body li { margin-bottom: 6px; }
+        .signature-table { width: 100%; border-collapse: collapse; margin-top: 14px; page-break-inside: avoid; font-size: 9.5pt; }
+        .signature-table td { text-align: center; vertical-align: top; padding: 4px; }
+        .sig-space { height: 55px; }
+        .sig-img { max-height: 50px; max-width: 130px; }
+        .photos-box { margin-top: 14px; page-break-inside: avoid; border-top: 1px dashed #cbd5e1; padding-top: 10px; }
+        .photos-title { font-size: 9pt; font-weight: bold; margin-bottom: 8px; }
+        .photo-grid { width: 100%; border-collapse: collapse; }
+        .photo-grid td { width: 50%; padding: 4px; text-align: center; vertical-align: middle; }
+        .photo-grid img { max-width: 100%; max-height: 140px; border: 1px solid #94a3b8; }
+    </style>
+    </head>
+    <body>
+    <div class="kop">
+        <?php if ($kopBase64): ?>
+            <img src="<?= $kopBase64 ?>">
+        <?php else: ?>
+            <div style="font-size: 13pt; font-weight: bold;">SMK NEGERI 1 KLUNGKUNG</div>
+            <div style="font-size: 9pt;">Generator Absensi & Berita Acara Ujian</div>
+            <hr style="border-top: 2px solid #000; margin-top: 4px;">
+        <?php endif; ?>
+    </div>
+    <div class="doc-title"><?= $judulDocHtml ?></div>
+    <div class="redaksi-body"><?= $rawRedaksi ?></div>
+    <table class="signature-table">
+        <tr>
+            <td style="width: 50%;">
+                Pengawas I,
+                <div class="sig-space">
+                    <?php if ($ttd1 && strpos($ttd1, 'data:image') === 0): ?>
+                        <img src="<?= $ttd1 ?>" class="sig-img">
+                    <?php endif; ?>
+                </div>
+                <strong><u><?= htmlspecialchars($namaPengawas1) ?></u></strong><br>
+                <?= $nipPengawas1 && $nipPengawas1 !== '-' ? 'NIP. ' . htmlspecialchars($nipPengawas1) : '' ?>
+            </td>
+            <td style="width: 50%;">
+                Pengawas II,
+                <div class="sig-space">
+                    <?php if ($ttd2 && strpos($ttd2, 'data:image') === 0): ?>
+                        <img src="<?= $ttd2 ?>" class="sig-img">
+                    <?php endif; ?>
+                </div>
+                <strong><u><?= htmlspecialchars($namaPengawas2 ?: '-') ?></u></strong><br>
+                <?= $nipPengawas2 && $nipPengawas2 !== '-' ? 'NIP. ' . htmlspecialchars($nipPengawas2) : '' ?>
+            </td>
+        </tr>
+    </table>
+    <?php if (!empty($photoBase64List)): ?>
+    <div class="photos-box">
+        <div class="photos-title">Dokumentasi Pelaksanaan Ujian:</div>
+        <table class="photo-grid">
+            <tr>
+            <?php foreach ($photoBase64List as $idx => $pBase): ?>
+                <?php if ($idx > 0 && $idx % 2 === 0): ?></tr><tr><?php endif; ?>
+                <td><img src="<?= $pBase ?>"></td>
+            <?php endforeach; ?>
+            </tr>
+        </table>
+    </div>
+    <?php endif; ?>
+    </body>
+    </html>
+    <?php
+    $html = ob_get_clean();
+
+    $options = new Dompdf\Options();
+    $options->set('isRemoteEnabled', true);
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('chroot', BASE_PATH);
+
+    $dompdf = new Dompdf\Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $pdfOutput = $dompdf->output();
+
+    $cleanMapel = preg_replace('/[^a-zA-Z0-9_\-]/', ' ', $mataPelajaran);
+    $cleanMapel = trim(preg_replace('/\s+/', ' ', $cleanMapel));
+    $filename = "BA-SAS GANJIL 26-27-{$namaKelas}-{$cleanMapel}-{$tanggalUjian}.pdf";
+    $dir = BASE_PATH . '/storage/berita-acara';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0777, true);
+    }
+    $fullPath = $dir . '/' . $filename;
+    file_put_contents($fullPath, $pdfOutput);
+
+    dbUpdate('berita_acara', [
+        'pdf_path' => "storage/berita-acara/{$filename}",
+        'file_size' => strlen($pdfOutput)
+    ], 'id = :id', ['id' => $id]);
+
+    return $fullPath;
+}
+
 
 

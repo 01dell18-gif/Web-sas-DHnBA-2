@@ -88,7 +88,7 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         </div>
     </div>
     <div class="admin-navbar-right">
-        <div class="user-profile-chip admin-welcome-text">
+        <a href="/admin/password.php" class="user-profile-chip admin-welcome-text" title="Klik untuk Ganti Password Akun" style="text-decoration: none; cursor: pointer;">
             <div class="user-avatar-icon">
                 <i class="bi bi-person-fill"></i>
             </div>
@@ -98,7 +98,10 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                     <?= is_admin() ? '👑 Admin' : '🛡️ Operator' ?>
                 </span>
             </div>
-        </div>
+        </a>
+        <a href="/admin/password.php" class="btn btn-secondary btn-sm" title="Ganti Password Akun">
+            <i class="bi bi-key"></i> <span>Password</span>
+        </a>
         <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
             <i class="bi bi-globe2"></i> <span>Web Publik</span>
         </a>
@@ -185,10 +188,10 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             </div>
         </div>
 
-        <!-- GRUP 3: PENGATURAN SISTEM -->
+        <!-- GRUP 3: PENGATURAN SISTEM (ADMIN) -->
         <?php if (is_admin()): ?>
             <?php 
-            $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php']); 
+            $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php', 'password.php']); 
             ?>
             <div class="sidebar-nav-group <?= $isPengaturanActive ? 'is-open' : '' ?>">
                 <button type="button" class="sidebar-group-header <?= $isPengaturanActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this, event)">
@@ -212,8 +215,17 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                         <span class="sidebar-sub-bullet"></span>
                         <span class="sidebar-sub-text">Manajemen User</span>
                     </a>
+                    <a href="/admin/password.php" class="sidebar-sub-item <?= $currentScript === 'password.php' ? 'active' : '' ?>">
+                        <span class="sidebar-sub-bullet"></span>
+                        <span class="sidebar-sub-text">Ganti Password</span>
+                    </a>
                 </div>
             </div>
+        <?php else: ?>
+            <!-- Menu Akun untuk Operator -->
+            <a href="/admin/password.php" class="admin-menu-item <?= $currentScript === 'password.php' ? 'active' : '' ?>" style="margin-top: 0.5rem;">
+                <i class="bi bi-key-fill"></i> <span>Ganti Password</span>
+            </a>
         <?php endif; ?>
     </aside>
 
