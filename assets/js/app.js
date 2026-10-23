@@ -69,7 +69,7 @@ function ensurePopupModalsExist() {
     }
 }
 
-let _globalConfirmCallback = null;
+var _globalConfirmCallback = window._globalConfirmCallback || null;
 
 window.showConfirmDialog = function(message, onConfirm, title = 'Konfirmasi Tindakan', isDanger = true) {
     _globalConfirmCallback = onConfirm;

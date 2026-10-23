@@ -618,6 +618,11 @@ function closeImportSiswaModal() {
 }
 
 function quickToggleSiswa(id, checkbox) {
+    if (typeof id === 'object' && id !== null && id.nodeType) {
+        const tmp = checkbox;
+        checkbox = id;
+        id = tmp;
+    }
     const isChecked = checkbox.checked ? 1 : 0;
     const box = document.getElementById('ceklis_box_siswa_' + id);
     const text = document.getElementById('ceklis_text_siswa_' + id);
@@ -637,7 +642,7 @@ function quickToggleSiswa(id, checkbox) {
         if (text) text.textContent = 'Nonaktif';
     }
 
-    const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '';
+    const csrfToken = '<?= csrf_token() ?>';
     const formData = new FormData();
     formData.append('action', 'toggle_active');
     formData.append('id', id);
@@ -648,22 +653,30 @@ function quickToggleSiswa(id, checkbox) {
     fetch('/admin/siswa.php', {
         method: 'POST',
         body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
     })
     .then(r => r.json())
     .then(data => {
         if (data && data.success) {
-            showQuickStatusToast('Status siswa berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+            try {
+                if (typeof showQuickStatusToast === 'function') {
+                    showQuickStatusToast('Status siswa berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+                }
+            } catch (e) {}
         } else {
             revertToggle();
         }
     })
-    .catch(() => {
+    .catch(err => {
+        console.error('Toggle error:', err);
         revertToggle();
     });
 
     function revertToggle() {
-        checkbox.checked = !checkbox.checked;
+        checkbox.checked = !isChecked;
         if (checkbox.checked) {
             if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
             if (text) text.textContent = 'Aktif';
@@ -671,9 +684,14 @@ function quickToggleSiswa(id, checkbox) {
             if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
             if (text) text.textContent = 'Nonaktif';
         }
-        showQuickStatusToast('Gagal memperbarui status');
+        try {
+            if (typeof showQuickStatusToast === 'function') {
+                showQuickStatusToast('Gagal memperbarui status');
+            }
+        } catch (e) {}
     }
 }
+window.quickToggleSiswa = quickToggleSiswa;
 
 function confirmResetAllSiswa(classId) {
     const targetText = classId > 0 ? "seluruh siswa pada KELAS INI" : "SELURUH data siswa di SEMUA KELAS";

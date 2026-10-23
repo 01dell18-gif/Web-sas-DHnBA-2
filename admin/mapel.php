@@ -625,7 +625,7 @@ function quickToggleMapel(id, checkbox) {
         if (text) text.textContent = 'Nonaktif';
     }
 
-    const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '<?= csrf_token() ?>';
+    const csrfToken = '<?= csrf_token() ?>';
     const fd = new FormData();
     fd.append('action', 'toggle_active');
     fd.append('id', id);
@@ -644,17 +644,22 @@ function quickToggleMapel(id, checkbox) {
     .then(res => res.json())
     .then(data => {
         if (data && data.success) {
-            showQuickStatusToast('Status mapel berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+            try {
+                if (typeof showQuickStatusToast === 'function') {
+                    showQuickStatusToast('Status mapel berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+                }
+            } catch (e) {}
         } else {
             revertToggle();
         }
     })
-    .catch(() => {
+    .catch(err => {
+        console.error('Toggle mapel error:', err);
         revertToggle();
     });
 
     function revertToggle() {
-        checkbox.checked = !checkbox.checked;
+        checkbox.checked = !isChecked;
         if (checkbox.checked) {
             if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
             if (text) text.textContent = 'Aktif';
@@ -662,9 +667,14 @@ function quickToggleMapel(id, checkbox) {
             if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
             if (text) text.textContent = 'Nonaktif';
         }
-        showQuickStatusToast('Gagal mengubah status mapel');
+        try {
+            if (typeof showQuickStatusToast === 'function') {
+                showQuickStatusToast('Gagal mengubah status mapel');
+            }
+        } catch (e) {}
     }
 }
+window.quickToggleMapel = quickToggleMapel;
 window.toggleMapelStatus = quickToggleMapel;
 </script>
 

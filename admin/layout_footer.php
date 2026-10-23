@@ -81,7 +81,7 @@
 </div>
 
 <script>
-let _pendingResetFormId = null;
+var _pendingResetFormId = window._pendingResetFormId || null;
 
 function showConfirmResetModal(formId, title, message) {
     _pendingResetFormId = formId;
@@ -104,7 +104,7 @@ function proceedConfirmReset() {
 }
 
 // Universal Global Confirm System
-let _globalConfirmCallback = null;
+var _globalConfirmCallback = window._globalConfirmCallback || null;
 
 window.showConfirmDialog = function(message, onConfirm, title = 'Konfirmasi Tindakan', isDanger = true) {
     _globalConfirmCallback = onConfirm;
@@ -199,6 +199,25 @@ window.showNotificationModal = function(message, type = 'info', title = null) {
 window.closeGlobalNotificationDialog = function() {
     const modal = document.getElementById('modalGlobalNotificationDialog');
     if (modal) modal.style.display = 'none';
+};
+
+// Universal Quick Status Toast Helper
+window.showQuickStatusToast = window.showQuickStatusToast || function(message) {
+    var toast = document.getElementById('globalQuickStatusToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalQuickStatusToast';
+        toast.className = 'quick-status-toast';
+        toast.innerHTML = '<i class="bi bi-check-circle-fill" style="color: #10b981;"></i><span id="globalQuickStatusMsg">Status berhasil diubah</span>';
+        document.body.appendChild(toast);
+    }
+    var msgEl = document.getElementById('globalQuickStatusMsg');
+    if (msgEl) msgEl.textContent = message || 'Status berhasil diubah';
+    toast.classList.add('show');
+    clearTimeout(window._quickToastTimeout);
+    window._quickToastTimeout = setTimeout(function() {
+        toast.classList.remove('show');
+    }, 2400);
 };
 
 // Override native alert to popup modal
