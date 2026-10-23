@@ -451,7 +451,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th style="width: 100px;">Kode</th>
                                 <th>Nama Mata Pelajaran</th>
                                 <th style="width: 150px;">Kelompok</th>
-                                <th style="width: 110px; text-align: center;">Status</th>
+                                <th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>
                                 <th style="width: 90px; text-align: center;">Aksi</th>
                             </tr>
                         </thead>
@@ -481,27 +481,35 @@ require_once __DIR__ . '/layout_header.php';
                                         </td>
                                         <td>
                                             <?php
-                                            $badgeBg = '#eff6ff';
-                                            $badgeColor = '#1d4ed8';
-                                            if ($m['kelompok'] === 'Kejuruan') {
-                                                $badgeBg = '#fef3c7';
-                                                $badgeColor = '#b45309';
-                                            } elseif ($m['kelompok'] === 'Muatan Lokal') {
-                                                $badgeBg = '#f3e8ff';
-                                                $badgeColor = '#7e22ce';
-                                            }
-                                            ?>
+                                             $badgeBg = '#eff6ff';
+                                             $badgeColor = '#1d4ed8';
+                                             if ($m['kelompok'] === 'Kejuruan') {
+                                                 $badgeBg = '#fef3c7';
+                                                 $badgeColor = '#b45309';
+                                             } elseif ($m['kelompok'] === 'Muatan Lokal') {
+                                                 $badgeBg = '#f3e8ff';
+                                                 $badgeColor = '#7e22ce';
+                                             }
+                                             ?>
                                             <span style="background: <?= $badgeBg ?>; color: <?= $badgeColor ?>; font-size: 0.725rem; font-weight: 700; padding: 3px 8px; border-radius: 999px;">
                                                 <?= htmlspecialchars($m['kelompok']) ?>
                                             </span>
                                         </td>
                                         <td style="text-align: center;">
-                                            <label style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 0;" title="Klik untuk mengubah status aktif mapel ini">
-                                                <input type="checkbox" class="toggle-mapel-checkbox" 
-                                                       data-id="<?= $m['id'] ?>" 
-                                                       <?= $m['aktif'] == 1 ? 'checked' : '' ?>
-                                                       onchange="toggleMapelStatus(this, <?= $m['id'] ?>)"
-                                                       style="width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;">
+                                            <label class="ceklis-status-pill <?= $m['aktif'] ? 'is-active' : 'is-inactive' ?>" 
+                                                   id="ceklis_box_mapel_<?= $m['id'] ?>" 
+                                                   title="Klik ceklis untuk mengubah status mata pelajaran ini">
+                                                <input type="checkbox" 
+                                                       class="ceklis-mapel-input" 
+                                                       id="check_mapel_<?= $m['id'] ?>" 
+                                                       <?= $m['aktif'] ? 'checked' : '' ?> 
+                                                       onchange="toggleMapelStatus(this, <?= $m['id'] ?>)">
+                                                <span class="ceklis-box">
+                                                    <i class="bi bi-check-lg ceklis-check-icon"></i>
+                                                </span>
+                                                <span class="ceklis-text" id="ceklis_text_mapel_<?= $m['id'] ?>">
+                                                    <?= $m['aktif'] ? 'Aktif' : 'Nonaktif' ?>
+                                                </span>
                                             </label>
                                         </td>
                                         <td style="text-align: center; white-space: nowrap;">
@@ -582,13 +590,29 @@ function confirmResetAllMapel() {
 }
 
 function toggleMapelStatus(checkbox, mapelId) {
-    const newStatus = checkbox.checked ? 1 : 0;
-    checkbox.disabled = true;
+    const isChecked = checkbox.checked ? 1 : 0;
+    const box = document.getElementById('ceklis_box_mapel_' + mapelId);
+    const text = document.getElementById('ceklis_text_mapel_' + mapelId);
+
+    // Optimistic UI update
+    if (isChecked) {
+        if (box) {
+            box.classList.remove('is-inactive');
+            box.classList.add('is-active');
+        }
+        if (text) text.textContent = 'Aktif';
+    } else {
+        if (box) {
+            box.classList.remove('is-active');
+            box.classList.add('is-inactive');
+        }
+        if (text) text.textContent = 'Nonaktif';
+    }
 
     const fd = new FormData();
     fd.append('action', 'toggle_active');
     fd.append('id', mapelId);
-    fd.append('status', newStatus);
+    fd.append('status', isChecked);
     fd.append('csrf_token', '<?= csrf_token() ?>');
 
     fetch('/admin/mapel.php', {
@@ -601,17 +625,27 @@ function toggleMapelStatus(checkbox, mapelId) {
     })
     .then(res => res.json())
     .then(data => {
-        checkbox.disabled = false;
-        if (!data.success) {
-            checkbox.checked = !checkbox.checked;
-            alert(data.message || 'Gagal mengubah status mapel');
+        if (data && data.success) {
+            showQuickStatusToast('Status mapel berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+        } else {
+            revertToggle();
         }
     })
-    .catch(err => {
-        checkbox.disabled = false;
-        checkbox.checked = !checkbox.checked;
-        alert('Terjadi kesalahan jaringan saat memperbarui status mapel.');
+    .catch(() => {
+        revertToggle();
     });
+
+    function revertToggle() {
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+            if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
+            if (text) text.textContent = 'Aktif';
+        } else {
+            if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
+            if (text) text.textContent = 'Nonaktif';
+        }
+        showQuickStatusToast('Gagal mengubah status mapel');
+    }
 }
 </script>
 

@@ -211,12 +211,41 @@ window.toggleAdminSidebar = function(e) {
 // Alias legacy untuk kompatibilitas
 window.toggleAdminMenu = window.toggleAdminSidebar;
 
+// Global Accordion Sidebar Group Toggle (Membuka / Menutup Grup Menu Navbar)
+window.toggleSidebarGroup = function(button) {
+    if (!button) return false;
+    const group = button.closest('.sidebar-nav-group');
+    if (!group) return false;
+    group.classList.toggle('is-open');
+    return false;
+};
+
+// Universal Quick Status Toast Helper
+window.showQuickStatusToast = function(message) {
+    let toast = document.getElementById('globalQuickStatusToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalQuickStatusToast';
+        toast.className = 'quick-status-toast';
+        toast.innerHTML = '<i class="bi bi-check-circle-fill" style="color: #10b981;"></i><span id="globalQuickStatusMsg">Status berhasil diubah</span>';
+        document.body.appendChild(toast);
+    }
+    const msgEl = document.getElementById('globalQuickStatusMsg');
+    if (msgEl) msgEl.textContent = message || 'Status berhasil diubah';
+    toast.classList.add('show');
+    clearTimeout(window._quickToastTimeout);
+    window._quickToastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2400);
+};
+
 // Initial state restore on script evaluation
 try {
     if (window.innerWidth > 900 && localStorage.getItem('admin_sidebar_collapsed') === 'true') {
         document.body.classList.add('sidebar-collapsed');
     }
 } catch (e) {}
+
 
 // =========================================================
 // 3. Document Ready Interceptors

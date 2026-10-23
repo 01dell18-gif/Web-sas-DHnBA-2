@@ -378,7 +378,7 @@ function export_excel_xls(string $filename, array $headers, array $rows, array $
 /**
  * Universal spreadsheet row parser for HTML-based .xls, XLSX, and CSV/TSV
  */
-function parse_spreadsheet_rows(string $filePath): array {
+function parse_spreadsheet_rows(string $filePath, bool $includeHeader = true): array {
     $rows = [];
     $raw = @file_get_contents($filePath);
     if ($raw === false) return [];
@@ -396,10 +396,11 @@ function parse_spreadsheet_rows(string $filePath): array {
                         $text = trim(preg_replace('/\s+/', ' ', $text));
                         $row[] = $text;
                     }
-                    if ($isHeader) {
+                    if ($isHeader && !$includeHeader) {
                         $isHeader = false;
                         continue;
                     }
+                    $isHeader = false;
                     if (!empty(array_filter($row, function($v) { return $v !== ''; }))) {
                         $rows[] = $row;
                     }
@@ -429,20 +430,42 @@ function parse_spreadsheet_rows(string $filePath): array {
                 if ($xml && isset($xml->sheetData->row)) {
                     $firstRow = true;
                     foreach ($xml->sheetData->row as $r) {
-                        if ($firstRow) {
+                        if ($firstRow && !$includeHeader) {
                             $firstRow = false;
                             continue;
                         }
+                        $firstRow = false;
                         $cols = [];
+                        // Handle sparse cells correctly by mapping column letter (A, B, C...) to index
                         foreach ($r->c as $c) {
+                            $rAttr = (string)($c['r'] ?? '');
+                            $colLetters = preg_replace('/[0-9]/', '', $rAttr);
+                            $colIdx = 0;
+                            if ($colLetters !== '') {
+                                for ($i = 0; $i < strlen($colLetters); $i++) {
+                                    $colIdx = $colIdx * 26 + (ord(strtoupper($colLetters[$i])) - ord('A') + 1);
+                                }
+                                $colIdx -= 1;
+                            } else {
+                                $colIdx = count($cols);
+                            }
+
                             $val = (string)$c->v;
                             if ((string)$c['t'] === 's' && isset($sharedStrings[(int)$val])) {
                                 $val = $sharedStrings[(int)$val];
                             }
-                            $cols[] = trim($val);
+                            $cols[$colIdx] = trim($val);
                         }
-                        if (!empty(array_filter($cols, function($v) { return $v !== ''; }))) {
-                            $rows[] = $cols;
+                        // Fill gaps
+                        if (!empty($cols)) {
+                            $maxIdx = max(array_keys($cols));
+                            $normalizedRow = [];
+                            for ($i = 0; $i <= $maxIdx; $i++) {
+                                $normalizedRow[$i] = $cols[$i] ?? '';
+                            }
+                            if (!empty(array_filter($normalizedRow, function($v) { return $v !== ''; }))) {
+                                $rows[] = $normalizedRow;
+                            }
                         }
                     }
                 }
@@ -472,10 +495,11 @@ function parse_spreadsheet_rows(string $filePath): array {
         foreach ($lines as $line) {
             if (trim($line) === '') continue;
             $row = str_getcsv($line, $bestDelim);
-            if ($firstRow) {
+            if ($firstRow && !$includeHeader) {
                 $firstRow = false;
                 continue;
             }
+            $firstRow = false;
             $cleanRow = array_map('trim', $row);
             if (!empty(array_filter($cleanRow, function($v) { return $v !== ''; }))) {
                 $rows[] = $cleanRow;
@@ -485,5 +509,6 @@ function parse_spreadsheet_rows(string $filePath): array {
 
     return $rows;
 }
+
 
 

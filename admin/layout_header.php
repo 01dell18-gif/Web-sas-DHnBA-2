@@ -60,53 +60,127 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
 
 <div class="admin-sidebar-layout">
     <aside class="admin-sidebar">
-        <div class="sidebar-section-title">RINGKASAN</div>
-        <a href="/admin/index.php" class="admin-menu-item <?= $currentScript === 'index.php' ? 'active' : '' ?>">
+        <!-- Dashboard Standalone -->
+        <a href="/admin/index.php" class="admin-menu-item <?= $currentScript === 'index.php' ? 'active' : '' ?>" style="margin-bottom: 0.5rem;">
             <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
         </a>
 
-        <div class="sidebar-section-title">DATA MASTER</div>
-        <a href="/admin/kelas.php" class="admin-menu-item <?= $currentScript === 'kelas.php' ? 'active' : '' ?>">
-            <i class="bi bi-mortarboard"></i> <span>Data Kelas</span>
-        </a>
-        <a href="/admin/siswa.php" class="admin-menu-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
-            <i class="bi bi-person-lines-fill"></i> <span>Data Siswa</span>
-        </a>
-        <a href="/admin/guru.php" class="admin-menu-item <?= $currentScript === 'guru.php' ? 'active' : '' ?>">
-            <i class="bi bi-person-badge"></i> <span>Data Guru</span>
-        </a>
-        <a href="/admin/mapel.php" class="admin-menu-item <?= $currentScript === 'mapel.php' ? 'active' : '' ?>">
-            <i class="bi bi-journal-bookmark-fill"></i> <span>Data Mapel</span>
-        </a>
-        <a href="/admin/import-siswa.php" class="admin-menu-item <?= ($currentScript === 'import-siswa.php' || $currentScript === 'import-excel.php') ? 'active' : '' ?>">
-            <i class="bi bi-file-earmark-spreadsheet"></i> <span>Impor Excel</span>
-        </a>
+        <!-- GRUP 1: DATA MASTER -->
+        <?php 
+        $isMasterActive = in_array($currentScript, ['kelas.php', 'guru.php', 'mapel.php']); 
+        ?>
+        <div class="sidebar-nav-group <?= $isMasterActive ? 'is-open' : '' ?>">
+            <button type="button" class="sidebar-group-header <?= $isMasterActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+                <span class="group-header-left">
+                    <i class="group-icon bi bi-buildings"></i>
+                    <span class="group-title">Data Master</span>
+                </span>
+                <i class="group-arrow bi bi-caret-down-fill"></i>
+            </button>
+            <div class="sidebar-group-sub">
+                <div class="sidebar-tree-line"></div>
+                <a href="/admin/kelas.php" class="sidebar-sub-item <?= $currentScript === 'kelas.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Data Kelas</span>
+                </a>
+                <a href="/admin/guru.php" class="sidebar-sub-item <?= $currentScript === 'guru.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Data Guru & Pengawas</span>
+                </a>
+                <a href="/admin/mapel.php" class="sidebar-sub-item <?= $currentScript === 'mapel.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Data Mapel</span>
+                </a>
+            </div>
+        </div>
 
-        <div class="sidebar-section-title">DOKUMEN & AUDIT</div>
-        <a href="/admin/rekap-kehadiran.php" class="admin-menu-item <?= $currentScript === 'rekap-kehadiran.php' ? 'active' : '' ?>">
-            <i class="bi bi-card-checklist"></i> <span>Rekap Kehadiran</span>
-        </a>
-        <a href="/admin/absensi.php" class="admin-menu-item <?= $currentScript === 'absensi.php' ? 'active' : '' ?>">
-            <i class="bi bi-file-earmark-check"></i> <span>Arsip Daftar Hadir</span>
-        </a>
-        <a href="/admin/berita-acara.php" class="admin-menu-item <?= $currentScript === 'berita-acara.php' ? 'active' : '' ?>">
-            <i class="bi bi-archive"></i> <span>Arsip Berita Acara</span>
-        </a>
-        <a href="/admin/rekonsiliasi.php" class="admin-menu-item <?= $currentScript === 'rekonsiliasi.php' ? 'active' : '' ?>">
-            <i class="bi bi-shield-check"></i> <span>Rekonsiliasi Dokumen</span>
-        </a>
+        <!-- GRUP 2: DATA PESERTA -->
+        <?php 
+        $isPesertaActive = in_array($currentScript, ['siswa.php', 'import-siswa.php', 'import-excel.php']); 
+        ?>
+        <div class="sidebar-nav-group <?= $isPesertaActive ? 'is-open' : '' ?>">
+            <button type="button" class="sidebar-group-header <?= $isPesertaActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+                <span class="group-header-left">
+                    <i class="group-icon bi bi-mortarboard"></i>
+                    <span class="group-title">Data Peserta</span>
+                </span>
+                <i class="group-arrow bi bi-caret-down-fill"></i>
+            </button>
+            <div class="sidebar-group-sub">
+                <div class="sidebar-tree-line"></div>
+                <a href="/admin/siswa.php" class="sidebar-sub-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Kelola Data Siswa</span>
+                </a>
+                <a href="/admin/import-siswa.php" class="sidebar-sub-item <?= ($currentScript === 'import-siswa.php' || $currentScript === 'import-excel.php') ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Impor Data Excel</span>
+                </a>
+            </div>
+        </div>
 
-        <div class="sidebar-section-title">PENGATURAN</div>
+        <!-- GRUP 3: REKAP DAN LAPORAN -->
+        <?php 
+        $isRekapActive = in_array($currentScript, ['rekap-kehadiran.php', 'absensi.php', 'berita-acara.php', 'rekonsiliasi.php']); 
+        ?>
+        <div class="sidebar-nav-group <?= $isRekapActive ? 'is-open' : '' ?>">
+            <button type="button" class="sidebar-group-header <?= $isRekapActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+                <span class="group-header-left">
+                    <i class="group-icon bi bi-bar-chart-line"></i>
+                    <span class="group-title">Rekap dan Laporan</span>
+                </span>
+                <i class="group-arrow bi bi-caret-down-fill"></i>
+            </button>
+            <div class="sidebar-group-sub">
+                <div class="sidebar-tree-line"></div>
+                <a href="/admin/rekap-kehadiran.php" class="sidebar-sub-item <?= $currentScript === 'rekap-kehadiran.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Rekap Kehadiran</span>
+                </a>
+                <a href="/admin/absensi.php" class="sidebar-sub-item <?= $currentScript === 'absensi.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Arsip Daftar Hadir</span>
+                </a>
+                <a href="/admin/berita-acara.php" class="sidebar-sub-item <?= $currentScript === 'berita-acara.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Arsip Berita Acara</span>
+                </a>
+                <a href="/admin/rekonsiliasi.php" class="sidebar-sub-item <?= $currentScript === 'rekonsiliasi.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Rekonsiliasi Dokumen</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- GRUP 4: PENGATURAN SISTEM -->
         <?php if (is_admin()): ?>
-            <a href="/admin/template-ujian.php" class="admin-menu-item <?= $currentScript === 'template-ujian.php' ? 'active' : '' ?>">
-                <i class="bi bi-file-earmark-richtext"></i> <span>Template Ujian</span>
-            </a>
-            <a href="/admin/pengaturan.php" class="admin-menu-item <?= $currentScript === 'pengaturan.php' ? 'active' : '' ?>">
-                <i class="bi bi-sliders"></i> <span>Pengaturan Kop & Drive</span>
-            </a>
-            <a href="/admin/users.php" class="admin-menu-item <?= $currentScript === 'users.php' ? 'active' : '' ?>">
-                <i class="bi bi-people"></i> <span>Manajemen User</span>
-            </a>
+            <?php 
+            $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php']); 
+            ?>
+            <div class="sidebar-nav-group <?= $isPengaturanActive ? 'is-open' : '' ?>">
+                <button type="button" class="sidebar-group-header <?= $isPengaturanActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+                    <span class="group-header-left">
+                        <i class="group-icon bi bi-sliders"></i>
+                        <span class="group-title">Pengaturan</span>
+                    </span>
+                    <i class="group-arrow bi bi-caret-down-fill"></i>
+                </button>
+                <div class="sidebar-group-sub">
+                    <div class="sidebar-tree-line"></div>
+                    <a href="/admin/template-ujian.php" class="sidebar-sub-item <?= $currentScript === 'template-ujian.php' ? 'active' : '' ?>">
+                        <span class="sidebar-sub-bullet"></span>
+                        <span class="sidebar-sub-text">Template Ujian</span>
+                    </a>
+                    <a href="/admin/pengaturan.php" class="sidebar-sub-item <?= $currentScript === 'pengaturan.php' ? 'active' : '' ?>">
+                        <span class="sidebar-sub-bullet"></span>
+                        <span class="sidebar-sub-text">Pengaturan Kop & Drive</span>
+                    </a>
+                    <a href="/admin/users.php" class="sidebar-sub-item <?= $currentScript === 'users.php' ? 'active' : '' ?>">
+                        <span class="sidebar-sub-bullet"></span>
+                        <span class="sidebar-sub-text">Manajemen User</span>
+                    </a>
+                </div>
+            </div>
         <?php endif; ?>
     </aside>
 

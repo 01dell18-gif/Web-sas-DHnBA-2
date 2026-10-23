@@ -51,6 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = (int)($_POST['status'] ?? 0);
         dbUpdate('kelas', ['aktif' => $status, 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => $id]);
         log_activity('TOGGLE_KELAS', "Mengubah status aktif kelas ID #{$id} menjadi {$status}");
+        
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) || isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'id' => $id, 'status' => $status]);
+            exit;
+        }
+
         set_flash('success', 'Status aktif kelas berhasil diperbarui.');
         header('Location: /admin/kelas.php');
         exit;
@@ -198,7 +205,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th>Tingkat</th>
                                 <th>Program Keahlian</th>
                                 <th style="text-align: center;">Jumlah Siswa</th>
-                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>
                                 <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
@@ -214,16 +221,21 @@ require_once __DIR__ . '/layout_header.php';
                                         </a>
                                     </td>
                                     <td style="text-align: center;">
-                                        <form method="POST" action="/admin/kelas.php" style="display: inline;">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="action" value="toggle_active">
-                                            <input type="hidden" name="id" value="<?= $c['id'] ?>">
-                                            <input type="hidden" name="status" value="<?= $c['aktif'] ? 0 : 1 ?>">
-                                            <button type="submit" class="badge <?= $c['aktif'] ? 'badge-success' : 'badge-danger' ?>" 
-                                                    style="border: none; cursor: pointer;" title="Klik untuk ubah status">
+                                        <label class="ceklis-status-pill <?= $c['aktif'] ? 'is-active' : 'is-inactive' ?>" 
+                                               id="ceklis_box_kelas_<?= $c['id'] ?>" 
+                                               title="Klik ceklis untuk mengubah status kelas ini">
+                                            <input type="checkbox" 
+                                                   class="ceklis-kelas-input" 
+                                                   id="check_kelas_<?= $c['id'] ?>" 
+                                                   <?= $c['aktif'] ? 'checked' : '' ?> 
+                                                   onchange="quickToggleKelas(<?= $c['id'] ?>, this)">
+                                            <span class="ceklis-box">
+                                                <i class="bi bi-check-lg ceklis-check-icon"></i>
+                                            </span>
+                                            <span class="ceklis-text" id="ceklis_text_kelas_<?= $c['id'] ?>">
                                                 <?= $c['aktif'] ? 'Aktif' : 'Nonaktif' ?>
-                                            </button>
-                                        </form>
+                                            </span>
+                                        </label>
                                     </td>
                                     <td style="text-align: center; white-space: nowrap;">
                                         <div class="action-btn-group">
@@ -252,6 +264,64 @@ require_once __DIR__ . '/layout_header.php';
 </div>
 
 <script>
+function quickToggleKelas(id, checkbox) {
+    const isChecked = checkbox.checked ? 1 : 0;
+    const box = document.getElementById('ceklis_box_kelas_' + id);
+    const text = document.getElementById('ceklis_text_kelas_' + id);
+
+    // Optimistic UI update
+    if (isChecked) {
+        if (box) {
+            box.classList.remove('is-inactive');
+            box.classList.add('is-active');
+        }
+        if (text) text.textContent = 'Aktif';
+    } else {
+        if (box) {
+            box.classList.remove('is-active');
+            box.classList.add('is-inactive');
+        }
+        if (text) text.textContent = 'Nonaktif';
+    }
+
+    const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '';
+    const formData = new FormData();
+    formData.append('action', 'toggle_active');
+    formData.append('id', id);
+    formData.append('status', isChecked);
+    formData.append('csrf_token', csrfToken);
+    formData.append('ajax', '1');
+
+    fetch('/admin/kelas.php', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data && data.success) {
+            showQuickStatusToast('Status kelas berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+        } else {
+            revertToggle();
+        }
+    })
+    .catch(() => {
+        revertToggle();
+    });
+
+    function revertToggle() {
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+            if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
+            if (text) text.textContent = 'Aktif';
+        } else {
+            if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
+            if (text) text.textContent = 'Nonaktif';
+        }
+        showQuickStatusToast('Gagal memperbarui status');
+    }
+}
+
 function confirmResetAllKelas() {
     showConfirmResetModal(
         'formDeleteAllKelas',

@@ -43,10 +43,187 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
     export_excel_xls("Data_Siswa_{$titleSuffix}_" . date('Ymd_His') . ".xls", $headers, $rows, [2, 3]);
 }
 
+// Handle Download Template Excel (.xls)
+if (isset($_GET['action']) && $_GET['action'] === 'template_excel') {
+    $headers = ['NIS', 'NISN', 'Nama Siswa', 'Kelas'];
+    $sampleRows = [
+        ['13741', '0061234567', 'I Putu Gede Pratama', 'XII RPL 1'],
+        ['13742', '0061234568', 'Ni Kadek Ayu Lestari', 'XII TKJ'],
+        ['13743', '-', 'I Made Arya Wijaya', 'XII DKV']
+    ];
+    export_excel_xls("template_impor_siswa.xls", $headers, $sampleRows, [0, 1]);
+}
+
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     $action = $_POST['action'] ?? '';
+
+    // Handle Import Excel
+    if ($action === 'import_excel') {
+        if (!empty($_FILES['file_siswa_excel']['tmp_name'])) {
+            $file = $_FILES['file_siswa_excel']['tmp_name'];
+            $rows = parse_spreadsheet_rows($file, true);
+
+            if (!empty($rows)) {
+                $classCache = [];
+                $allKelas = dbFetchAll("SELECT id, UPPER(TRIM(nama_kelas)) as uname FROM kelas");
+                foreach ($allKelas as $ak) {
+                    $classCache[$ak['uname']] = $ak['id'];
+                }
+
+                $importedCount = 0;
+                $updatedCount = 0;
+                $headerMap = null;
+
+                foreach ($rows as $cols) {
+                    if (empty(array_filter($cols, function($v) { return trim((string)$v) !== ''; }))) {
+                        continue;
+                    }
+
+                    // Deteksi baris header jika belum ditentukan
+                    if ($headerMap === null) {
+                        $lowerRow = array_map(function($c) { return strtolower(trim((string)$c)); }, $cols);
+                        $hasHeaderKeywords = false;
+                        foreach ($lowerRow as $val) {
+                            if (strpos($val, 'nama') !== false || strpos($val, 'siswa') !== false || strpos($val, 'kelas') !== false) {
+                                $hasHeaderKeywords = true;
+                                break;
+                            }
+                        }
+
+                        if ($hasHeaderKeywords) {
+                            $headerMap = [];
+                            foreach ($lowerRow as $idx => $val) {
+                                if (strpos($val, 'nama') !== false || strpos($val, 'siswa') !== false) {
+                                    $headerMap['nama'] = $idx;
+                                } elseif (strpos($val, 'nisn') !== false) {
+                                    $headerMap['nisn'] = $idx;
+                                } elseif (strpos($val, 'nis') !== false) {
+                                    $headerMap['nis'] = $idx;
+                                } elseif (strpos($val, 'kelas') !== false || strpos($val, 'rombel') !== false) {
+                                    $headerMap['kelas'] = $idx;
+                                }
+                            }
+                            continue; // Lewati baris header
+                        }
+                    }
+
+                    // Ambil nilai kolom berdasarkan headerMap atau fallback posisi
+                    $nama = '';
+                    $kelasName = '';
+                    $nis = '';
+                    $nisn = '';
+
+                    if ($headerMap !== null && isset($headerMap['nama'])) {
+                        $nama = $cols[$headerMap['nama']] ?? '';
+                        $kelasName = isset($headerMap['kelas']) ? ($cols[$headerMap['kelas']] ?? '') : '';
+                        $nis = isset($headerMap['nis']) ? ($cols[$headerMap['nis']] ?? '') : '';
+                        $nisn = isset($headerMap['nisn']) ? ($cols[$headerMap['nisn']] ?? '') : '';
+                    } else {
+                        // Heuristik posisi: jika col 0 adalah nomor urut
+                        if (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            // Format export: No, Kelas, NIS, NISN, Nama
+                            $kelasName = $cols[1] ?? '';
+                            $nis = $cols[2] ?? '';
+                            $nisn = $cols[3] ?? '';
+                            $nama = $cols[4] ?? '';
+                        } elseif (count($cols) >= 4) {
+                            // Format template: NIS, NISN, Nama, Kelas
+                            $nis = $cols[0] ?? '';
+                            $nisn = $cols[1] ?? '';
+                            $nama = $cols[2] ?? '';
+                            $kelasName = $cols[3] ?? '';
+                        } elseif (count($cols) === 3) {
+                            $nis = $cols[0] ?? '';
+                            $nama = $cols[1] ?? '';
+                            $kelasName = $cols[2] ?? '';
+                        } else {
+                            $nama = $cols[0] ?? '';
+                            $kelasName = $cols[1] ?? '';
+                        }
+                    }
+
+                    $nama = trim((string)$nama);
+                    $kelasName = trim((string)$kelasName);
+                    $nis = trim((string)$nis);
+                    $nisn = trim((string)$nisn);
+
+                    if ($nama === '' || in_array(strtolower($nama), ['nama', 'nama siswa', 'nama lengkap', 'no', 'nomor'])) {
+                        continue;
+                    }
+                    if ($kelasName === '') {
+                        $kelasName = 'Umum';
+                    }
+
+                    // Pastikan kelas terdaftar
+                    $uname = strtoupper($kelasName);
+                    if (!isset($classCache[$uname])) {
+                        $tingkat = 'XII';
+                        if (stripos($kelasName, 'X ') === 0 || strtoupper(substr($kelasName, 0, 2)) === 'X ') $tingkat = 'X';
+                        elseif (stripos($kelasName, 'XI ') === 0 || strtoupper(substr($kelasName, 0, 3)) === 'XI ') $tingkat = 'XI';
+
+                        $newCid = dbInsert('kelas', [
+                            'nama_kelas' => $kelasName,
+                            'tingkat' => $tingkat,
+                            'program_keahlian' => '',
+                            'aktif' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                        $classCache[$uname] = $newCid;
+                    }
+                    $cid = $classCache[$uname];
+
+                    // Cek apakah siswa sudah ada di kelas ini
+                    $existing = null;
+                    if ($nis !== '' && $nis !== '-') {
+                        $existing = dbFetch("SELECT id FROM siswa WHERE nis = :nis AND class_id = :cid", ['nis' => $nis, 'cid' => $cid]);
+                    }
+                    if (!$existing) {
+                        $existing = dbFetch("SELECT id FROM siswa WHERE LOWER(TRIM(nama)) = LOWER(:n) AND class_id = :cid", [
+                            'n' => $nama,
+                            'cid' => $cid
+                        ]);
+                    }
+
+                    if ($existing) {
+                        dbUpdate('siswa', [
+                            'nis' => $nis,
+                            'nisn' => $nisn,
+                            'nama' => $nama,
+                            'aktif' => 1,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ], 'id = :id', ['id' => $existing['id']]);
+                        $updatedCount++;
+                    } else {
+                        dbInsert('siswa', [
+                            'class_id' => $cid,
+                            'nis' => $nis,
+                            'nisn' => $nisn,
+                            'nama' => $nama,
+                            'aktif' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                        $importedCount++;
+                    }
+                }
+
+                $total = $importedCount + $updatedCount;
+                log_activity('IMPORT_SISWA', "Mengimpor {$importedCount} data siswa baru dan memperbarui {$updatedCount} data dari berkas Excel.");
+                set_flash('success', "Berhasil memproses {$total} data siswa ({$importedCount} siswa baru ditambahkan, {$updatedCount} diperbarui).");
+                header('Location: /admin/siswa.php');
+                exit;
+            } else {
+                set_flash('danger', 'Berkas kosong atau tidak ada data yang dapat dibaca. Pastikan format kolom sesuai template.');
+            }
+        } else {
+            set_flash('danger', 'Silakan pilih berkas Excel (.xls/.xlsx/.csv) terlebih dahulu.');
+        }
+        header('Location: /admin/siswa.php');
+        exit;
+    }
 
     if ($action === 'save') {
         $id = (int)($_POST['id'] ?? 0);
@@ -94,6 +271,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = (int)($_POST['status'] ?? 0);
         $retClass = (int)($_POST['return_class_id'] ?? 0);
         dbUpdate('siswa', ['aktif' => $status, 'updated_at' => date('Y-m-d H:i:s')], 'id = :id', ['id' => $id]);
+        
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) || isset($_POST['ajax'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'id' => $id, 'status' => $status]);
+            exit;
+        }
+
         set_flash('success', 'Status siswa berhasil diperbarui.');
         header('Location: /admin/siswa.php' . ($retClass > 0 ? "?class_id={$retClass}" : ''));
         exit;
@@ -184,9 +368,9 @@ require_once __DIR__ . '/layout_header.php';
         <a href="/admin/siswa.php?action=export_excel<?= $selectedClassId > 0 ? '&class_id=' . $selectedClassId : '' ?>" class="btn btn-secondary btn-sm" title="Ekspor data siswa ke format Excel .xls">
             <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
         </a>
-        <a href="/admin/import-siswa.php?type=siswa" class="btn btn-success btn-sm" title="Impor data siswa dari format Excel .xls">
+        <button type="button" class="btn btn-success btn-sm" onclick="openImportSiswaModal()" title="Impor data siswa dari format Excel .xls">
             <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
-        </a>
+        </button>
         <?php if ($totalSiswaGlobal > 0): ?>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllSiswa(<?= $selectedClassId ?>)" title="Kosongkan data siswa untuk persiapan ujian baru">
                 <i class="bi bi-trash3-fill"></i> 
@@ -306,7 +490,7 @@ require_once __DIR__ . '/layout_header.php';
                                 <th style="width: 90px;">NIS</th>
                                 <th>Nama Lengkap</th>
                                 <th>Kelas</th>
-                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>
                                 <th style="text-align: center; width: 105px;">AKSI</th>
                             </tr>
                         </thead>
@@ -325,17 +509,21 @@ require_once __DIR__ . '/layout_header.php';
                                         <td><strong><?= htmlspecialchars($s['nama']) ?></strong></td>
                                         <td><span class="badge badge-info"><?= htmlspecialchars($s['nama_kelas'] ?? '-') ?></span></td>
                                         <td style="text-align: center;">
-                                            <form method="POST" action="/admin/siswa.php" style="display: inline;">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="action" value="toggle_active">
-                                                <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                                                <input type="hidden" name="status" value="<?= $s['aktif'] ? 0 : 1 ?>">
-                                                <input type="hidden" name="return_class_id" value="<?= $selectedClassId ?>">
-                                                <button type="submit" class="badge <?= $s['aktif'] ? 'badge-success' : 'badge-danger' ?>" 
-                                                        style="border: none; cursor: pointer;">
+                                            <label class="ceklis-status-pill <?= $s['aktif'] ? 'is-active' : 'is-inactive' ?>" 
+                                                   id="ceklis_box_siswa_<?= $s['id'] ?>" 
+                                                   title="Klik ceklis untuk mengubah status aktif/nonaktif siswa">
+                                                <input type="checkbox" 
+                                                       class="ceklis-siswa-input" 
+                                                       id="check_siswa_<?= $s['id'] ?>" 
+                                                       <?= $s['aktif'] ? 'checked' : '' ?> 
+                                                       onchange="quickToggleSiswa(<?= $s['id'] ?>, this)">
+                                                <span class="ceklis-box">
+                                                    <i class="bi bi-check-lg ceklis-check-icon"></i>
+                                                </span>
+                                                <span class="ceklis-text" id="ceklis_text_siswa_<?= $s['id'] ?>">
                                                     <?= $s['aktif'] ? 'Aktif' : 'Nonaktif' ?>
-                                                </button>
-                                            </form>
+                                                </span>
+                                            </label>
                                         </td>
                                         <td style="text-align: center; white-space: nowrap;">
                                             <div class="action-btn-group">
@@ -365,7 +553,128 @@ require_once __DIR__ . '/layout_header.php';
     </div>
 </div>
 
+<!-- MODAL IMPOR SISWA DARI EXCEL -->
+<div id="modalImportSiswa" class="custom-modal" style="display: none;">
+    <div class="custom-modal-backdrop" onclick="closeImportSiswaModal()"></div>
+    <div class="notification-popup-card" style="max-width: 580px; position: relative; z-index: 10;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                    <i class="bi bi-file-earmark-excel"></i>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--slate-800);">Impor Data Siswa (.xls)</h3>
+                    <p style="margin: 0; font-size: 0.78rem; color: var(--slate-500);">Unggah berkas Excel untuk menambahkan peserta ujian</p>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeImportSiswaModal()" style="border: none; background: transparent; font-size: 1.25rem; cursor: pointer; color: var(--slate-400);">✕</button>
+        </div>
+
+        <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem;">
+            <div>
+                <strong style="font-size: 0.85rem; color: #1e293b; display: block;">Format Template Siswa</strong>
+                <span style="font-size: 0.75rem; color: #64748b;">Gunakan template resmi agar pencocokan kolom presisi.</span>
+            </div>
+            <a href="/admin/siswa.php?action=template_excel" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem;">
+                <i class="bi bi-download"></i> Unduh Template
+            </a>
+        </div>
+
+        <form method="POST" action="/admin/siswa.php" enctype="multipart/form-data">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="import_excel">
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label" for="file_siswa_excel" style="font-weight: 600;">Pilih Berkas Spreadsheet (.xls / .xlsx / .csv) <span class="required">*</span></label>
+                <input type="file" name="file_siswa_excel" id="file_siswa_excel" class="form-control" accept=".xls,.xlsx,.csv" required style="padding: 0.5rem;">
+                <div class="form-hint" style="font-size: 0.75rem; color: #64748b; margin-top: 0.35rem;">
+                    Didukung: Excel 97-2003 (.xls), Excel (.xlsx), atau CSV (Maksimal 5 MB).
+                </div>
+            </div>
+
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.75rem 0.95rem; margin-bottom: 1.25rem; font-size: 0.8rem; color: #1e40af; line-height: 1.5;">
+                <strong>Panduan Kolom:</strong> Kolom yang didukung: <em>NIS</em>, <em>NISN</em>, <em>Nama Siswa</em>, <em>Kelas</em>. Kelas baru akan dibuat secara otomatis bila belum ada di sistem.
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.65rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeImportSiswaModal()">Batal</button>
+                <button type="submit" class="btn btn-success" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <i class="bi bi-cloud-arrow-up-fill"></i> Unggah & Proses Impor
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+function openImportSiswaModal() {
+    const modal = document.getElementById('modalImportSiswa');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeImportSiswaModal() {
+    const modal = document.getElementById('modalImportSiswa');
+    if (modal) modal.style.display = 'none';
+}
+
+function quickToggleSiswa(id, checkbox) {
+    const isChecked = checkbox.checked ? 1 : 0;
+    const box = document.getElementById('ceklis_box_siswa_' + id);
+    const text = document.getElementById('ceklis_text_siswa_' + id);
+
+    // Optimistic UI update
+    if (isChecked) {
+        if (box) {
+            box.classList.remove('is-inactive');
+            box.classList.add('is-active');
+        }
+        if (text) text.textContent = 'Aktif';
+    } else {
+        if (box) {
+            box.classList.remove('is-active');
+            box.classList.add('is-inactive');
+        }
+        if (text) text.textContent = 'Nonaktif';
+    }
+
+    const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '';
+    const formData = new FormData();
+    formData.append('action', 'toggle_active');
+    formData.append('id', id);
+    formData.append('status', isChecked);
+    formData.append('csrf_token', csrfToken);
+    formData.append('ajax', '1');
+
+    fetch('/admin/siswa.php', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data && data.success) {
+            showQuickStatusToast('Status siswa berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+        } else {
+            revertToggle();
+        }
+    })
+    .catch(() => {
+        revertToggle();
+    });
+
+    function revertToggle() {
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+            if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
+            if (text) text.textContent = 'Aktif';
+        } else {
+            if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
+            if (text) text.textContent = 'Nonaktif';
+        }
+        showQuickStatusToast('Gagal memperbarui status');
+    }
+}
+
 function confirmResetAllSiswa(classId) {
     const targetText = classId > 0 ? "seluruh siswa pada KELAS INI" : "SELURUH data siswa di SEMUA KELAS";
     showConfirmResetModal(
@@ -377,3 +686,4 @@ function confirmResetAllSiswa(classId) {
 </script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>
+

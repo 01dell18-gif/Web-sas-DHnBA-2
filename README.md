@@ -149,6 +149,28 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
     - **Desktop Mode (> 900px):** Menekan tombol toggle menyembunyikan sidebar admin (width: 0), dan area konten utama (`.admin-main`) otomatis melebar penuh 100% (*isi dinamis mengikuti saat navbar disembunyikan atau ditampilkan*). Menekan tombol kembali mengembalikan posisi sidebar ke 240px. Status toggle tersimpan otomatis di `localStorage`.
     - **Mobile Mode (≤ 900px):** Sidebar secara default tersembunyi rapi dan muncul saat tombol toggle ditekan dengan animasi slide down, serta otomatis menutup bila mengklik di luar area menu.
     - **Halaman Publik:** Tombol toggle yang sama mengontrol visibilitas menu navigasi dropdown mobile.
+16. **Perbaikan & Optimalisasi Impor Data Siswa Peserta Ujian:**
+    - Menyediakan modal popup interaktif **"Impor Data Siswa (.xls)"** langsung pada halaman `/admin/siswa.php`, memungkinkan panitia mengunggah data siswa secara langsung tanpa perlu berpindah modul.
+    - Dilengkapi tautan unduh **Template Resmi Siswa (.xls)** dengan format kolom presisi: *NIS*, *NISN*, *Nama Siswa*, dan *Kelas*.
+    - **Smart Header & Column Auto-Detection:** Mengatasi masalah impor gagal dengan algoritma pencocokan cerdas yang membaca baris header secara otomatis. Mampu memproses file hasil ekspor sistem sebelumnya, format Dapodik sekolah, maupun template murni secara fleksibel.
+    - Pendaftaran kelas otomatis jika nama kelas belum terdaftar di sistem (lengkap dengan deteksi tingkat X, XI, XII), serta kemampuan deteksi pembaruan data (*update existing*) siswa berdasarkan NIS maupun nama lengkap.
+17. **Standardisasi Tampilan Kolom Status (Ceklis) Menyeluruh:**
+    - Menyeragamkan seluruh tabel data master pada admin panel (**Kelola Data Siswa**, **Data Kelas**, **Data Guru & Pengawas**, dan **Data Mapel**) ke satu tampilan dan satu desain yang 100% konsisten.
+    - Menggunakan header resmi `<th style="text-align: center; width: 140px;"><i class="bi bi-check2-square"></i> Status (Ceklis)</th>`.
+    - Mengimplementasikan komponen pill terstandarisasi (`.ceklis-status-pill`):
+      - **Status Aktif:** Pill rounded hijau mint (`#ecfdf5`), border hijau (`#a7f3d0`), rounded square checkbox hijau dengan ikon ceklis putih (`✓`), dan teks tebal "Aktif" bernuansa hijau tua (`#065f46`).
+      - **Status Nonaktif:** Pill abu-abu lembut (`#f8fafc`), border abu-abu (`#e2e8f0`), rounded square putih, dan teks abu-abu "Nonaktif".
+    - Setiap pill status berfungsi interaktif dengan toggle instan via AJAX, pembaruan antarmuka seketika (*optimistic UI*), dan notifikasi melayang (*quick toast notification*) di pojok kanan bawah tanpa memuat ulang halaman.
+18. **Grup Menu Navbar Berdesain Accordion Tree (Terbuka Saat Diklik):**
+    - Mengorganisasi menu navigasi sidebar admin ke dalam grup-grup terstruktur sesuai alur kerja ujian:
+      - **Dashboard** (Akses Cepat Ringkasan)
+      - **Data Master:** Data Kelas, Data Guru & Pengawas, Data Mapel
+      - **Data Peserta:** Kelola Data Siswa, Impor Data Excel
+      - **Rekap dan Laporan:** Rekap Kehadiran, Arsip Daftar Hadir, Arsip Berita Acara, Rekonsiliasi Dokumen
+      - **Pengaturan:** Template Ujian, Pengaturan Kop & Drive, Manajemen User
+    - Setiap grup menu bertindak sebagai accordion interaktif: dapat dibuka dan ditutup dengan mengeklik kepala grup menu, disertai animasi rotasi panah indikator (`▾` ke `▴`).
+    - Desain pohon (*tree menu*) yang elegan dengan garis vertikal konektor (`.sidebar-tree-line`) di sisi kiri submenu dan bulatan dot presisi (`.sidebar-sub-bullet`) untuk setiap menu anak, identik dengan contoh referensi visual.
+    - Grup yang memuat halaman yang sedang aktif secara otomatis terbuka sejak halaman pertama kali dimuat.
 
 ---
 
@@ -167,3 +189,4 @@ Aplikasi mendukung 2 mode basis data:
    database/database_mysql.sql
    ```
    Untuk beralih ke MySQL, cukup sesuaikan konstanta di `config/database.php`.
+

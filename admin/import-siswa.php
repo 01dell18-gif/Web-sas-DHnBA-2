@@ -425,47 +425,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_FILES[$fileInputName]['tmp_name'])) {
             $file = $_FILES[$fileInputName]['tmp_name'];
             $origName = $_FILES[$fileInputName]['name'];
-            $rows = parseSpreadsheetRows($file, $origName);
+            $rows = parse_spreadsheet_rows($file, true);
 
             if (!empty($rows)) {
                 $classCache = [];
-                $allKelas = dbFetchAll("SELECT id, UPPER(nama_kelas) as uname FROM kelas");
+                $allKelas = dbFetchAll("SELECT id, UPPER(TRIM(nama_kelas)) as uname FROM kelas");
                 foreach ($allKelas as $ak) {
                     $classCache[$ak['uname']] = $ak['id'];
                 }
 
                 $importedCount = 0;
+                $updatedCount = 0;
+                $headerMap = null;
+
                 foreach ($rows as $cols) {
-                    // Check if col 0 is a sequence No
-                    if (count($cols) >= 5 && is_numeric($cols[0]) && (is_numeric($cols[1]) || empty($cols[1]))) {
-                        $nis = $cols[1] ?? '';
-                        $nisn = $cols[2] ?? '';
-                        $nama = $cols[3] ?? '';
-                        $kelasName = $cols[4] ?? '';
-                    } elseif (count($cols) >= 4) {
-                        $nis = $cols[0] ?? '';
-                        $nisn = $cols[1] ?? '';
-                        $nama = $cols[2] ?? '';
-                        $kelasName = $cols[3] ?? '';
-                    } elseif (count($cols) === 3) {
-                        $nis = $cols[0] ?? '';
-                        $nisn = '';
-                        $nama = $cols[1] ?? '';
-                        $kelasName = $cols[2] ?? '';
-                    } else {
-                        $nis = '';
-                        $nisn = '';
-                        $nama = $cols[0] ?? '';
-                        $kelasName = $cols[1] ?? '';
+                    if (empty(array_filter($cols, function($v) { return trim((string)$v) !== ''; }))) {
+                        continue;
                     }
 
-                    $nama = trim($nama);
-                    $kelasName = trim($kelasName);
+                    // Deteksi baris header
+                    if ($headerMap === null) {
+                        $lowerRow = array_map(function($c) { return strtolower(trim((string)$c)); }, $cols);
+                        $hasHeaderKeywords = false;
+                        foreach ($lowerRow as $val) {
+                            if (strpos($val, 'nama') !== false || strpos($val, 'siswa') !== false || strpos($val, 'kelas') !== false) {
+                                $hasHeaderKeywords = true;
+                                break;
+                            }
+                        }
+
+                        if ($hasHeaderKeywords) {
+                            $headerMap = [];
+                            foreach ($lowerRow as $idx => $val) {
+                                if (strpos($val, 'nama') !== false || strpos($val, 'siswa') !== false) {
+                                    $headerMap['nama'] = $idx;
+                                } elseif (strpos($val, 'nisn') !== false) {
+                                    $headerMap['nisn'] = $idx;
+                                } elseif (strpos($val, 'nis') !== false) {
+                                    $headerMap['nis'] = $idx;
+                                } elseif (strpos($val, 'kelas') !== false || strpos($val, 'rombel') !== false) {
+                                    $headerMap['kelas'] = $idx;
+                                }
+                            }
+                            continue; // Lewati header
+                        }
+                    }
+
+                    $nama = '';
+                    $kelasName = '';
+                    $nis = '';
+                    $nisn = '';
+
+                    if ($headerMap !== null && isset($headerMap['nama'])) {
+                        $nama = $cols[$headerMap['nama']] ?? '';
+                        $kelasName = isset($headerMap['kelas']) ? ($cols[$headerMap['kelas']] ?? '') : '';
+                        $nis = isset($headerMap['nis']) ? ($cols[$headerMap['nis']] ?? '') : '';
+                        $nisn = isset($headerMap['nisn']) ? ($cols[$headerMap['nisn']] ?? '') : '';
+                    } else {
+                        if (count($cols) >= 5 && is_numeric($cols[0]) && !is_numeric($cols[1])) {
+                            $kelasName = $cols[1] ?? '';
+                            $nis = $cols[2] ?? '';
+                            $nisn = $cols[3] ?? '';
+                            $nama = $cols[4] ?? '';
+                        } elseif (count($cols) >= 4) {
+                            $nis = $cols[0] ?? '';
+                            $nisn = $cols[1] ?? '';
+                            $nama = $cols[2] ?? '';
+                            $kelasName = $cols[3] ?? '';
+                        } elseif (count($cols) === 3) {
+                            $nis = $cols[0] ?? '';
+                            $nama = $cols[1] ?? '';
+                            $kelasName = $cols[2] ?? '';
+                        } else {
+                            $nama = $cols[0] ?? '';
+                            $kelasName = $cols[1] ?? '';
+                        }
+                    }
+
+                    $nama = trim((string)$nama);
+                    $kelasName = trim((string)$kelasName);
+                    $nis = trim((string)$nis);
+                    $nisn = trim((string)$nisn);
+
                     if ($nama === '' || in_array(strtolower($nama), ['nama', 'nama siswa', 'nama lengkap', 'no', 'nomor'])) {
                         continue;
                     }
                     if ($kelasName === '') {
-                        continue;
+                        $kelasName = 'Umum';
                     }
 
                     $uname = strtoupper($kelasName);
@@ -486,20 +532,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $cid = $classCache[$uname];
 
-                    dbInsert('siswa', [
-                        'class_id' => $cid,
-                        'nis' => trim($nis),
-                        'nisn' => trim($nisn),
-                        'nama' => $nama,
-                        'aktif' => 1,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ]);
-                    $importedCount++;
+                    $existing = null;
+                    if ($nis !== '' && $nis !== '-') {
+                        $existing = dbFetch("SELECT id FROM siswa WHERE nis = :nis AND class_id = :cid", ['nis' => $nis, 'cid' => $cid]);
+                    }
+                    if (!$existing) {
+                        $existing = dbFetch("SELECT id FROM siswa WHERE LOWER(TRIM(nama)) = LOWER(:n) AND class_id = :cid", [
+                            'n' => $nama,
+                            'cid' => $cid
+                        ]);
+                    }
+
+                    if ($existing) {
+                        dbUpdate('siswa', [
+                            'nis' => $nis,
+                            'nisn' => $nisn,
+                            'nama' => $nama,
+                            'aktif' => 1,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ], 'id = :id', ['id' => $existing['id']]);
+                        $updatedCount++;
+                    } else {
+                        dbInsert('siswa', [
+                            'class_id' => $cid,
+                            'nis' => $nis,
+                            'nisn' => $nisn,
+                            'nama' => $nama,
+                            'aktif' => 1,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                        $importedCount++;
+                    }
                 }
 
-                log_activity('IMPORT_SISWA', "Mengimpor {$importedCount} data siswa dari berkas {$origName}.");
-                set_flash('success', "Berhasil mengimpor {$importedCount} siswa ke dalam sistem.");
+                $total = $importedCount + $updatedCount;
+                log_activity('IMPORT_SISWA', "Mengimpor {$importedCount} data siswa baru dan memperbarui {$updatedCount} data dari berkas {$origName}.");
+                set_flash('success', "Berhasil memproses {$total} data siswa ({$importedCount} baru, {$updatedCount} diperbarui) ke dalam sistem.");
                 header('Location: /admin/siswa.php');
                 exit;
             } else {
