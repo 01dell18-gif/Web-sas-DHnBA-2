@@ -212,9 +212,13 @@ window.toggleAdminSidebar = function(e) {
 window.toggleAdminMenu = window.toggleAdminSidebar;
 
 // Global Accordion Sidebar Group Toggle (Membuka / Menutup Grup Menu Navbar)
-window.toggleSidebarGroup = function(button) {
-    if (!button) return false;
-    const group = button.closest('.sidebar-nav-group');
+window.toggleSidebarGroup = function(button, event) {
+    if (event) {
+        try { event.preventDefault(); event.stopPropagation(); } catch (e) {}
+    }
+    const btn = button || (event ? event.target.closest('.sidebar-group-header') : null);
+    if (!btn) return false;
+    const group = btn.closest('.sidebar-nav-group');
     if (!group) return false;
     group.classList.toggle('is-open');
     return false;
@@ -279,6 +283,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.body.classList.contains('mobile-sidebar-open')) {
             if (adminSidebar && !adminSidebar.contains(e.target) && (!btnToggleSidebar || !btnToggleSidebar.contains(e.target))) {
                 document.body.classList.remove('mobile-sidebar-open');
+            }
+        }
+    });
+
+    // Delegated click handler untuk grup menu accordion sidebar
+    document.addEventListener('click', function(e) {
+        const groupHeader = e.target.closest('.sidebar-group-header');
+        if (groupHeader) {
+            e.preventDefault();
+            const group = groupHeader.closest('.sidebar-nav-group');
+            if (group) {
+                group.classList.toggle('is-open');
             }
         }
     });

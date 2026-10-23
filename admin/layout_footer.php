@@ -207,6 +207,6 @@ window.alert = function(msg) {
 };
 </script>
 
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/app.js?v=<?= file_exists(__DIR__ . '/../assets/js/app.js') ? filemtime(__DIR__ . '/../assets/js/app.js') : time() ?>"></script>
 </body>
 </html>

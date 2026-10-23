@@ -44,11 +44,16 @@ def test_sidebar_groups():
     assert "toggleSidebarGroup" in html, "toggleSidebarGroup missing"
     
     # Check all groups present
-    assert "Data Master" in html
-    assert "Data Peserta" in html
-    assert "Rekap dan Laporan" in html
-    assert "Pengaturan" in html
-    print("✓ Sidebar grouped accordion tree structure verified")
+    assert "admin-navbar" in html, "admin-navbar missing"
+    assert "admin-brand-box" in html, "admin-brand-box missing"
+    assert "admin-header-actions" in html, "admin-header-actions missing"
+    assert "btn-sidebar-toggle" in html, "btn-sidebar-toggle missing"
+    assert "Data Master" in html, "Data Master missing"
+    assert "Kelola Data Siswa" in html, "Kelola Data Siswa missing from Data Master"
+    assert "Impor Data Excel" in html, "Impor Data Excel missing from Data Master"
+    assert "Rekap dan Laporan" in html, "Rekap dan Laporan missing"
+    assert "Pengaturan" in html, "Pengaturan missing"
+    print("✓ Sidebar grouped accordion tree structure & navbar alignment verified")
 
 def test_status_pill_consistency():
     pages = [

@@ -1,5 +1,6 @@
 # Sistem Administrasi Ujian (SAS) - SMK Negeri 1 Klungkung
-### Generator Absensi & Berita Acara Ujian Resmi Berformat A4 PDF & Spreadsheet Excel (.xls)
+
+## Generator Absensi & Berita Acara Ujian Resmi Berformat A4 PDF & Spreadsheet Excel (.xls)
 
 Aplikasi ini merupakan sistem administrasi ujian presisi dan fungsional untuk SMK Negeri 1 Klungkung. Aplikasi ini dirancang untuk memfasilitasi administrasi ujian sekolah, pencatatan kehadiran siswa live, pembuatan berita acara, dokumentasi foto pengawasan, tanda tangan digital/manual, audit rekonsiliasi dokumen, rekap matriks kehadiran seluruh mata pelajaran, serta ekspor dokumen ke PDF resmi berformat A4 dan lembar kerja Excel berformat `.xls`.
 
@@ -8,10 +9,13 @@ Aplikasi ini merupakan sistem administrasi ujian presisi dan fungsional untuk SM
 ## 🚀 Panduan Menjalankan Aplikasi
 
 ### Cara 1: Menggunakan File Batch (Satu Kali Klik)
+
 Cukup jalankan / double-click file:
-```
+
+```cmd
 start-server.bat
 ```
+
 Script ini akan:
 1. Memeriksa ketersediaan PHP di `C:\xampp\php\php.exe`.
 2. Mengaktifkan ekstensi yang diperlukan (`gd`, `mbstring`, `pdo_sqlite`).
@@ -19,6 +23,7 @@ Script ini akan:
 4. Otomatis membuka browser default Anda ke halaman beranda.
 
 ### Cara 2: Menjalankan via Terminal / CMD / PowerShell
+
 ```bash
 "C:\xampp\php\php.exe" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=gd -S 127.0.0.1:8080
 ```
@@ -161,16 +166,24 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
       - **Status Aktif:** Pill rounded hijau mint (`#ecfdf5`), border hijau (`#a7f3d0`), rounded square checkbox hijau dengan ikon ceklis putih (`✓`), dan teks tebal "Aktif" bernuansa hijau tua (`#065f46`).
       - **Status Nonaktif:** Pill abu-abu lembut (`#f8fafc`), border abu-abu (`#e2e8f0`), rounded square putih, dan teks abu-abu "Nonaktif".
     - Setiap pill status berfungsi interaktif dengan toggle instan via AJAX, pembaruan antarmuka seketika (*optimistic UI*), dan notifikasi melayang (*quick toast notification*) di pojok kanan bawah tanpa memuat ulang halaman.
-18. **Grup Menu Navbar Berdesain Accordion Tree (Terbuka Saat Diklik):**
-    - Mengorganisasi menu navigasi sidebar admin ke dalam grup-grup terstruktur sesuai alur kerja ujian:
-      - **Dashboard** (Akses Cepat Ringkasan)
-      - **Data Master:** Data Kelas, Data Guru & Pengawas, Data Mapel
-      - **Data Peserta:** Kelola Data Siswa, Impor Data Excel
+18. **Penyelarasan Navbar Header & Penggabungan Grup Data Master:**
+    - **Penyelarasan Presisi Header & Sidebar:** Mengintegrasikan area brand sekolah (`.admin-brand-box` dengan lebar `240px`) di sudut kiri atas bilah navigasi agar sejajar vertikal lurus (*flush alignment*) dengan bilah sidebar menu di bawahnya. Tombol toggle titik tiga / garis tiga (`#btnToggleSidebar`) ditempatkan secara terstandarisasi di samping brand header pada bilah navbar atas, identik dengan tata letak dashboard web modern pada umumnya.
+    - **Penggabungan Menu Data Master Terpadu:** Menu **Kelola Data Siswa** dan **Impor Data Excel** kini disatukan ke dalam satu grup utama **Data Master**:
+      - 🏫 **Data Kelas**
+      - 👨‍🎓 **Kelola Data Siswa**
+      - 👨‍🏫 **Data Guru & Pengawas**
+      - 📚 **Data Mapel**
+      - 📥 **Impor Data Excel**
+    - **Struktur Grup Menu Bersih & Efisien:**
+      - **Dashboard** (Pintasan Utama)
+      - **Data Master:** Data Kelas, Kelola Data Siswa, Data Guru & Pengawas, Data Mapel, Impor Data Excel
       - **Rekap dan Laporan:** Rekap Kehadiran, Arsip Daftar Hadir, Arsip Berita Acara, Rekonsiliasi Dokumen
       - **Pengaturan:** Template Ujian, Pengaturan Kop & Drive, Manajemen User
-    - Setiap grup menu bertindak sebagai accordion interaktif: dapat dibuka dan ditutup dengan mengeklik kepala grup menu, disertai animasi rotasi panah indikator (`▾` ke `▴`).
-    - Desain pohon (*tree menu*) yang elegan dengan garis vertikal konektor (`.sidebar-tree-line`) di sisi kiri submenu dan bulatan dot presisi (`.sidebar-sub-bullet`) untuk setiap menu anak, identik dengan contoh referensi visual.
-    - Grup yang memuat halaman yang sedang aktif secara otomatis terbuka sejak halaman pertama kali dimuat.
+    - **Kehandalan Interaksi Accordion Tree Menu:**
+      - Mengimplementasikan penanganan toggle ganda (*inline synchronous handler* di kepala HTML dan *delegated document click listener*) untuk menjamin klik pada grup menu langsung membuka/menutup daftar submenu tanpa kendala cache peramban.
+      - Menambahkan parameter *cache-busting* dinamis (`?v=...`) pada pemanggilan berkas CSS dan JavaScript aplikasi.
+      - Menetapkan aturan `display: flex !important;` pada submenu yang terbuka dengan animasi transisi yang mulus dan rotasi indikator panah.
+      - Menu aktif secara otomatis terbuka dan disorot (*highlighted*) saat halaman dibuka.
 
 ---
 

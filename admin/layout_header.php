@@ -13,21 +13,60 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?> - <?= htmlspecialchars($namaSekolah) ?></title>
-    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/app.css?v=<?= file_exists(__DIR__ . '/../assets/css/app.css') ? filemtime(__DIR__ . '/../assets/css/app.css') : time() ?>">
     <link rel="icon" type="image/png" href="/<?= htmlspecialchars($logoPath) ?>">
+    <script>
+    // Early synchronous handlers for accordion and sidebar collapse
+    window.toggleSidebarGroup = function(button, event) {
+        if (event) {
+            try { event.preventDefault(); event.stopPropagation(); } catch (e) {}
+        }
+        var btn = button || this;
+        if (!btn) return false;
+        var group = btn.closest('.sidebar-nav-group');
+        if (group) {
+            group.classList.toggle('is-open');
+        }
+        return false;
+    };
+
+    window.toggleAdminSidebar = function(event) {
+        if (event) {
+            try { event.preventDefault(); event.stopPropagation(); } catch (e) {}
+        }
+        if (window.innerWidth <= 900) {
+            document.body.classList.toggle('mobile-sidebar-open');
+        } else {
+            document.body.classList.toggle('sidebar-collapsed');
+            try {
+                var isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            } catch (err) {}
+        }
+        return false;
+    };
+
+    // Global event delegation for reliable click handling
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('click', function(e) {
+            var header = e.target.closest('.sidebar-group-header');
+            if (header) {
+                e.preventDefault();
+                var group = header.closest('.sidebar-nav-group');
+                if (group) {
+                    group.classList.toggle('is-open');
+                }
+            }
+        });
+    });
+    </script>
 </head>
 <body>
 
-<header class="navbar">
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" onclick="toggleAdminSidebar(event)" aria-label="Toggle Sidebar" title="Sembunyikan / Tampilkan Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
-        <div class="navbar-brand">
+<header class="navbar admin-navbar">
+    <div class="admin-navbar-left">
+        <!-- Brand Header Section: Sejajar persis dengan Sidebar (240px) -->
+        <div class="admin-brand-box">
             <a href="/admin/index.php" class="brand-link">
                 <img src="/<?= htmlspecialchars($logoPath) ?>" alt="Logo Sekolah" class="navbar-logo">
                 <div class="brand-text">
@@ -36,8 +75,19 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                 </div>
             </a>
         </div>
+
+        <!-- Tombol Hamburger / Titik Tiga Toggle Sidebar di Navbar -->
+        <div class="admin-header-actions">
+            <button type="button" class="btn-sidebar-toggle" id="btnToggleSidebar" onclick="toggleAdminSidebar(event)" aria-label="Toggle Sidebar" title="Sembunyikan / Tampilkan Menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
+    <div class="admin-navbar-right">
         <div class="user-profile-chip admin-welcome-text">
             <div class="user-avatar-icon">
                 <i class="bi bi-person-fill"></i>
@@ -65,12 +115,12 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
         </a>
 
-        <!-- GRUP 1: DATA MASTER -->
+        <!-- GRUP 1: DATA MASTER (Disatukan dengan Kelola Siswa & Impor Excel) -->
         <?php 
-        $isMasterActive = in_array($currentScript, ['kelas.php', 'guru.php', 'mapel.php']); 
+        $isMasterActive = in_array($currentScript, ['kelas.php', 'siswa.php', 'guru.php', 'mapel.php', 'import-siswa.php', 'import-excel.php']); 
         ?>
         <div class="sidebar-nav-group <?= $isMasterActive ? 'is-open' : '' ?>">
-            <button type="button" class="sidebar-group-header <?= $isMasterActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+            <button type="button" class="sidebar-group-header <?= $isMasterActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this, event)">
                 <span class="group-header-left">
                     <i class="group-icon bi bi-buildings"></i>
                     <span class="group-title">Data Master</span>
@@ -83,6 +133,10 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                     <span class="sidebar-sub-bullet"></span>
                     <span class="sidebar-sub-text">Data Kelas</span>
                 </a>
+                <a href="/admin/siswa.php" class="sidebar-sub-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
+                    <span class="sidebar-sub-bullet"></span>
+                    <span class="sidebar-sub-text">Kelola Data Siswa</span>
+                </a>
                 <a href="/admin/guru.php" class="sidebar-sub-item <?= $currentScript === 'guru.php' ? 'active' : '' ?>">
                     <span class="sidebar-sub-bullet"></span>
                     <span class="sidebar-sub-text">Data Guru & Pengawas</span>
@@ -91,27 +145,6 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                     <span class="sidebar-sub-bullet"></span>
                     <span class="sidebar-sub-text">Data Mapel</span>
                 </a>
-            </div>
-        </div>
-
-        <!-- GRUP 2: DATA PESERTA -->
-        <?php 
-        $isPesertaActive = in_array($currentScript, ['siswa.php', 'import-siswa.php', 'import-excel.php']); 
-        ?>
-        <div class="sidebar-nav-group <?= $isPesertaActive ? 'is-open' : '' ?>">
-            <button type="button" class="sidebar-group-header <?= $isPesertaActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
-                <span class="group-header-left">
-                    <i class="group-icon bi bi-mortarboard"></i>
-                    <span class="group-title">Data Peserta</span>
-                </span>
-                <i class="group-arrow bi bi-caret-down-fill"></i>
-            </button>
-            <div class="sidebar-group-sub">
-                <div class="sidebar-tree-line"></div>
-                <a href="/admin/siswa.php" class="sidebar-sub-item <?= $currentScript === 'siswa.php' ? 'active' : '' ?>">
-                    <span class="sidebar-sub-bullet"></span>
-                    <span class="sidebar-sub-text">Kelola Data Siswa</span>
-                </a>
                 <a href="/admin/import-siswa.php" class="sidebar-sub-item <?= ($currentScript === 'import-siswa.php' || $currentScript === 'import-excel.php') ? 'active' : '' ?>">
                     <span class="sidebar-sub-bullet"></span>
                     <span class="sidebar-sub-text">Impor Data Excel</span>
@@ -119,12 +152,12 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             </div>
         </div>
 
-        <!-- GRUP 3: REKAP DAN LAPORAN -->
+        <!-- GRUP 2: REKAP DAN LAPORAN -->
         <?php 
         $isRekapActive = in_array($currentScript, ['rekap-kehadiran.php', 'absensi.php', 'berita-acara.php', 'rekonsiliasi.php']); 
         ?>
         <div class="sidebar-nav-group <?= $isRekapActive ? 'is-open' : '' ?>">
-            <button type="button" class="sidebar-group-header <?= $isRekapActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+            <button type="button" class="sidebar-group-header <?= $isRekapActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this, event)">
                 <span class="group-header-left">
                     <i class="group-icon bi bi-bar-chart-line"></i>
                     <span class="group-title">Rekap dan Laporan</span>
@@ -152,13 +185,13 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
             </div>
         </div>
 
-        <!-- GRUP 4: PENGATURAN SISTEM -->
+        <!-- GRUP 3: PENGATURAN SISTEM -->
         <?php if (is_admin()): ?>
             <?php 
             $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php']); 
             ?>
             <div class="sidebar-nav-group <?= $isPengaturanActive ? 'is-open' : '' ?>">
-                <button type="button" class="sidebar-group-header <?= $isPengaturanActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this)">
+                <button type="button" class="sidebar-group-header <?= $isPengaturanActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this, event)">
                     <span class="group-header-left">
                         <i class="group-icon bi bi-sliders"></i>
                         <span class="group-title">Pengaturan</span>
