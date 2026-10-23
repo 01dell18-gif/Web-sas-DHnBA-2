@@ -551,6 +551,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($existing) {
                         dbUpdate('siswa', [
+                            'class_id' => $cid,
+                            'nama_kelas' => $kelasName,
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
@@ -561,6 +563,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         dbInsert('siswa', [
                             'class_id' => $cid,
+                            'nama_kelas' => $kelasName,
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,

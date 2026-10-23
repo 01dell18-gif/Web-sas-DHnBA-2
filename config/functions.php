@@ -6,6 +6,15 @@
 
 require_once __DIR__ . '/database.php';
 
+if (file_exists(BASE_PATH . '/vendor/autoload.php')) {
+    require_once BASE_PATH . '/vendor/autoload.php';
+} elseif (file_exists(BASE_PATH . '/vendor/dompdf/autoload.inc.php')) {
+    require_once BASE_PATH . '/vendor/dompdf/autoload.inc.php';
+}
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 $sessionDir = BASE_PATH . '/storage/sessions';
 if (!is_dir($sessionDir)) {
     @mkdir($sessionDir, 0777, true);
@@ -242,7 +251,7 @@ function format_date_indo(?string $dateStr): string {
     return "{$d} {$m} {$y}";
 }
 
-function terbilang($n): string {
+function terbilang(int|float $n): string {
     $n = abs((int)$n);
     $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
     if ($n < 12) return $huruf[$n];
@@ -702,12 +711,12 @@ function generate_absensi_pdf_file(int $id): ?string {
     <?php
     $html = ob_get_clean();
 
-    $options = new Dompdf\Options();
+    $options = new Options();
     $options->set('isRemoteEnabled', true);
     $options->set('isHtml5ParserEnabled', true);
     $options->set('chroot', BASE_PATH);
 
-    $dompdf = new Dompdf\Dompdf($options);
+    $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
@@ -926,12 +935,12 @@ function generate_berita_acara_pdf_file(int $id): ?string {
     <?php
     $html = ob_get_clean();
 
-    $options = new Dompdf\Options();
+    $options = new Options();
     $options->set('isRemoteEnabled', true);
     $options->set('isHtml5ParserEnabled', true);
     $options->set('chroot', BASE_PATH);
 
-    $dompdf = new Dompdf\Dompdf($options);
+    $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();

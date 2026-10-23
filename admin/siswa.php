@@ -189,6 +189,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($existing) {
                         dbUpdate('siswa', [
+                            'class_id' => $cid,
+                            'nama_kelas' => $kelasName,
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
@@ -199,6 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         dbInsert('siswa', [
                             'class_id' => $cid,
+                            'nama_kelas' => $kelasName,
                             'nis' => $nis,
                             'nisn' => $nisn,
                             'nama' => $nama,
@@ -228,10 +231,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'save') {
         $id = (int)($_POST['id'] ?? 0);
         $classId = (int)($_POST['class_id'] ?? 0);
+        $namaKelasBaru = trim($_POST['kelas_baru'] ?? '');
         $nama = trim($_POST['nama'] ?? '');
         $nis = trim($_POST['nis'] ?? '');
         $nisn = trim($_POST['nisn'] ?? '');
         $aktif = isset($_POST['aktif']) ? 1 : 0;
+
+        if ($classId <= 0 && $namaKelasBaru !== '') {
+            $existK = dbFetch("SELECT id, nama_kelas FROM kelas WHERE UPPER(TRIM(nama_kelas)) = :n", ['n' => strtoupper($namaKelasBaru)]);
+            if ($existK) {
+                $classId = (int)$existK['id'];
+                $className = $existK['nama_kelas'];
+            } else {
+                $tingkat = 'XII';
+                if (stripos($namaKelasBaru, 'X ') === 0 || strtoupper(substr($namaKelasBaru, 0, 2)) === 'X ') $tingkat = 'X';
+                elseif (stripos($namaKelasBaru, 'XI ') === 0 || strtoupper(substr($namaKelasBaru, 0, 3)) === 'XI ') $tingkat = 'XI';
+                $classId = dbInsert('kelas', [
+                    'nama_kelas' => $namaKelasBaru,
+                    'tingkat' => $tingkat,
+                    'program_keahlian' => '',
+                    'aktif' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+                $className = $namaKelasBaru;
+            }
+        } else {
+            $className = (string)dbValue("SELECT nama_kelas FROM kelas WHERE id = :id", ['id' => $classId]);
+        }
 
         if ($classId <= 0 || $nama === '') {
             set_flash('danger', 'Nama siswa dan kelas wajib diisi.');
@@ -239,6 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($id > 0) {
                 dbUpdate('siswa', [
                     'class_id' => $classId,
+                    'nama_kelas' => $className,
                     'nama' => $nama,
                     'nis' => $nis,
                     'nisn' => $nisn,
@@ -250,6 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $newId = dbInsert('siswa', [
                     'class_id' => $classId,
+                    'nama_kelas' => $className,
                     'nama' => $nama,
                     'nis' => $nis,
                     'nisn' => $nisn,
@@ -402,8 +431,13 @@ require_once __DIR__ . '/layout_header.php';
                     <?php endif; ?>
                     
                     <div class="form-group">
-                        <label class="form-label" for="class_id">Kelas <span class="required">*</span></label>
-                        <select name="class_id" id="class_id" class="form-select" required>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <label class="form-label" for="class_id" style="margin-bottom: 0;">Kelas <span class="required">*</span></label>
+                            <button type="button" class="btn btn-link btn-sm" id="btnToggleNewClass" onclick="toggleNewClassInput()" style="padding: 0; font-size: 0.78rem; text-decoration: none;">
+                                <i class="bi bi-plus-circle"></i> + Ketik Kelas Baru
+                            </button>
+                        </div>
+                        <select name="class_id" id="class_id" class="form-select" <?= empty($classes) ? '' : 'required' ?>>
                             <option value="">-- Pilih Kelas --</option>
                             <?php foreach ($classes as $c): ?>
                                 <option value="<?= $c['id'] ?>" <?= ($editStudent ? $editStudent['class_id'] : $selectedClassId) == $c['id'] ? 'selected' : '' ?>>
@@ -411,6 +445,12 @@ require_once __DIR__ . '/layout_header.php';
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div id="wrapperNewClass" style="<?= empty($classes) ? 'display: block; margin-top: 0.5rem;' : 'display: none; margin-top: 0.5rem;' ?>">
+                            <input type="text" name="kelas_baru" id="kelas_baru" class="form-control" placeholder="Ketik nama kelas baru (contoh: XII RPL 1)" <?= empty($classes) ? 'required' : '' ?>>
+                            <small class="text-muted" style="font-size: 0.76rem; display: block; margin-top: 3px;">
+                                <i class="bi bi-info-circle"></i> Kelas baru akan otomatis tersimpan ke data kelas.
+                            </small>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -711,6 +751,29 @@ function confirmResetAllSiswa(classId) {
         'PERINGATAN: Tindakan ini akan MENGHAPUS ' + targetText + ' dari sistem secara permanen untuk memulai dari awal.'
     );
 }
+
+function toggleNewClassInput() {
+    var w = document.getElementById('wrapperNewClass');
+    var sel = document.getElementById('class_id');
+    var inp = document.getElementById('kelas_baru');
+    if (!w) return;
+    if (w.style.display === 'none') {
+        w.style.display = 'block';
+        if (sel) sel.removeAttribute('required');
+        if (inp) {
+            inp.setAttribute('required', 'required');
+            inp.focus();
+        }
+    } else {
+        w.style.display = 'none';
+        if (inp) {
+            inp.value = '';
+            inp.removeAttribute('required');
+        }
+        if (sel && sel.options.length > 1) sel.setAttribute('required', 'required');
+    }
+}
+window.toggleNewClassInput = toggleNewClassInput;
 </script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

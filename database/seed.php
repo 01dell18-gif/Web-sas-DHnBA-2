@@ -35,6 +35,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS kelas (
 $db->exec("CREATE TABLE IF NOT EXISTS siswa (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     class_id INTEGER NOT NULL,
+    nama_kelas VARCHAR(50) DEFAULT '',
     nis VARCHAR(30) DEFAULT '',
     nisn VARCHAR(30) DEFAULT '',
     nama VARCHAR(150) NOT NULL,
