@@ -250,6 +250,79 @@ async function run() {
     `);
     console.log('Mapel after click 2 (expected Aktif):', mAfter2);
 
+    // ==========================================
+    // TEST 4: DATA GURU & PENGAWAS UJIAN
+    // ==========================================
+    console.log('\n--- TESTING DATA GURU & PENGAWAS UJIAN ---');
+    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/guru.php' });
+    await sleep(1500);
+
+    let gInitial = await evaluate(`
+        (() => {
+            const pill = document.querySelector('.ceklis-status-pill');
+            return {
+                id: pill?.id,
+                checked: pill.querySelector('input').checked,
+                text: pill.querySelector('.ceklis-text').textContent.trim()
+            };
+        })()
+    `);
+    console.log('Guru initial:', gInitial);
+
+    console.log('Clicking guru status pill (to Nonaktif)...');
+    await evaluate(`document.querySelector('.ceklis-status-pill').click()`);
+    await sleep(1200);
+
+    let gAfter1 = await evaluate(`
+        (() => {
+            const pill = document.querySelector('.ceklis-status-pill');
+            return {
+                checked: pill.querySelector('input').checked,
+                text: pill.querySelector('.ceklis-text').textContent.trim(),
+                isInactive: pill.classList.contains('is-inactive'),
+                toastShow: !!document.querySelector('.quick-status-toast.show'),
+                toastText: document.querySelector('.quick-status-toast')?.textContent.trim()
+            };
+        })()
+    `);
+    console.log('Guru after click 1 (expected Nonaktif):', gAfter1);
+
+    console.log('Clicking guru status pill (back to Aktif)...');
+    await evaluate(`document.querySelector('.ceklis-status-pill').click()`);
+    await sleep(1200);
+
+    let gAfter2 = await evaluate(`
+        (() => {
+            const pill = document.querySelector('.ceklis-status-pill');
+            return {
+                checked: pill.querySelector('input').checked,
+                text: pill.querySelector('.ceklis-text').textContent.trim(),
+                isActive: pill.classList.contains('is-active'),
+                toastText: document.querySelector('.quick-status-toast')?.textContent.trim()
+            };
+        })()
+    `);
+    console.log('Guru after click 2 (expected Aktif):', gAfter2);
+
+    // ==========================================
+    // TEST 5: KEMBALI KE BUTTONS ON IMPORT EXCEL
+    // ==========================================
+    console.log('\n--- TESTING KEMBALI KE LINKS ON IMPOR DATA EXCEL ---');
+    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=siswa' });
+    await sleep(1200);
+    let backSiswa = await evaluate(`document.querySelector('#cardImportSiswa a[href="/admin/siswa.php"]')?.textContent.trim()`);
+    console.log('Back to Siswa button text:', backSiswa);
+
+    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=guru' });
+    await sleep(1200);
+    let backGuru = await evaluate(`document.querySelector('#cardImportGuru a[href="/admin/guru.php"]')?.textContent.trim()`);
+    console.log('Back to Guru button text:', backGuru);
+
+    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=mapel' });
+    await sleep(1200);
+    let backMapel = await evaluate(`document.querySelector('#cardImportMapel a[href="/admin/mapel.php"]')?.textContent.trim()`);
+    console.log('Back to Mapel button text:', backMapel);
+
     console.log('\nTotal exceptions caught:', exceptions.length);
     ws.close();
     chrome.kill();
@@ -270,7 +343,15 @@ async function run() {
         console.error('FAILED: Mapel toggle did not update correctly!');
         process.exit(1);
     }
-    console.log('\n=== ALL BROWSER CDP TESTS PASSED WITH 0 EXCEPTIONS! ===');
+    if (gAfter1.text !== 'Nonaktif' || gAfter2.text !== 'Aktif') {
+        console.error('FAILED: Guru toggle did not update correctly!');
+        process.exit(1);
+    }
+    if (!backSiswa || !backGuru || !backMapel) {
+        console.error('FAILED: Kembali ke buttons missing on import sections!');
+        process.exit(1);
+    }
+    console.log('\n=== ALL BROWSER CDP TESTS (KELAS, SISWA, MAPEL, GURU & IMPOR LINKS) PASSED WITH 0 EXCEPTIONS! ===');
     process.exit(0);
 }
 

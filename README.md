@@ -187,6 +187,9 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 19. **Integrasi Menu Impor Data Mapel & Akses Cepat Status Ceklis:**
     - **Akses Cepat Status (Ceklis) di Data Kelas, Kelola Data Siswa, & Data Mapel:** Seluruh toggle status (Aktif/Nonaktif) pada kolom *Status (Ceklis)* berfungsi secara instan menggunakan selector modern CSS `:has(input:checked)` dan `:not(:has(input:checked))` dipadukan dengan *optimistic UI state update*, background AJAX POST asynchronous, dan *quick toast notification* melayang tanpa refresh halaman. Tampilan pill ceklis dijamin 100% konsisten antar semua tabel master.
     - **Integrasi Langsung Impor Excel Data Mapel:** Tombol **"Impor Excel (.xls)"** pada menu **Data Mapel** (`/admin/mapel.php`) kini terhubung langsung ke menu **Impor Data Excel** pada tab aktif **Unggah Berkas Mapel (.xls)** (`/admin/import-siswa.php?type=mapel`). Dilengkapi juga dengan kartu navigasi dua arah *Kembali ke Data Mapel*, template spreadsheet unduhan `.xls`, dan mesin parsing multi-format (`.xls`, `.xlsx`, `.csv`).
+20. **Standardisasi Penuh Seluruh Menu Data Master (Kelas, Siswa, Guru, Mapel) & Navigasi Impor Excel:**
+    - **Penyelarasan Status (Ceklis) Data Guru & Pengawas Ujian:** Menu Data Guru (`/admin/guru.php`) diseragamkan sepenuhnya menggunakan komponen pill universal `.ceklis-status-pill` dan notifikasi melayang seragam `showQuickStatusToast('Status guru berhasil diaktifkan / dinonaktifkan')` yang identik dengan menu Kelas, Siswa, dan Mapel.
+    - **Navigasi Dua Arah Impor Data Excel:** Seluruh seksi unggah pada menu Impor Data Excel (`/admin/import-siswa.php`) kini dilengkapi tombol *Kembali ke ...* yang presisi: *Kembali ke Data Siswa*, *Kembali ke Data Guru*, dan *Kembali ke Data Mapel*. Seluruh tombol *Impor Excel (.xls)* pada toolbar Data Siswa, Data Guru, dan Data Mapel terhubung langsung ke tab masing-masing modul.
 
 ---
 

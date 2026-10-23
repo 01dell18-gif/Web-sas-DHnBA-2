@@ -368,9 +368,9 @@ require_once __DIR__ . '/layout_header.php';
         <a href="/admin/siswa.php?action=export_excel<?= $selectedClassId > 0 ? '&class_id=' . $selectedClassId : '' ?>" class="btn btn-secondary btn-sm" title="Ekspor data siswa ke format Excel .xls">
             <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
         </a>
-        <button type="button" class="btn btn-success btn-sm" onclick="openImportSiswaModal()" title="Impor data siswa dari format Excel .xls">
+        <a href="/admin/import-siswa.php?type=siswa" class="btn btn-success btn-sm" title="Impor data siswa melalui menu Impor Data Excel (.xls)">
             <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
-        </button>
+        </a>
         <?php if ($totalSiswaGlobal > 0): ?>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllSiswa(<?= $selectedClassId ?>)" title="Kosongkan data siswa untuk persiapan ujian baru">
                 <i class="bi bi-trash3-fill"></i> 
@@ -568,6 +568,16 @@ require_once __DIR__ . '/layout_header.php';
                 </div>
             </div>
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeImportSiswaModal()" style="border: none; background: transparent; font-size: 1.25rem; cursor: pointer; color: var(--slate-400);">✕</button>
+        </div>
+
+        <div style="background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 8px; padding: 0.75rem 0.95rem; margin-bottom: 1rem; font-size: 0.825rem; color: #0369a1; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+                <i class="bi bi-info-circle-fill" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+                <span>Tersedia menu terpadu Impor Data Excel khusus Siswa.</span>
+            </div>
+            <a href="/admin/import-siswa.php?type=siswa" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                <i class="bi bi-box-arrow-up-right"></i> Buka Menu Impor Excel Siswa
+            </a>
         </div>
 
         <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem;">

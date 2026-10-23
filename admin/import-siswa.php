@@ -626,9 +626,14 @@ require_once __DIR__ . '/layout_header.php';
         <span class="card-title">
             <i class="bi bi-mortarboard-fill" style="color: var(--primary);"></i> Unggah Berkas Siswa
         </span>
-        <a href="/admin/import-siswa.php?template=siswa" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet siswa">
-            <i class="bi bi-download"></i> Unduh Template Siswa (.xls)
-        </a>
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <a href="/admin/siswa.php" class="btn btn-secondary btn-sm" title="Kembali ke Kelola Data Siswa Peserta Ujian">
+                <i class="bi bi-arrow-left"></i> Kembali ke Data Siswa
+            </a>
+            <a href="/admin/import-siswa.php?template=siswa" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet siswa">
+                <i class="bi bi-download"></i> Unduh Template Siswa (.xls)
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form method="POST" action="/admin/import-siswa.php" enctype="multipart/form-data">
@@ -668,9 +673,14 @@ require_once __DIR__ . '/layout_header.php';
         <span class="card-title">
             <i class="bi bi-person-badge-fill" style="color: #4f46e5;"></i> Unggah Berkas Guru
         </span>
-        <a href="/admin/import-siswa.php?template=guru" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet guru">
-            <i class="bi bi-download"></i> Unduh Template Guru (.xls)
-        </a>
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <a href="/admin/guru.php" class="btn btn-secondary btn-sm" title="Kembali ke Data Guru & Pengawas Ujian">
+                <i class="bi bi-arrow-left"></i> Kembali ke Data Guru
+            </a>
+            <a href="/admin/import-siswa.php?template=guru" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet guru">
+                <i class="bi bi-download"></i> Unduh Template Guru (.xls)
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form method="POST" action="/admin/import-siswa.php" enctype="multipart/form-data">

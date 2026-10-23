@@ -87,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         log_activity('TOGGLE_GURU', "Mengubah status aktif guru ID #{$id} menjadi {$status}");
 
         $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') 
-                  || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+                  || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+                  || isset($_POST['ajax']);
         if ($isAjax) {
             header('Content-Type: application/json');
             echo json_encode([
@@ -382,18 +383,18 @@ require_once __DIR__ . '/layout_header.php';
                                             </span>
                                         </td>
                                         <td style="text-align: center;">
-                                            <label class="ceklis-status-guru <?= $g['aktif'] ? 'is-active' : 'is-inactive' ?>" 
-                                                   id="ceklis_box_<?= $g['id'] ?>" 
-                                                   title="Klik ceklis untuk mengubah status aktif/nonaktif">
+                                            <label class="ceklis-status-pill <?= $g['aktif'] ? 'is-active' : 'is-inactive' ?>" 
+                                                   id="ceklis_box_guru_<?= $g['id'] ?>" 
+                                                   title="Klik ceklis untuk mengubah status aktif/nonaktif guru ini">
                                                 <input type="checkbox" 
                                                        class="ceklis-guru-input" 
                                                        id="check_guru_<?= $g['id'] ?>" 
                                                        <?= $g['aktif'] ? 'checked' : '' ?> 
                                                        onchange="quickToggleGuru(<?= $g['id'] ?>, this)">
-                                                <span class="ceklis-guru-box">
+                                                <span class="ceklis-box">
                                                     <i class="bi bi-check-lg ceklis-check-icon"></i>
                                                 </span>
-                                                <span class="ceklis-guru-text" id="ceklis_text_<?= $g['id'] ?>">
+                                                <span class="ceklis-text" id="ceklis_text_guru_<?= $g['id'] ?>">
                                                     <?= $g['aktif'] ? 'Aktif' : 'Nonaktif' ?>
                                                 </span>
                                             </label>
@@ -425,114 +426,16 @@ require_once __DIR__ . '/layout_header.php';
     </div>
 </div>
 
-<style>
-.ceklis-status-guru {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.22rem 0.65rem 0.22rem 0.35rem;
-    border-radius: 9999px;
-    cursor: pointer;
-    user-select: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1.5px solid transparent;
-}
-.ceklis-status-guru input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-}
-.ceklis-guru-box {
-    width: 20px;
-    height: 20px;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #fff;
-    border: 2px solid #94a3b8;
-    color: #fff;
-    font-size: 0.82rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-}
-.ceklis-check-icon {
-    display: none;
-    font-weight: 800;
-}
-.ceklis-status-guru.is-active {
-    background: #ecfdf5;
-    border-color: #a7f3d0;
-    color: #065f46;
-}
-.ceklis-status-guru.is-active .ceklis-guru-box {
-    background: #10b981;
-    border-color: #059669;
-}
-.ceklis-status-guru.is-active .ceklis-check-icon {
-    display: block;
-}
-.ceklis-status-guru.is-inactive {
-    background: #f8fafc;
-    border-color: #e2e8f0;
-    color: #64748b;
-}
-.ceklis-status-guru.is-inactive .ceklis-guru-box {
-    background: #fff;
-    border-color: #cbd5e1;
-}
-.ceklis-status-guru:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-}
-.ceklis-status-guru.is-active:hover {
-    border-color: #6ee7b7;
-    background: #d1fae5;
-}
-.ceklis-status-guru.is-inactive:hover {
-    border-color: #94a3b8;
-    background: #f1f5f9;
-}
-#toastGuruQuick {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #0f172a;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    font-size: 0.85rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 9999;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: all 0.25s ease;
-    pointer-events: none;
-}
-#toastGuruQuick.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-</style>
-
-<div id="toastGuruQuick">
-    <i class="bi bi-check-circle-fill" style="color: #10b981;"></i>
-    <span id="toastGuruMsg">Status berhasil diubah</span>
-</div>
-
 <script>
 function quickToggleGuru(id, checkbox) {
+    if (typeof id === 'object' && id !== null && id.nodeType) {
+        const tmp = checkbox;
+        checkbox = id;
+        id = tmp;
+    }
     const isChecked = checkbox.checked ? 1 : 0;
-    const box = document.getElementById('ceklis_box_' + id);
-    const text = document.getElementById('ceklis_text_' + id);
+    const box = document.getElementById('ceklis_box_guru_' + id);
+    const text = document.getElementById('ceklis_text_guru_' + id);
 
     // Optimistic UI update
     if (isChecked) {
@@ -549,11 +452,13 @@ function quickToggleGuru(id, checkbox) {
         if (text) text.textContent = 'Nonaktif';
     }
 
+    const csrfToken = '<?= csrf_token() ?>';
     const formData = new FormData();
-    formData.append('csrf_token', '<?= csrf_token() ?>');
+    formData.append('csrf_token', csrfToken);
     formData.append('action', 'toggle_active');
     formData.append('id', id);
     formData.append('status', isChecked);
+    formData.append('ajax', '1');
 
     fetch('/admin/guru.php', {
         method: 'POST',
@@ -566,32 +471,37 @@ function quickToggleGuru(id, checkbox) {
     .then(r => r.json())
     .then(data => {
         if (data && data.success) {
-            showGuruToast(isChecked ? 'Guru diaktifkan (siap dipilih di formulir)' : 'Guru dinonaktifkan');
+            try {
+                if (typeof showQuickStatusToast === 'function') {
+                    showQuickStatusToast('Status guru berhasil ' + (isChecked ? 'diaktifkan' : 'dinonaktifkan'));
+                }
+            } catch (e) {}
         } else {
-            alert('Gagal memperbarui status: ' + (data.message || 'Terjadi kesalahan'));
-            checkbox.checked = !isChecked;
-            quickToggleGuru(id, checkbox);
+            revertToggle();
         }
     })
     .catch(err => {
-        console.error(err);
-        showGuruToast('Gagal terhubung ke server');
-        checkbox.checked = !isChecked;
+        console.error('Toggle guru error:', err);
+        revertToggle();
     });
-}
 
-let toastTimer = null;
-function showGuruToast(msg) {
-    const toast = document.getElementById('toastGuruQuick');
-    const label = document.getElementById('toastGuruMsg');
-    if (!toast || !label) return;
-    label.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2200);
+    function revertToggle() {
+        checkbox.checked = !isChecked;
+        if (checkbox.checked) {
+            if (box) { box.classList.remove('is-inactive'); box.classList.add('is-active'); }
+            if (text) text.textContent = 'Aktif';
+        } else {
+            if (box) { box.classList.remove('is-active'); box.classList.add('is-inactive'); }
+            if (text) text.textContent = 'Nonaktif';
+        }
+        try {
+            if (typeof showQuickStatusToast === 'function') {
+                showQuickStatusToast('Gagal memperbarui status');
+            }
+        } catch (e) {}
+    }
 }
+window.quickToggleGuru = quickToggleGuru;
 
 function confirmResetAllGuru() {
     showConfirmResetModal(
