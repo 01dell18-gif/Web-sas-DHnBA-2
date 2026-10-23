@@ -19,15 +19,15 @@ start-server.bat
 Script ini akan:
 1. Memeriksa ketersediaan PHP di `C:\xampp\php\php.exe`.
 2. Mengaktifkan ekstensi yang diperlukan (`gd`, `mbstring`, `pdo_sqlite`).
-3. Menjalankan web server lokal di `http://localhost:8080`.
+3. Menjalankan web server lokal di `http://localhost:8081`.
 4. Otomatis membuka browser default Anda ke halaman beranda.
 
 ### Cara 2: Menjalankan via Terminal / CMD / PowerShell
 
 ```bash
-"C:\xampp\php\php.exe" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=gd -S 127.0.0.1:8080
+"C:\xampp\php\php.exe" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=gd -S 127.0.0.1:8081
 ```
-Lalu buka peramban ke: `http://localhost:8080/`
+Lalu buka peramban ke: `http://localhost:8081/`
 
 ---
 

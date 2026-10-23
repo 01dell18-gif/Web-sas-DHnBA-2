@@ -18,7 +18,8 @@ if (isset($_GET['template'])) {
     <style>
         table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
         th { background-color: #4f46e5; color: #ffffff; font-weight: bold; padding: 8px 12px; border: 1px solid #3730a3; text-align: left; }
-        td { padding: 6px 12px; border: 1px solid #cbd5e1; mso-number-format:"\@"; }
+        td { padding: 6px 12px; border: 1px solid #cbd5e1; <?= 'mso-number-format:"\@";' ?> }
+        .text-cell { <?= 'mso-number-format:"\@";' ?> }
     </style>
 </head>
 <body>
@@ -33,17 +34,17 @@ if (isset($_GET['template'])) {
         <tbody>
             <tr>
                 <td>Dra. Ni Made Wardani, M.Pd.</td>
-                <td style="mso-number-format:'\@';">196805121994032008</td>
+                <td class="text-cell">196805121994032008</td>
                 <td>Guru / Pengawas</td>
             </tr>
             <tr>
                 <td>I Ketut Suartana, S.Kom.</td>
-                <td style="mso-number-format:'\@';">198203152010011019</td>
+                <td class="text-cell">198203152010011019</td>
                 <td>Guru / Pengawas</td>
             </tr>
             <tr>
                 <td>Ni Putu Eka Santi, S.Pd.</td>
-                <td style="mso-number-format:'\@';">-</td>
+                <td class="text-cell">-</td>
                 <td>Guru / Pengawas</td>
             </tr>
         </tbody>
@@ -64,7 +65,8 @@ if (isset($_GET['template'])) {
     <style>
         table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
         th { background-color: #0284c7; color: #ffffff; font-weight: bold; padding: 8px 12px; border: 1px solid #0369a1; text-align: left; }
-        td { padding: 6px 12px; border: 1px solid #cbd5e1; mso-number-format:"\@"; }
+        td { padding: 6px 12px; border: 1px solid #cbd5e1; <?= 'mso-number-format:"\@";' ?> }
+        .text-cell { <?= 'mso-number-format:"\@";' ?> }
     </style>
 </head>
 <body>
@@ -78,22 +80,22 @@ if (isset($_GET['template'])) {
         </thead>
         <tbody>
             <tr>
-                <td style="mso-number-format:'\@';">BIN-X</td>
+                <td class="text-cell">BIN-X</td>
                 <td>Bahasa Indonesia</td>
                 <td>Umum</td>
             </tr>
             <tr>
-                <td style="mso-number-format:'\@';">MAT-X</td>
+                <td class="text-cell">MAT-X</td>
                 <td>Matematika</td>
                 <td>Umum</td>
             </tr>
             <tr>
-                <td style="mso-number-format:'\@';">RPL-01</td>
+                <td class="text-cell">RPL-01</td>
                 <td>Pemrograman Web</td>
                 <td>Kejuruan</td>
             </tr>
             <tr>
-                <td style="mso-number-format:'\@';">ML-BLI</td>
+                <td class="text-cell">ML-BLI</td>
                 <td>Bahasa Bali</td>
                 <td>Muatan Lokal</td>
             </tr>
@@ -116,7 +118,8 @@ if (isset($_GET['template'])) {
     <style>
         table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
         th { background-color: #059669; color: #ffffff; font-weight: bold; padding: 8px 12px; border: 1px solid #047857; text-align: left; }
-        td { padding: 6px 12px; border: 1px solid #cbd5e1; mso-number-format:"\@"; }
+        td { padding: 6px 12px; border: 1px solid #cbd5e1; <?= 'mso-number-format:"\@";' ?> }
+        .text-cell { <?= 'mso-number-format:"\@";' ?> }
     </style>
 </head>
 <body>
@@ -131,20 +134,20 @@ if (isset($_GET['template'])) {
         </thead>
         <tbody>
             <tr>
-                <td style="mso-number-format:'\@';">13741</td>
-                <td style="mso-number-format:'\@';">0061234567</td>
+                <td class="text-cell">13741</td>
+                <td class="text-cell">0061234567</td>
                 <td>I Putu Gede Pratama</td>
                 <td>XII TKJ</td>
             </tr>
             <tr>
-                <td style="mso-number-format:'\@';">13742</td>
-                <td style="mso-number-format:'\@';">0061234568</td>
+                <td class="text-cell">13742</td>
+                <td class="text-cell">0061234568</td>
                 <td>Ni Kadek Ayu Lestari</td>
                 <td>XII TKJ</td>
             </tr>
             <tr>
-                <td style="mso-number-format:'\@';">13743</td>
-                <td style="mso-number-format:'\@';">-</td>
+                <td class="text-cell">13743</td>
+                <td class="text-cell">-</td>
                 <td>I Made Arya Wijaya</td>
                 <td>XII RPL 1</td>
             </tr>
@@ -160,7 +163,7 @@ if (isset($_GET['template'])) {
 /**
  * Universal spreadsheet parser for HTML-based .xls, XLSX zip, and CSV/TSV
  */
-function parseSpreadsheetRows($filePath, $origName) {
+function parseSpreadsheetRows(string $filePath, string $origName = ''): array {
     $rows = [];
     $raw = @file_get_contents($filePath);
     if ($raw === false) return [];

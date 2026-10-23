@@ -80,7 +80,7 @@ header("Expires: 0");
         th { background-color: #f1f5f9; font-weight: bold; text-align: center; vertical-align: middle; }
         .center { text-align: center; vertical-align: middle; }
         .left { text-align: left; vertical-align: middle; }
-        .text-cell { mso-number-format: "\@"; }
+        .text-cell { <?= 'mso-number-format: "\@";' ?> }
         .title-sekolah { font-size: 14pt; font-weight: bold; text-align: center; border: none; }
         .title-laporan { font-size: 12pt; font-weight: bold; text-align: center; border: none; }
         .title-meta { font-size: 11pt; font-weight: bold; text-align: center; border: none; }

@@ -81,7 +81,7 @@ async function run() {
 
     // 1. Login
     console.log('Navigating to login...');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/login.php' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/login.php' });
     await sleep(1200);
 
     await evaluate(`
@@ -95,7 +95,7 @@ async function run() {
     // TEST 1: DATA KELAS
     // ==========================================
     console.log('\n--- TESTING DATA KELAS ---');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/kelas.php' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/kelas.php' });
     await sleep(1500);
 
     let kInitial = await evaluate(`
@@ -150,7 +150,7 @@ async function run() {
     // TEST 2: KELOLA DATA SISWA
     // ==========================================
     console.log('\n--- TESTING KELOLA DATA SISWA ---');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/siswa.php' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/siswa.php' });
     await sleep(1500);
 
     let sInitial = await evaluate(`
@@ -202,7 +202,7 @@ async function run() {
     // TEST 3: DATA MAPEL
     // ==========================================
     console.log('\n--- TESTING DATA MAPEL ---');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/mapel.php' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/mapel.php' });
     await sleep(1500);
 
     let mInitial = await evaluate(`
@@ -254,7 +254,7 @@ async function run() {
     // TEST 4: DATA GURU & PENGAWAS UJIAN
     // ==========================================
     console.log('\n--- TESTING DATA GURU & PENGAWAS UJIAN ---');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/guru.php' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/guru.php' });
     await sleep(1500);
 
     let gInitial = await evaluate(`
@@ -308,17 +308,17 @@ async function run() {
     // TEST 5: KEMBALI KE BUTTONS ON IMPORT EXCEL
     // ==========================================
     console.log('\n--- TESTING KEMBALI KE LINKS ON IMPOR DATA EXCEL ---');
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=siswa' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/import-siswa.php?type=siswa' });
     await sleep(1200);
     let backSiswa = await evaluate(`document.querySelector('#cardImportSiswa a[href="/admin/siswa.php"]')?.textContent.trim()`);
     console.log('Back to Siswa button text:', backSiswa);
 
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=guru' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/import-siswa.php?type=guru' });
     await sleep(1200);
     let backGuru = await evaluate(`document.querySelector('#cardImportGuru a[href="/admin/guru.php"]')?.textContent.trim()`);
     console.log('Back to Guru button text:', backGuru);
 
-    await send('Page.navigate', { url: 'http://127.0.0.1:8080/admin/import-siswa.php?type=mapel' });
+    await send('Page.navigate', { url: 'http://127.0.0.1:8081/admin/import-siswa.php?type=mapel' });
     await sleep(1200);
     let backMapel = await evaluate(`document.querySelector('#cardImportMapel a[href="/admin/mapel.php"]')?.textContent.trim()`);
     console.log('Back to Mapel button text:', backMapel);

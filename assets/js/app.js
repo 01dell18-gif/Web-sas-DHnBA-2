@@ -100,9 +100,10 @@ window.showConfirmDialog = function(message, onConfirm, title = 'Konfirmasi Tind
     }
 
     btnProceed.onclick = function() {
+        const callback = _globalConfirmCallback;
         closeGlobalConfirmDialog();
-        if (typeof _globalConfirmCallback === 'function') {
-            _globalConfirmCallback();
+        if (typeof callback === 'function') {
+            callback();
         }
     };
 
