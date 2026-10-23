@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         log_activity('TOGGLE_MAPEL', "Mengubah status aktif mapel ID #{$id} menjadi {$status}");
 
         $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') 
-                  || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+                  || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+                  || isset($_POST['ajax']);
         if ($isAjax) {
             header('Content-Type: application/json');
             echo json_encode([
@@ -270,9 +271,9 @@ require_once __DIR__ . '/layout_header.php';
         <a href="/admin/mapel.php?action=export_excel<?= !empty($searchQ) ? '&q=' . urlencode($searchQ) : '' ?><?= !empty($kelompokFilter) ? '&kelompok=' . urlencode($kelompokFilter) : '' ?><?= $statusFilter !== '' ? '&status=' . urlencode($statusFilter) : '' ?>" class="btn btn-secondary btn-sm" title="Ekspor data mata pelajaran ke format Excel .xls">
             <i class="bi bi-file-earmark-arrow-down"></i> <span>Ekspor Excel (.xls)</span>
         </a>
-        <button type="button" class="btn btn-success btn-sm" onclick="openModal('modalImportMapel')" title="Impor mata pelajaran dari berkas Excel .xls">
+        <a href="/admin/import-siswa.php?type=mapel" class="btn btn-success btn-sm" title="Impor data mata pelajaran melalui menu Impor Data Excel (.xls)">
             <i class="bi bi-file-earmark-excel"></i> <span>Impor Excel (.xls)</span>
-        </button>
+        </a>
         <?php if ($totalMapel > 0): ?>
             <button type="button" class="btn btn-danger-soft btn-sm" onclick="confirmResetAllMapel()" title="Kosongkan seluruh data mata pelajaran">
                 <i class="bi bi-trash3-fill"></i> <span>Hapus Semua Data Mapel</span>
@@ -503,7 +504,7 @@ require_once __DIR__ . '/layout_header.php';
                                                        class="ceklis-mapel-input" 
                                                        id="check_mapel_<?= $m['id'] ?>" 
                                                        <?= $m['aktif'] ? 'checked' : '' ?> 
-                                                       onchange="toggleMapelStatus(this, <?= $m['id'] ?>)">
+                                                       onchange="quickToggleMapel(<?= $m['id'] ?>, this)">
                                                 <span class="ceklis-box">
                                                     <i class="bi bi-check-lg ceklis-check-icon"></i>
                                                 </span>
@@ -549,6 +550,16 @@ require_once __DIR__ . '/layout_header.php';
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalImportMapel')">✕</button>
         </div>
 
+        <div style="background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 8px; padding: 0.75rem 0.95rem; margin-bottom: 1rem; font-size: 0.825rem; color: #0369a1; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+                <i class="bi bi-info-circle-fill" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+                <span>Tersedia menu terpadu Impor Data Excel khusus Mapel.</span>
+            </div>
+            <a href="/admin/import-siswa.php?type=mapel" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                <i class="bi bi-box-arrow-up-right"></i> Buka Menu Impor Excel Mapel
+            </a>
+        </div>
+
         <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;">
             Unggah berkas spreadsheet <code>.xls</code> / <code>.xlsx</code> untuk menambahkan atau memperbarui data mata pelajaran secara massal.
         </p>
@@ -558,8 +569,8 @@ require_once __DIR__ . '/layout_header.php';
                 <strong style="font-size: 0.85rem; color: var(--slate-800); display: block;">Format Template Excel</strong>
                 <span style="font-size: 0.75rem; color: var(--slate-500);">Kolom: Kode Mapel, Nama Mapel, Kelompok</span>
             </div>
-            <a href="/admin/mapel.php?action=template_excel" class="btn btn-outline-primary btn-sm" style="white-space: nowrap;">
-                <i class="bi bi-download"></i> Unduh Template
+            <a href="/admin/import-siswa.php?template=mapel" class="btn btn-outline-primary btn-sm" style="white-space: nowrap;">
+                <i class="bi bi-download"></i> Unduh Template Mapel (.xls)
             </a>
         </div>
 
@@ -589,10 +600,15 @@ function confirmResetAllMapel() {
     );
 }
 
-function toggleMapelStatus(checkbox, mapelId) {
+function quickToggleMapel(id, checkbox) {
+    if (typeof id === 'object' && id !== null && id.nodeType) {
+        const tmp = checkbox;
+        checkbox = id;
+        id = tmp;
+    }
     const isChecked = checkbox.checked ? 1 : 0;
-    const box = document.getElementById('ceklis_box_mapel_' + mapelId);
-    const text = document.getElementById('ceklis_text_mapel_' + mapelId);
+    const box = document.getElementById('ceklis_box_mapel_' + id);
+    const text = document.getElementById('ceklis_text_mapel_' + id);
 
     // Optimistic UI update
     if (isChecked) {
@@ -609,11 +625,13 @@ function toggleMapelStatus(checkbox, mapelId) {
         if (text) text.textContent = 'Nonaktif';
     }
 
+    const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '<?= csrf_token() ?>';
     const fd = new FormData();
     fd.append('action', 'toggle_active');
-    fd.append('id', mapelId);
+    fd.append('id', id);
     fd.append('status', isChecked);
-    fd.append('csrf_token', '<?= csrf_token() ?>');
+    fd.append('csrf_token', csrfToken);
+    fd.append('ajax', '1');
 
     fetch('/admin/mapel.php', {
         method: 'POST',
@@ -647,6 +665,7 @@ function toggleMapelStatus(checkbox, mapelId) {
         showQuickStatusToast('Gagal mengubah status mapel');
     }
 }
+window.toggleMapelStatus = quickToggleMapel;
 </script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

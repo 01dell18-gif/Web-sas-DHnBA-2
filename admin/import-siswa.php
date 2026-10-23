@@ -352,7 +352,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($_FILES[$fileInputName]['tmp_name'])) {
             $file = $_FILES[$fileInputName]['tmp_name'];
             $origName = $_FILES[$fileInputName]['name'];
-            $rows = parseSpreadsheetRows($file, $origName);
+            $rows = parse_spreadsheet_rows($file, false);
+            if (empty($rows)) {
+                $rows = parseSpreadsheetRows($file, $origName);
+            }
 
             if (!empty($rows)) {
                 $importedCount = 0;
@@ -706,9 +709,14 @@ require_once __DIR__ . '/layout_header.php';
         <span class="card-title">
             <i class="bi bi-journal-bookmark-fill" style="color: #0284c7;"></i> Unggah Berkas Mapel
         </span>
-        <a href="/admin/import-siswa.php?template=mapel" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet mata pelajaran">
-            <i class="bi bi-download"></i> Unduh Template Mapel (.xls)
-        </a>
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <a href="/admin/mapel.php" class="btn btn-secondary btn-sm" title="Kembali ke Kelola Data Mata Pelajaran">
+                <i class="bi bi-arrow-left"></i> Kembali ke Data Mapel
+            </a>
+            <a href="/admin/import-siswa.php?template=mapel" class="btn btn-secondary btn-sm" title="Unduh format spreadsheet mata pelajaran">
+                <i class="bi bi-download"></i> Unduh Template Mapel (.xls)
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form method="POST" action="/admin/import-siswa.php" enctype="multipart/form-data">

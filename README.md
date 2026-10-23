@@ -184,6 +184,9 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
       - Menambahkan parameter *cache-busting* dinamis (`?v=...`) pada pemanggilan berkas CSS dan JavaScript aplikasi.
       - Menetapkan aturan `display: flex !important;` pada submenu yang terbuka dengan animasi transisi yang mulus dan rotasi indikator panah.
       - Menu aktif secara otomatis terbuka dan disorot (*highlighted*) saat halaman dibuka.
+19. **Integrasi Menu Impor Data Mapel & Akses Cepat Status Ceklis:**
+    - **Akses Cepat Status (Ceklis) di Data Kelas, Kelola Data Siswa, & Data Mapel:** Seluruh toggle status (Aktif/Nonaktif) pada kolom *Status (Ceklis)* berfungsi secara instan menggunakan selector modern CSS `:has(input:checked)` dan `:not(:has(input:checked))` dipadukan dengan *optimistic UI state update*, background AJAX POST asynchronous, dan *quick toast notification* melayang tanpa refresh halaman. Tampilan pill ceklis dijamin 100% konsisten antar semua tabel master.
+    - **Integrasi Langsung Impor Excel Data Mapel:** Tombol **"Impor Excel (.xls)"** pada menu **Data Mapel** (`/admin/mapel.php`) kini terhubung langsung ke menu **Impor Data Excel** pada tab aktif **Unggah Berkas Mapel (.xls)** (`/admin/import-siswa.php?type=mapel`). Dilengkapi juga dengan kartu navigasi dua arah *Kembali ke Data Mapel*, template spreadsheet unduhan `.xls`, dan mesin parsing multi-format (`.xls`, `.xlsx`, `.csv`).
 
 ---
 

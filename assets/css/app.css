@@ -2024,30 +2024,46 @@ body.sidebar-collapsed .admin-main {
     line-height: 1;
 }
 .ceklis-status-pill.is-active,
-.ceklis-status-guru.is-active {
-    background: #ecfdf5;
-    border-color: #a7f3d0;
-    color: #065f46;
+.ceklis-status-guru.is-active,
+.ceklis-status-pill:has(input:checked),
+.ceklis-status-guru:has(input:checked) {
+    background: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+    color: #065f46 !important;
 }
 .ceklis-status-pill.is-active .ceklis-box,
-.ceklis-status-guru.is-active .ceklis-guru-box {
-    background: #10b981;
-    border-color: #059669;
+.ceklis-status-guru.is-active .ceklis-guru-box,
+.ceklis-status-pill:has(input:checked) .ceklis-box,
+.ceklis-status-guru:has(input:checked) .ceklis-guru-box {
+    background: #10b981 !important;
+    border-color: #059669 !important;
 }
 .ceklis-status-pill.is-active .ceklis-check-icon,
-.ceklis-status-guru.is-active .ceklis-check-icon {
-    display: block;
+.ceklis-status-guru.is-active .ceklis-check-icon,
+.ceklis-status-pill:has(input:checked) .ceklis-check-icon,
+.ceklis-status-guru:has(input:checked) .ceklis-check-icon {
+    display: block !important;
 }
 .ceklis-status-pill.is-inactive,
-.ceklis-status-guru.is-inactive {
+.ceklis-status-guru.is-inactive,
+.ceklis-status-pill:not(:has(input:checked)),
+.ceklis-status-guru:not(:has(input:checked)) {
     background: #f8fafc;
     border-color: #e2e8f0;
     color: #64748b;
 }
 .ceklis-status-pill.is-inactive .ceklis-box,
-.ceklis-status-guru.is-inactive .ceklis-guru-box {
+.ceklis-status-guru.is-inactive .ceklis-guru-box,
+.ceklis-status-pill:not(:has(input:checked)) .ceklis-box,
+.ceklis-status-guru:not(:has(input:checked)) .ceklis-guru-box {
     background: #fff;
     border-color: #cbd5e1;
+}
+.ceklis-status-pill.is-inactive .ceklis-check-icon,
+.ceklis-status-guru.is-inactive .ceklis-check-icon,
+.ceklis-status-pill:not(:has(input:checked)) .ceklis-check-icon,
+.ceklis-status-guru:not(:has(input:checked)) .ceklis-check-icon {
+    display: none !important;
 }
 .ceklis-status-pill:hover,
 .ceklis-status-guru:hover {
@@ -2055,12 +2071,16 @@ body.sidebar-collapsed .admin-main {
     box-shadow: 0 2px 6px rgba(0,0,0,0.07);
 }
 .ceklis-status-pill.is-active:hover,
-.ceklis-status-guru.is-active:hover {
-    border-color: #6ee7b7;
-    background: #d1fae5;
+.ceklis-status-guru.is-active:hover,
+.ceklis-status-pill:has(input:checked):hover,
+.ceklis-status-guru:has(input:checked):hover {
+    border-color: #6ee7b7 !important;
+    background: #d1fae5 !important;
 }
 .ceklis-status-pill.is-inactive:hover,
-.ceklis-status-guru.is-inactive:hover {
+.ceklis-status-guru.is-inactive:hover,
+.ceklis-status-pill:not(:has(input:checked)):hover,
+.ceklis-status-guru:not(:has(input:checked)):hover {
     border-color: #94a3b8;
     background: #f1f5f9;
 }
