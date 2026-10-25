@@ -7,7 +7,7 @@ if (is_admin_logged_in()) {
 }
 
 $error = '';
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

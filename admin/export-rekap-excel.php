@@ -8,7 +8,7 @@ $selectedSemester = trim($_GET['semester'] ?? 'Ganjil');
 
 $classInfo = dbFetch("SELECT * FROM kelas WHERE id = :id", ['id' => $selectedClassId]);
 $namaKelas = $classInfo['nama_kelas'] ?? "Kelas {$selectedClassId}";
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 
 $students = dbFetchAll("SELECT * FROM siswa WHERE class_id = :cid ORDER BY nama ASC", ['cid' => $selectedClassId]);
 

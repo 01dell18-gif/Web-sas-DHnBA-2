@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config/functions.php';
 
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 
@@ -362,8 +362,8 @@ $defaultTpl = $templates[0] ?? [
                 <!-- HALAMAN 1: BERITA ACARA RESMI -->
                 <div class="a4-page" id="a4Page" style="margin: 0 auto !important; width: 210mm !important; min-height: 297mm !important; box-sizing: border-box !important; flex-shrink: 0 !important;">
                     <!-- KOP SURAT SEKOLAH -->
-                    <div class="kop-surat" style="border-bottom: none; padding-bottom: 0; margin-bottom: 8px; text-align: center;">
-                        <img src="/<?= htmlspecialchars($kopPath) ?>" alt="Kop Surat Resmi" style="width: 100%; max-height: 105px; object-fit: contain; display: block; margin: 0 auto;">
+                    <div id="pvKopSurat">
+                        <?= render_kop_surat_html(false) ?>
                     </div>
 
                     <!-- JUDUL DOKUMEN -->

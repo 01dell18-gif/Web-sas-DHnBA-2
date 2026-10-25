@@ -39,6 +39,7 @@ pages = [
     '/admin/template-ujian.php',
     '/admin/pengaturan.php',
     '/admin/users.php',
+    '/admin/profil.php',
     '/admin/password.php'
 ]
 for p in pages:

@@ -14,8 +14,10 @@ $db->exec("CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    password_plain VARCHAR(255) DEFAULT '',
     nama_lengkap VARCHAR(100) DEFAULT '',
     role VARCHAR(20) DEFAULT 'admin',
+    foto VARCHAR(255) DEFAULT NULL,
     created_at DATETIME,
     updated_at DATETIME
 );");
@@ -200,15 +202,15 @@ if (!$operatorCount) {
 
 // --- SEED SETTINGS ---
 $defaultSettings = [
-    'nama_sekolah' => 'SMK NEGERI 1 KLUNGKUNG',
-    'alamat_sekolah' => "Jl. Merpati No. 1, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali 80711",
+    'nama_sekolah' => 'SMK NEGERI FYJ Channel',
+    'alamat_sekolah' => 'Jl. Merpati No. 1',
     'kop_mode' => 'image',
     'kop_image_path' => 'assets/img/kop-header.png',
-    'kop_baris_1' => 'PEMERINTAH PROVINSI BALI',
+    'kop_baris_1' => 'PEMERINTAH PROVINSI FYJ',
     'kop_baris_2' => 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA',
-    'kop_baris_3' => 'SMK NEGERI 1 KLUNGKUNG',
-    'kop_telepon' => 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com',
-    'kop_website' => 'Website: smkn1klungkung.sch.id',
+    'kop_baris_3' => 'SMK NEGERI FYJ Channel',
+    'kop_telepon' => 'Telp. (0300) 2002 | Email: smkn@yahoo.com',
+    'kop_website' => 'Website: smkn.sch.id',
     'logo_path' => 'storage/uploads/logo/logo_default.png',
     'google_drive_folder_url' => 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing'
 ];
@@ -231,7 +233,7 @@ if (!$tplCount) {
         'judul_berita_acara' => "BERITA ACARA \r\nPENYELENGGARAAN SUMATIF AKHIR SEMESTER (SAS) GANJIL\r\nTAHUN AJARAN [tahun_ajaran]",
         'redaksi_isi' => '<p>Pada hari ini&nbsp;<strong>[hari]</strong>, tanggal&nbsp;<strong>[tanggal]</strong>&nbsp;(<strong><i>[tanggal_teks]</i></strong>) bulan&nbsp;<strong>[bulan]</strong>&nbsp;tahun&nbsp;<strong>[tahun]</strong>&nbsp;(<strong><i>[tahun_teks]</i></strong>):</p><ol style="margin-top: 6px; margin-bottom: 12px;"><li style="margin-bottom: 8px;">Telah diselenggarakan&nbsp;<strong>[nama_ujian]</strong>&nbsp;Tahun Ajaran&nbsp;<strong>[tahun_ajaran]</strong>&nbsp;dari pukul&nbsp;<strong>[jam_mulai]</strong>&nbsp;sampai dengan pukul&nbsp;<strong>[jam_selesai]</strong>&nbsp;WITA.<ul style="margin-bottom: 6px; margin-left: 20px; list-style-type: disc;"><li>Pada Sekolah:&nbsp;<strong>[sekolah]</strong></li><li>Kelas:&nbsp;<strong>[kelas]</strong></li><li>Mata Pelajaran:&nbsp;<strong>[mata_pelajaran]</strong></li><li>Ruang:&nbsp;<strong>[ruang]</strong></li><li>Jumlah Peserta Seharusnya:&nbsp;<strong>[peserta_seharusnya]</strong>&nbsp;orang</li><li>Jumlah Peserta yang Tidak Hadir:&nbsp;<strong>[peserta_tidak_hadir]</strong>&nbsp;orang</li><li>Jumlah Peserta yang Hadir:&nbsp;<strong>[peserta_hadir]</strong>&nbsp;orang</li></ul></li><li style="margin-bottom: 8px;">Telah mengisi&nbsp;lembar blangko berita acara sebanyak&nbsp;<strong>[blangko_berita_acara]</strong>&nbsp;eksemplar dan blangko daftar hadir sebanyak&nbsp;<strong>[blangko_daftar_hadir]</strong>&nbsp;eksemplar, untuk Mata Pelajaran&nbsp;<strong>[mata_pelajaran]</strong>&nbsp;di ruang&nbsp;<strong>[ruang]</strong>&nbsp;dan kelas&nbsp;<strong>[kelas]</strong>&nbsp;dengan disaksikan oleh para peserta.</li><li style="margin-bottom: 8px;">Catatan selama pelaksanaan ujian (kendala teknis, kejadian khusus, atau keterangan lain):<br><em>[catatan_pelaksanaan]</em></li></ol><p style="margin-top: 15px;">Demikian Berita Acara ini dibuat dengan sesungguhnya.</p><p style="margin-top: 15px;"><span style="font-size: 14.6667px;"><br></span></p><p style="text-align: center; margin-top: 15px;"><span style="font-size: 14.6667px;">Yang membuat berita acara :</span></p>',
         'redaksi_pembuka' => 'Pada hari ini [hari], tanggal [tanggal] bulan [bulan] tahun [tahun].',
-        'redaksi_poin_1' => "Telah diselenggarakan [nama_ujian] Tahun Ajaran [tahun_ajaran] dari pukul [jam_mulai] sampai dengan pukul [jam_selesai].\n- Pada Sekolah: SMK NEGERI 1 KLUNGKUNG\n- Mata Pelajaran: [mata_pelajaran]\n- Kelas: [kelas]\n- Ruang: [ruang]\n- Jumlah Peserta Seharusnya: [peserta_seharusnya] orang\n- Jumlah Peserta yang Tidak Hadir: [peserta_tidak_hadir] orang\n- Jumlah Peserta yang Hadir: [peserta_hadir] orang",
+        'redaksi_poin_1' => "Telah diselenggarakan [nama_ujian] Tahun Ajaran [tahun_ajaran] dari pukul [jam_mulai] sampai dengan pukul [jam_selesai].\n- Pada Sekolah: [sekolah]\n- Mata Pelajaran: [mata_pelajaran]\n- Kelas: [kelas]\n- Ruang: [ruang]\n- Jumlah Peserta Seharusnya: [peserta_seharusnya] orang\n- Jumlah Peserta yang Tidak Hadir: [peserta_tidak_hadir] orang\n- Jumlah Peserta yang Hadir: [peserta_hadir] orang",
         'redaksi_poin_2' => 'Telah dibagikan tautan soal ujian online untuk Mata Pelajaran [mata_pelajaran] di ruang [ruang] dengan disaksikan oleh para peserta, serta telah dibagikan lembar blangko berita acara sebanyak [blangko_berita_acara] eksemplar dan blangko daftar hadir sebanyak [blangko_daftar_hadir] eksemplar.',
         'label_catatan' => 'Catatan selama pelaksanaan ujian (kendala teknis, kejadian khusus, atau keterangan lain):',
         'aktif' => 1,

@@ -186,6 +186,32 @@ function require_admin_role(): void {
     }
 }
 
+function get_logged_in_user(): ?array {
+    if (!is_admin_logged_in()) return null;
+    $id = (int)($_SESSION['admin_id'] ?? 0);
+    if ($id > 0) {
+        $u = dbFetch("SELECT * FROM users WHERE id = :id", ['id' => $id]);
+        if ($u) return $u;
+    }
+    if (!empty($_SESSION['admin_user'])) {
+        return dbFetch("SELECT * FROM users WHERE username = :u", ['u' => $_SESSION['admin_user']]);
+    }
+    return null;
+}
+
+function get_user_avatar(?array $user = null): string {
+    if ($user === null) {
+        $user = get_logged_in_user();
+    }
+    if (!empty($user['foto'])) {
+        $rel = ltrim($user['foto'], '/');
+        if (file_exists(BASE_PATH . '/' . $rel)) {
+            return '/' . $rel;
+        }
+    }
+    return '';
+}
+
 /**
  * Settings helpers
  */
@@ -212,6 +238,73 @@ function save_setting(string $key, string $value): void {
     } else {
         dbInsert("pengaturan", ['setting_key' => $key, 'setting_value' => $value]);
     }
+}
+
+/**
+ * Render Kop Surat (Banner Gambar Penuh atau Format Susunan Teks Cadangan)
+ */
+function render_kop_surat_html(bool $forPdf = false): string {
+    $kopMode = get_setting('kop_mode', 'image');
+    $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
+    $fullKopPath = BASE_PATH . '/' . $kopPath;
+
+    if ($kopMode === 'image' && file_exists($fullKopPath)) {
+        if ($forPdf) {
+            $type = pathinfo($fullKopPath, PATHINFO_EXTENSION);
+            $data = @file_get_contents($fullKopPath);
+            $src = 'data:image/' . $type . ';base64,' . base64_encode($data ?: '');
+        } else {
+            $src = '/' . htmlspecialchars($kopPath);
+        }
+        return '<div class="kop" style="text-align: center; margin-bottom: 8px;">'
+             . '<img src="' . $src . '" alt="Kop Surat Resmi" style="width: 100%; max-height: 95px; object-fit: contain; display: block; margin: 0 auto;">'
+             . '</div>';
+    }
+
+    // Susunan Teks Resmi Cadangan (Mode Teks)
+    $baris1 = get_setting('kop_baris_1', 'PEMERINTAH PROVINSI FYJ');
+    $baris2 = get_setting('kop_baris_2', 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA');
+    $baris3 = get_setting('kop_baris_3', 'SMK NEGERI FYJ Channel');
+    $alamat = get_setting('alamat_sekolah', 'Jl. Merpati No. 1');
+    $telepon = get_setting('kop_telepon', 'Telp. (0300) 2002 | Email: smkn@yahoo.com');
+    $website = get_setting('kop_website', 'Website: smkn.sch.id');
+    $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
+    $fullLogoPath = BASE_PATH . '/' . $logoPath;
+
+    $logoHtml = '';
+    if (file_exists($fullLogoPath)) {
+        if ($forPdf) {
+            $lType = pathinfo($fullLogoPath, PATHINFO_EXTENSION);
+            $lData = @file_get_contents($fullLogoPath);
+            $lSrc = 'data:image/' . $lType . ';base64,' . base64_encode($lData ?: '');
+        } else {
+            $lSrc = '/' . htmlspecialchars($logoPath);
+        }
+        $logoHtml = '<td style="width: 80px; text-align: center; vertical-align: middle; padding-right: 12px;">'
+                  . '<img src="' . $lSrc . '" alt="Logo Instansi" style="max-height: 75px; max-width: 80px; object-fit: contain;">'
+                  . '</td>';
+    }
+
+    $contactParts = [];
+    if (!empty($telepon)) $contactParts[] = htmlspecialchars($telepon);
+    if (!empty($website)) $contactParts[] = htmlspecialchars($website);
+    $contactStr = implode(' | ', $contactParts);
+
+    return '<div class="kop" style="margin-bottom: 8px;">'
+         . '<table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;">'
+         . '<tr>'
+         . $logoHtml
+         . '<td style="text-align: center; vertical-align: middle;">'
+         . ($baris1 ? '<div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; line-height: 1.25;">' . htmlspecialchars($baris1) . '</div>' : '')
+         . ($baris2 ? '<div style="font-size: 11.5pt; font-weight: bold; text-transform: uppercase; line-height: 1.25;">' . htmlspecialchars($baris2) . '</div>' : '')
+         . ($baris3 ? '<div style="font-size: 13.5pt; font-weight: bold; text-transform: uppercase; line-height: 1.25; letter-spacing: 0.5px;">' . htmlspecialchars($baris3) . '</div>' : '')
+         . ($alamat ? '<div style="font-size: 8.5pt; line-height: 1.35; margin-top: 2px;">' . htmlspecialchars($alamat) . '</div>' : '')
+         . ($contactStr ? '<div style="font-size: 8.5pt; line-height: 1.35;">' . $contactStr . '</div>' : '')
+         . '</td>'
+         . '</tr>'
+         . '</table>'
+         . '<div style="border-bottom: 3px double #000; margin-top: 4px; margin-bottom: 8px;"></div>'
+         . '</div>';
 }
 
 /**
@@ -609,15 +702,7 @@ function generate_absensi_pdf_file(int $id): ?string {
     </style>
     </head>
     <body>
-    <div class="kop">
-        <?php if ($kopBase64): ?>
-            <img src="<?= $kopBase64 ?>">
-        <?php else: ?>
-            <div style="font-size: 13pt; font-weight: bold;">SMK NEGERI 1 KLUNGKUNG</div>
-            <div style="font-size: 9pt;">Generator Absensi & Berita Acara Ujian</div>
-            <hr style="border-top: 2px solid #000; margin-top: 4px;">
-        <?php endif; ?>
-    </div>
+    <?= render_kop_surat_html(true) ?>
     <div class="doc-title">
         DAFTAR HADIR PESERTA UJIAN<br>
         <?= htmlspecialchars($namaUjian) ?><br>
@@ -789,7 +874,7 @@ function generate_berita_acara_pdf_file(int $id): ?string {
         }
     }
 
-    $namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+    $namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
     $kopPath = BASE_PATH . '/' . get_setting('kop_image_path', 'assets/img/kop-header.png');
     $kopBase64 = '';
     if (file_exists($kopPath)) {
@@ -882,15 +967,7 @@ function generate_berita_acara_pdf_file(int $id): ?string {
     </style>
     </head>
     <body>
-    <div class="kop">
-        <?php if ($kopBase64): ?>
-            <img src="<?= $kopBase64 ?>">
-        <?php else: ?>
-            <div style="font-size: 13pt; font-weight: bold;">SMK NEGERI 1 KLUNGKUNG</div>
-            <div style="font-size: 9pt;">Generator Absensi & Berita Acara Ujian</div>
-            <hr style="border-top: 2px solid #000; margin-top: 4px;">
-        <?php endif; ?>
-    </div>
+    <?= render_kop_surat_html(true) ?>
     <div class="doc-title"><?= $judulDocHtml ?></div>
     <div class="redaksi-body"><?= $rawRedaksi ?></div>
     <table class="signature-table">

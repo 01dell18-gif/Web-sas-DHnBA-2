@@ -14,12 +14,13 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password_plain` VARCHAR(255) DEFAULT '',
     `nama_lengkap` VARCHAR(100) DEFAULT '',
     `role` VARCHAR(20) DEFAULT 'admin',
+    `foto` VARCHAR(255) DEFAULT NULL,
     `created_at` DATETIME NULL,
     `updated_at` DATETIME NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `role`, `created_at`, `updated_at`, `password_plain`) VALUES
-(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMK', 'admin', '2026-10-22 03:03:04', '2026-10-22 06:10:42', 'admin123'),
-(2, 'operator', '$2y$10$frHJGKF5ZNQ9PgEga0gGQeCN9QJJeTxwfvmcGSKUx14CpTmKFjB9m', 'Operator SAS SMK', 'operator', '2026-10-22 03:47:12', '2026-10-22 04:44:07', 'operator123');
+INSERT INTO `users` (`id`, `username`, `password`, `nama_lengkap`, `role`, `foto`, `created_at`, `updated_at`, `password_plain`) VALUES
+(1, 'admin', '$2y$10$UwtkB29BdlulMDYB6NHtbefs3cObJfxneq8QEmIJlt7BMGRVfd2vW', 'Administrator SAS SMK', 'admin', NULL, '2026-10-22 03:03:04', '2026-10-22 06:10:42', 'admin123'),
+(2, 'operator', '$2y$10$frHJGKF5ZNQ9PgEga0gGQeCN9QJJeTxwfvmcGSKUx14CpTmKFjB9m', 'Operator SAS SMK', 'operator', NULL, '2026-10-22 03:47:12', '2026-10-22 04:44:07', 'operator123');
 
 
 DROP TABLE IF EXISTS `pengaturan`;
@@ -29,15 +30,15 @@ CREATE TABLE IF NOT EXISTS `pengaturan` (
     `setting_value` TEXT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT INTO `pengaturan` (`id`, `setting_key`, `setting_value`) VALUES
-(1, 'nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG'),
-(2, 'alamat_sekolah', 'Jl. Merpati No. 1, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali 80711'),
+(1, 'nama_sekolah', 'SMK NEGERI FYJ Channel'),
+(2, 'alamat_sekolah', 'Jl. Merpati No. 1'),
 (3, 'kop_mode', 'text'),
 (4, 'kop_image_path', 'assets/img/kop-header.png'),
-(5, 'kop_baris_1', 'PEMERINTAH PROVINSI BALI'),
+(5, 'kop_baris_1', 'PEMERINTAH PROVINSI FYJ'),
 (6, 'kop_baris_2', 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA'),
-(7, 'kop_baris_3', 'SMK NEGERI 1 KLUNGKUNG'),
-(8, 'kop_telepon', 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com'),
-(9, 'kop_website', 'Website: smkn1klungkung.sch.id'),
+(7, 'kop_baris_3', 'SMK NEGERI FYJ Channel'),
+(8, 'kop_telepon', 'Telp. (0300) 2002 | Email: smkn@yahoo.com'),
+(9, 'kop_website', 'Website: smkn.sch.id'),
 (10, 'logo_path', 'storage/uploads/logo/logo_1792652650.png'),
 (11, 'google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 

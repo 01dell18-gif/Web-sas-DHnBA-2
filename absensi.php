@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config/functions.php';
 
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
 
@@ -342,8 +342,8 @@ $defaultTpl = $templates[0] ?? [
             <div class="a4-wrapper" id="a4Wrapper" style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; width: 100% !important; gap: 30px !important; box-sizing: border-box !important;">
                 <div class="a4-page" id="a4Page" style="margin: 0 auto !important; width: 210mm !important; min-height: 297mm !important; box-sizing: border-box !important; flex-shrink: 0 !important;">
                     <!-- KOP SURAT SEKOLAH -->
-                    <div class="kop-surat" style="border-bottom: none; padding-bottom: 0; margin-bottom: 8px; text-align: center;">
-                        <img src="/<?= htmlspecialchars($kopPath) ?>" alt="Kop Surat Resmi" style="width: 100%; max-height: 105px; object-fit: contain; display: block; margin: 0 auto;">
+                    <div id="pvKopSurat">
+                        <?= render_kop_surat_html(false) ?>
                     </div>
 
                     <!-- JUDUL DOKUMEN -->

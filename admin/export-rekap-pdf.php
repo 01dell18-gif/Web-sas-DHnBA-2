@@ -25,7 +25,7 @@ if ($selectedClassId <= 0) {
 $classInfo = dbFetch("SELECT * FROM kelas WHERE id = :id", ['id' => $selectedClassId]);
 $namaKelas = $classInfo['nama_kelas'] ?? "Kelas {$selectedClassId}";
 $tingkat = $classInfo['tingkat'] ?? 'XII';
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 
 $students = dbFetchAll("SELECT * FROM siswa WHERE class_id = :cid ORDER BY nama ASC", ['cid' => $selectedClassId]);
 
@@ -224,16 +224,7 @@ ob_start();
 <body>
 
     <!-- KOP SURAT -->
-    <div class="header-kop">
-        <?php if (!empty($kopBase64)): ?>
-            <img src="<?= $kopBase64 ?>" alt="Kop Surat">
-        <?php else: ?>
-            <div style="text-align: center; padding: 4px 0;">
-                <div style="font-size: 13pt; font-weight: bold;"><?= htmlspecialchars($namaSekolah) ?></div>
-                <div style="font-size: 8pt; color: #475569;">SISTEM ADMINISTRASI UJIAN SEKOLAH (SAS)</div>
-            </div>
-        <?php endif; ?>
-    </div>
+    <?= render_kop_surat_html(true) ?>
 
     <!-- JUDUL LAPORAN -->
     <div class="title-box">

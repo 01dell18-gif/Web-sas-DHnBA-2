@@ -79,7 +79,7 @@ if (!$tpl) {
     $tpl = dbFetch("SELECT * FROM template_ujian WHERE aktif = 1 LIMIT 1");
 }
 
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $kopPath = __DIR__ . '/' . get_setting('kop_image_path', 'assets/img/kop-header.png');
 $kopBase64 = '';
 if (file_exists($kopPath)) {
@@ -253,15 +253,7 @@ ob_start();
 </head>
 <body>
 
-<!-- HALAMAN 1: BERITA ACARA RESMI -->
-<div class="kop">
-    <?php if ($kopBase64): ?>
-        <img src="<?= $kopBase64 ?>">
-    <?php else: ?>
-        <div style="font-size: 13pt; font-weight: bold;"><?= htmlspecialchars($namaSekolah) ?></div>
-        <hr style="border-top: 2px solid #000; margin-top: 4px;">
-    <?php endif; ?>
-</div>
+<?= render_kop_surat_html(true) ?>
 
 <div class="doc-title">
     <?= $judulDocHtml ?>

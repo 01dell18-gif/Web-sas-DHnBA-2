@@ -181,15 +181,7 @@ ob_start();
 </head>
 <body>
 
-<div class="kop">
-    <?php if ($kopBase64): ?>
-        <img src="<?= $kopBase64 ?>">
-    <?php else: ?>
-        <div style="font-size: 13pt; font-weight: bold;">SMK NEGERI 1 KLUNGKUNG</div>
-        <div style="font-size: 9pt;">Generator Absensi & Berita Acara Ujian</div>
-        <hr style="border-top: 2px solid #000; margin-top: 4px;">
-    <?php endif; ?>
-</div>
+<?= render_kop_surat_html(true) ?>
 
 <div class="doc-title">
     DAFTAR HADIR PESERTA UJIAN<br>

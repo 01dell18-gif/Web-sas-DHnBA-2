@@ -30,7 +30,7 @@ assert "🛡️ Operator" in dashboard or "Operator" in dashboard
 print("   [OK] Operator logged in successfully! Badge displayed.")
 
 print("2. Verifying operator CAN access operational modules...")
-for p in ['/admin/kelas.php', '/admin/siswa.php', '/admin/absensi.php', '/admin/berita-acara.php', '/admin/password.php']:
+for p in ['/admin/kelas.php', '/admin/siswa.php', '/admin/absensi.php', '/admin/berita-acara.php', '/admin/profil.php', '/admin/password.php']:
     c = opener.open(f"{BASE}{p}").read().decode()
     assert "Akses ditolak" not in c
     print(f"   [OK] Operator accessed {p} smoothly.")

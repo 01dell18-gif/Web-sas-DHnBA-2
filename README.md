@@ -75,7 +75,8 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 | `/admin/template-ujian.php` | **Khusus Admin** | **Template Ujian & Editor WYSIWYG:** Konfigurasi template ujian, nama ujian, tahun ajaran, dan editor WYSIWYG berita acara dengan palet tag placeholder interaktif serta live simulasi pratinjau teks. |
 | `/admin/pengaturan.php` | **Khusus Admin** | **Pengaturan Identitas & Kop Surat:** Unggah kop surat resmi, ganti logo, nama sekolah, alamat, kontak, dan URL Google Drive. |
 | `/admin/users.php` | **Khusus Admin** | **Manajemen Pengguna & Hak Akses:** Tambah, edit, dan hapus pengguna dengan pembagian peran Admin vs Operator. Dilengkapi kolom **Password** pada tabel *Daftar Pengguna Terdaftar* dengan ikon mata (`👁️`) untuk toggle melihat password secara interaktif, tombol **Ekspor Excel (.xls)** seluruh akun pengguna, serta modal **Impor Excel (.xls)** untuk unggah data akun massal lengkap dengan template unduhan. |
-| `/admin/password.php` | Admin & Operator | **Ganti Password Akun:** Ubah kata sandi akun masing-masing pengguna dengan enkripsi bcrypt. |
+| `/admin/profil.php` | Admin & Operator | **Profil & Keamanan Akun:** Kelola identitas pengguna, unggah foto profil (avatar) yang tampil di header navigasi, serta perbarui kata sandi akun dengan enkripsi bcrypt. |
+| `/admin/password.php` | Admin & Operator | *Redirect alias* ke halaman `/admin/profil.php`. |
 | `/admin/logout.php` | Admin & Operator | Mengakhiri sesi pengguna secara aman. |
 
 ---

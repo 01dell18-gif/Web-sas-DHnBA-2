@@ -2,10 +2,12 @@
 require_once __DIR__ . '/../config/functions.php';
 require_admin();
 
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $currentScript = basename($_SERVER['PHP_SELF']);
 $pageTitle = $pageTitle ?? 'Panel Administrator';
+$currentUser = get_logged_in_user();
+$userAvatarUrl = get_user_avatar($currentUser);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -46,6 +48,44 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         return false;
     };
 
+    window.hapusCacheWeb = function(event) {
+        if (event) {
+            try { event.preventDefault(); event.stopPropagation(); } catch (e) {}
+        }
+        var btn = document.getElementById('btnHapusCacheWeb');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat" style="display:inline-block; animation: spin 0.75s linear infinite;"></i>';
+        }
+
+        try {
+            sessionStorage.clear();
+            var preserveKeys = ['admin_sidebar_collapsed'];
+            for (var i = localStorage.length - 1; i >= 0; i--) {
+                var key = localStorage.key(i);
+                if (key && preserveKeys.indexOf(key) === -1) {
+                    localStorage.removeItem(key);
+                }
+            }
+        } catch (err) {}
+
+        if ('caches' in window) {
+            try {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) { caches.delete(name); });
+                });
+            } catch (err) {}
+        }
+
+        fetch('/api/clear-cache.php', { method: 'POST', cache: 'no-store' })
+            .catch(function() {})
+            .finally(function() {
+                var sep = window.location.href.indexOf('?') !== -1 ? '&' : '?';
+                var cleanUrl = window.location.href.replace(/([?&])_t=\d+/, '');
+                window.location.href = cleanUrl + sep + '_t=' + Date.now();
+            });
+    };
+
     // Global event delegation for reliable click handling
     document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(e) {
@@ -60,6 +100,12 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         });
     });
     </script>
+    <style>
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    </style>
 </head>
 <body>
 
@@ -88,9 +134,13 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         </div>
     </div>
     <div class="admin-navbar-right">
-        <a href="/admin/password.php" class="user-profile-chip admin-welcome-text" title="Klik untuk Ganti Password Akun" style="text-decoration: none; cursor: pointer;">
-            <div class="user-avatar-icon">
-                <i class="bi bi-person-fill"></i>
+        <a href="/admin/profil.php" class="user-profile-chip admin-welcome-text" title="Buka Profil Akun" style="text-decoration: none; cursor: pointer;">
+            <div class="user-avatar-icon" style="overflow: hidden; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e0e7ff; flex-shrink: 0;">
+                <?php if ($userAvatarUrl): ?>
+                    <img src="<?= htmlspecialchars($userAvatarUrl) ?>?v=<?= time() ?>" alt="Foto Profil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <?php else: ?>
+                    <i class="bi bi-person-fill" style="color: #4f46e5; font-size: 1.15rem;"></i>
+                <?php endif; ?>
             </div>
             <div class="user-info-text">
                 <span class="user-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator') ?></span>
@@ -99,9 +149,9 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                 </span>
             </div>
         </a>
-        <a href="/admin/password.php" class="btn btn-secondary btn-sm" title="Ganti Password Akun">
-            <i class="bi bi-key"></i> <span>Password</span>
-        </a>
+        <button type="button" class="btn btn-secondary btn-sm" id="btnHapusCacheWeb" onclick="hapusCacheWeb(event)" title="Hapus Cache Web & Segarkan Halaman" aria-label="Hapus Cache Web" style="padding: 0.45rem 0.65rem; border-radius: var(--radius-sm); display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+            <i class="bi bi-trash3"></i>
+        </button>
         <a href="/" target="_blank" class="btn btn-secondary btn-sm" title="Buka Halaman Publik">
             <i class="bi bi-globe2"></i> <span>Web Publik</span>
         </a>
@@ -191,7 +241,7 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
         <!-- GRUP 3: PENGATURAN SISTEM (ADMIN) -->
         <?php if (is_admin()): ?>
             <?php 
-            $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php', 'password.php']); 
+            $isPengaturanActive = in_array($currentScript, ['template-ujian.php', 'pengaturan.php', 'users.php', 'profil.php', 'password.php']); 
             ?>
             <div class="sidebar-nav-group <?= $isPengaturanActive ? 'is-open' : '' ?>">
                 <button type="button" class="sidebar-group-header <?= $isPengaturanActive ? 'has-active' : '' ?>" onclick="toggleSidebarGroup(this, event)">
@@ -215,16 +265,16 @@ $pageTitle = $pageTitle ?? 'Panel Administrator';
                         <span class="sidebar-sub-bullet"></span>
                         <span class="sidebar-sub-text">Manajemen User</span>
                     </a>
-                    <a href="/admin/password.php" class="sidebar-sub-item <?= $currentScript === 'password.php' ? 'active' : '' ?>">
+                    <a href="/admin/profil.php" class="sidebar-sub-item <?= in_array($currentScript, ['profil.php', 'password.php']) ? 'active' : '' ?>">
                         <span class="sidebar-sub-bullet"></span>
-                        <span class="sidebar-sub-text">Ganti Password</span>
+                        <span class="sidebar-sub-text">Profil</span>
                     </a>
                 </div>
             </div>
         <?php else: ?>
             <!-- Menu Akun untuk Operator -->
-            <a href="/admin/password.php" class="admin-menu-item <?= $currentScript === 'password.php' ? 'active' : '' ?>" style="margin-top: 0.5rem;">
-                <i class="bi bi-key-fill"></i> <span>Ganti Password</span>
+            <a href="/admin/profil.php" class="admin-menu-item <?= in_array($currentScript, ['profil.php', 'password.php']) ? 'active' : '' ?>" style="margin-top: 0.5rem;">
+                <i class="bi bi-person-badge-fill"></i> <span>Profil</span>
             </a>
         <?php endif; ?>
     </aside>

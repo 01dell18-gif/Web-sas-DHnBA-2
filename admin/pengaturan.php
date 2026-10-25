@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
 
     $kopMode = trim($_POST['kop_mode'] ?? 'image');
-    $namaSekolah = trim($_POST['nama_sekolah'] ?? 'SMK NEGERI 1 KLUNGKUNG');
+    $namaSekolah = trim($_POST['nama_sekolah'] ?? 'SMK NEGERI FYJ Channel');
     $alamatSekolah = trim($_POST['alamat_sekolah'] ?? '');
     $kopBaris1 = trim($_POST['kop_baris_1'] ?? '');
     $kopBaris2 = trim($_POST['kop_baris_2'] ?? '');
@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $kopMode = get_setting('kop_mode', 'image');
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
-$alamatSekolah = get_setting('alamat_sekolah', 'Jl. Merpati No. 1, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali 80711');
-$kopBaris1 = get_setting('kop_baris_1', 'PEMERINTAH PROVINSI BALI');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
+$alamatSekolah = get_setting('alamat_sekolah', 'Jl. Merpati No. 1');
+$kopBaris1 = get_setting('kop_baris_1', 'PEMERINTAH PROVINSI FYJ');
 $kopBaris2 = get_setting('kop_baris_2', 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA');
-$kopBaris3 = get_setting('kop_baris_3', 'SMK NEGERI 1 KLUNGKUNG');
-$kopTelepon = get_setting('kop_telepon', 'Telp. (0366) 21152 | Email: smkn1klungkung@yahoo.com');
-$kopWebsite = get_setting('kop_website', 'Website: smkn1klungkung.sch.id');
+$kopBaris3 = get_setting('kop_baris_3', 'SMK NEGERI FYJ Channel');
+$kopTelepon = get_setting('kop_telepon', 'Telp. (0300) 2002 | Email: smkn@yahoo.com');
+$kopWebsite = get_setting('kop_website', 'Website: smkn.sch.id');
 $driveUrl = get_setting('google_drive_folder_url', 'https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 $kopPath = get_setting('kop_image_path', 'assets/img/kop-header.png');
@@ -142,50 +142,66 @@ require_once __DIR__ . '/layout_header.php';
             </div>
 
             <!-- 2. IDENTITAS SEKOLAH & TEKS KOP CADANGAN -->
-            <div class="card">
-                <div class="card-header">
+            <div class="card" id="cardIdentitasSekolah">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                     <span class="card-title">🏫 Identitas Sekolah & Cadangan Format Teks</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="isiDefaultIdentitasFormatTeks()" style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; padding: 4px 10px; cursor: pointer;" title="Terapkan teks default contoh sesuai format resmi">
+                        <i class="bi bi-arrow-counterclockwise"></i> Format Default Contoh
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
                         <label class="form-label" for="nama_sekolah">Nama Sekolah <span class="required">*</span></label>
                         <input type="text" name="nama_sekolah" id="nama_sekolah" class="form-control" 
-                               value="<?= htmlspecialchars($namaSekolah) ?>" required>
+                               value="<?= htmlspecialchars($namaSekolah) ?>" placeholder="SMK NEGERI FYJ Channel" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="alamat_sekolah">Alamat Lengkap</label>
-                        <textarea name="alamat_sekolah" id="alamat_sekolah" class="form-control" rows="2"><?= htmlspecialchars($alamatSekolah) ?></textarea>
+                        <textarea name="alamat_sekolah" id="alamat_sekolah" class="form-control" rows="2" placeholder="Jl. Merpati No. 1"><?= htmlspecialchars($alamatSekolah) ?></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="kop_baris_1">Kop Baris 1 (Pemerintah)</label>
                         <input type="text" name="kop_baris_1" id="kop_baris_1" class="form-control" 
-                               value="<?= htmlspecialchars($kopBaris1) ?>">
+                               value="<?= htmlspecialchars($kopBaris1) ?>" placeholder="PEMERINTAH PROVINSI FYJ">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="kop_baris_2">Kop Baris 2 (Dinas)</label>
                         <input type="text" name="kop_baris_2" id="kop_baris_2" class="form-control" 
-                               value="<?= htmlspecialchars($kopBaris2) ?>">
+                               value="<?= htmlspecialchars($kopBaris2) ?>" placeholder="DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="kop_baris_3">Kop Baris 3 (Nama Instansi Sekolah)</label>
                         <input type="text" name="kop_baris_3" id="kop_baris_3" class="form-control" 
-                               value="<?= htmlspecialchars($kopBaris3) ?>">
+                               value="<?= htmlspecialchars($kopBaris3) ?>" placeholder="SMK NEGERI FYJ Channel">
                     </div>
 
                     <div class="grid-2">
                         <div class="form-group">
                             <label class="form-label" for="kop_telepon">Kontak / Telepon / Email</label>
                             <input type="text" name="kop_telepon" id="kop_telepon" class="form-control" 
-                                   value="<?= htmlspecialchars($kopTelepon) ?>">
+                                   value="<?= htmlspecialchars($kopTelepon) ?>" placeholder="Telp. (0300) 2002 | Email: smkn@yahoo.com">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="kop_website">Website Sekolah</label>
                             <input type="text" name="kop_website" id="kop_website" class="form-control" 
-                                   value="<?= htmlspecialchars($kopWebsite) ?>">
+                                   value="<?= htmlspecialchars($kopWebsite) ?>" placeholder="Website: smkn.sch.id">
+                        </div>
+                    </div>
+
+                    <!-- Pratinjau Format Kop Teks Interaktif -->
+                    <div style="margin-top: 1.25rem; padding: 12px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 0.8rem; font-weight: 600; color: var(--slate-700);">
+                                <i class="bi bi-eye"></i> Pratinjau Susunan Kop Teks Resmi (Otomatis Tersinkronisasi):
+                            </span>
+                            <span class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 0.72rem; padding: 3px 7px; border-radius: 4px;">Live Preview</span>
+                        </div>
+                        <div id="livePreviewKopBox" style="background: #ffffff; padding: 14px 18px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <!-- Otomatis diisi oleh JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -266,6 +282,89 @@ function testDriveLink() {
     }
     window.open(val, '_blank', 'noopener,noreferrer');
 }
+
+const defaultFormatTeks = {
+    nama_sekolah: 'SMK NEGERI FYJ Channel',
+    alamat_sekolah: 'Jl. Merpati No. 1',
+    kop_baris_1: 'PEMERINTAH PROVINSI FYJ',
+    kop_baris_2: 'DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA',
+    kop_baris_3: 'SMK NEGERI FYJ Channel',
+    kop_telepon: 'Telp. (0300) 2002 | Email: smkn@yahoo.com',
+    kop_website: 'Website: smkn.sch.id'
+};
+
+function isiDefaultIdentitasFormatTeks() {
+    document.getElementById('nama_sekolah').value = defaultFormatTeks.nama_sekolah;
+    document.getElementById('alamat_sekolah').value = defaultFormatTeks.alamat_sekolah;
+    document.getElementById('kop_baris_1').value = defaultFormatTeks.kop_baris_1;
+    document.getElementById('kop_baris_2').value = defaultFormatTeks.kop_baris_2;
+    document.getElementById('kop_baris_3').value = defaultFormatTeks.kop_baris_3;
+    document.getElementById('kop_telepon').value = defaultFormatTeks.kop_telepon;
+    document.getElementById('kop_website').value = defaultFormatTeks.kop_website;
+    updateLiveKopPreview();
+
+    const card = document.getElementById('cardIdentitasSekolah');
+    if (card) {
+        card.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+        card.style.boxShadow = '0 0 0 3px rgba(79, 70, 229, 0.35)';
+        card.style.borderColor = 'var(--primary)';
+        setTimeout(() => {
+            card.style.boxShadow = '';
+            card.style.borderColor = '';
+        }, 1200);
+    }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function updateLiveKopPreview() {
+    const b1 = (document.getElementById('kop_baris_1')?.value || '').trim();
+    const b2 = (document.getElementById('kop_baris_2')?.value || '').trim();
+    const b3 = (document.getElementById('kop_baris_3')?.value || '').trim();
+    const alamat = (document.getElementById('alamat_sekolah')?.value || '').trim();
+    const telp = (document.getElementById('kop_telepon')?.value || '').trim();
+    const web = (document.getElementById('kop_website')?.value || '').trim();
+    const logoSrc = '<?= htmlspecialchars($logoPath) ?>';
+
+    let contactLine = [];
+    if (telp) contactLine.push(escapeHtml(telp));
+    if (web) contactLine.push(escapeHtml(web));
+    let contactStr = contactLine.join(' | ');
+
+    let html = '<table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;"><tr>';
+    if (logoSrc) {
+        html += '<td style="width: 75px; text-align: center; vertical-align: middle; padding-right: 12px;">'
+              + '<img src="/' + escapeHtml(logoSrc) + '?v=<?= time() ?>" alt="Logo" style="max-height: 70px; max-width: 75px; object-fit: contain;">'
+              + '</td>';
+    }
+    html += '<td style="text-align: center; vertical-align: middle;">';
+    if (b1) html += '<div style="font-size: 10.5pt; font-weight: bold; text-transform: uppercase; line-height: 1.25; color: #000;">' + escapeHtml(b1) + '</div>';
+    if (b2) html += '<div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; line-height: 1.25; color: #000;">' + escapeHtml(b2) + '</div>';
+    if (b3) html += '<div style="font-size: 13pt; font-weight: bold; text-transform: uppercase; line-height: 1.25; letter-spacing: 0.5px; color: #000;">' + escapeHtml(b3) + '</div>';
+    if (alamat) html += '<div style="font-size: 8.5pt; line-height: 1.35; margin-top: 2px; color: #222;">' + escapeHtml(alamat) + '</div>';
+    if (contactStr) html += '<div style="font-size: 8.5pt; line-height: 1.35; color: #222;">' + contactStr + '</div>';
+    html += '</td></tr></table>';
+    html += '<div style="border-bottom: 3px double #000; margin-top: 5px;"></div>';
+
+    const box = document.getElementById('livePreviewKopBox');
+    if (box) box.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    ['nama_sekolah', 'alamat_sekolah', 'kop_baris_1', 'kop_baris_2', 'kop_baris_3', 'kop_telepon', 'kop_website'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updateLiveKopPreview);
+    });
+    updateLiveKopPreview();
+});
 </script>
 
 <?php require_once __DIR__ . '/layout_footer.php'; ?>

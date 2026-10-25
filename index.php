@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config/functions.php';
 
-$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI 1 KLUNGKUNG');
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
 ?>
 <!DOCTYPE html>
