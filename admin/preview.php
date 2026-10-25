@@ -25,6 +25,7 @@ if ($type === 'berita-acara' || $type === 'berita_acara' || $type === 'ba') {
     $doc = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
 }
 
+$title = $doc ? "Pratinjau {$docTypeName} - {$doc['nama_kelas']} ({$doc['mata_pelajaran']})" : "Dokumen Tidak Ditemukan";
 $namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 ?>
 <!DOCTYPE html>

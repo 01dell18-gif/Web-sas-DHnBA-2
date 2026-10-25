@@ -9,16 +9,16 @@ Aplikasi ini merupakan sistem administrasi ujian presisi dan fungsional untuk **
 ## 🏫 Identitas & Pengaturan Default Sekolah
 
 | Parameter Pengaturan | Nilai Konfigurasi Default |
-|---|---|
+| --- | --- |
 | **Nama Sekolah** | **SMK NEGERI FYJ Channel** |
 | **Alamat Sekolah** | Jl. Merpati No. 1 |
 | **Kop Surat Baris 1** | PEMERINTAH PROVINSI FYJ |
 | **Kop Surat Baris 2** | DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA |
 | **Kop Surat Baris 3** | SMK NEGERI FYJ Channel |
-| **Kontak & Telepon** | Telp. (0300) 2002 \| Email: smkn@yahoo.com |
+| **Kontak & Telepon** | Telp. (0300) 2002 • Email: smkn@yahoo.com |
 | **Website Resmi** | Website: smkn.sch.id |
 | **Logo Sekolah** | `storage/uploads/logo/logo_1792652650.png` |
-| **Folder Google Drive** | `https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing` |
+| **Folder Google Drive** | [Tautan Google Drive](https://drive.google.com/drive/folders/1sHpxyW6DbHSp1D7KNN-_xTu8fG9rY35h?usp=sharing) |
 | **Format Template Ujian** | Sumatif Akhir Semester (SAS) Ganjil - Tahun Ajaran 2026/2027 |
 
 ---
@@ -34,6 +34,7 @@ start-server.bat
 ```
 
 Script ini akan:
+
 1. Memeriksa ketersediaan PHP di `C:\xampp\php\php.exe`.
 2. Mengaktifkan ekstensi yang diperlukan (`gd`, `mbstring`, `pdo_sqlite`, `zip`).
 3. Menjalankan web server lokal di `http://localhost:8081`.
@@ -44,12 +45,15 @@ Script ini akan:
 ```bash
 "C:\xampp\php\php.exe" -d extension_dir="C:\xampp\php\ext" -d browscap="" -d extension=gd -S 127.0.0.1:8081
 ```
+
 Lalu buka peramban ke: `http://localhost:8081/`
 
 ---
 
 ## 🔑 Kredensial Akses Pengguna Sistem
+
 Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
+
 * **1. Administrator (Hak Akses Penuh Seluruh Sistem):**
   * **Nama Akun:** `Administrator SAS SMK`
   * **Username:** `admin`
@@ -66,8 +70,9 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 ## 📁 Struktur Navigasi & Modul Aplikasi
 
 ### 1. Halaman Publik (Dapat Diakses Guru & Pengawas)
+
 | URL / Berkas | Fungsi & Fitur Utama |
-|---|---|
+| --- | --- |
 | `/index.php` | **Beranda Portal Publik:** Dilengkapi 3 kartu pilihan utama: **Daftar Hadir Ujian**, **Berita Acara Ujian**, dan **Arsip Dokumen Ujian**. |
 | `/absensi.php` | **Generator Formulir Daftar Hadir Ujian:** Live synchronised A4 Preview, pemilihan kelas, daftar siswa interaktif per kelas, status kehadiran (Hadir, Dispensasi, Izin, Sakit, Tidak Hadir), input nama pengawas dengan fitur ketik langsung (searchable datalist dari Data Guru), canvas tanda tangan digital pengawas, mode tanda tangan manual, dan tombol cetak/unduh PDF. Data tersimpan langsung di database. |
 | `/berita-acara.php` | **Generator Formulir Berita Acara Ujian:** Format redaksi dinamis dari template, validasi jumlah peserta (Hadir + Tidak Hadir = Seharusnya), input nama pengawas terintegrasi Data Guru, unggah & kompresi foto kamera ruangan ujian (maks 4 foto), tanda tangan digital pengawas, pratinjau 2 halaman A4 (Berita Acara + Lampiran Bukti Pelaksanaan), dan unduh PDF. Data tersimpan langsung di database. |
@@ -78,8 +83,9 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 | `/api/clear-cache.php` | Endpoint API untuk menghapus cache sesi dan file sementara server. |
 
 ### 2. Panel Administrator & Operator (`/admin/`)
+
 | Menu / Berkas | Hak Akses | Fungsi & Fitur Utama |
-|---|:---:|---|
+| --- | :---: | --- |
 | `/admin/index.php` | Admin & Operator | **Dashboard:** Statistik total kelas, siswa, guru, arsip absensi, berita acara, Google Drive, alert selisih dokumen, pintasan cepat, dan log aktivitas. |
 | `/admin/kelas.php` | Admin & Operator | **Kelola Data Kelas:** Tambah, edit, hapus kelas (ikon aksi terstandarisasi), toggle status aktif/nonaktif, ringkasan siswa per kelas, dan tombol Reset Hapus Semua Data Kelas. |
 | `/admin/siswa.php` | Admin & Operator | **Kelola Data Siswa:** Tambah, edit, hapus (ikon aksi), toggle aktif siswa, filter siswa per kelas, **Ekspor Excel (.xls)** per kelas/semua kelas, dan tombol Reset Hapus Semua Data Siswa. |
@@ -103,37 +109,40 @@ Sistem mendukung 2 tingkatan hak akses berbasis peran (RBAC):
 ---
 
 ## 🎨 Pembaruan Desain & UI/UX Terkini
+
 1. **Menu Publik Arsip Dokumen (Pelihat Pengawas):**
-   - Halaman publik `/arsip.php` yang dirancang khusus bagi para pengawas ujian untuk memeriksa apakah berkas presensi dan berita acara yang baru saja diisi sudah tersimpan dengan aman di database sekolah.
-   - Menyediakan filter lengkap: pencarian teks bebas (mata pelajaran, nama pengawas, ruang ujian), filter tanggal pelaksanaan ujian, filter tingkat kelas (X, XI, XII), filter kelas spesifik, serta filter status kelengkapan dokumen.
-   - Dilengkapi tombol pratinjau PDF langsung (`target="_blank"`) yang men-stream berkas PDF secara instan ke tab browser baru.
+   * Halaman publik `/arsip.php` yang dirancang khusus bagi para pengawas ujian untuk memeriksa apakah berkas presensi dan berita acara yang baru saja diisi sudah tersimpan dengan aman di database sekolah.
+   * Menyediakan filter lengkap: pencarian teks bebas (mata pelajaran, nama pengawas, ruang ujian), filter tanggal pelaksanaan ujian, filter tingkat kelas (X, XI, XII), filter kelas spesifik, serta filter status kelengkapan dokumen.
+   * Dilengkapi tombol pratinjau PDF langsung (`target="_blank"`) yang men-stream berkas PDF secara instan ke tab browser baru.
 2. **Penyempurnaan Header Admin: Tombol Hapus Cache & Akses Profil:**
-   - Tombol ganti password di header telah dilebur ke nama akun pengguna (`/admin/profil.php`), sehingga mengklik nama akun langsung membuka menu **Profil Akun**.
-   - Menambahkan tombol ikon **Hapus Cache (`bi-trash3`)** di header atas untuk membersihkan cache browser/storage lokal dan merefresh kembali halaman sesuai menu terakhir yang dibuka.
+   * Tombol ganti password di header telah dilebur ke nama akun pengguna (`/admin/profil.php`), sehingga mengklik nama akun langsung membuka menu **Profil Akun**.
+   * Menambahkan tombol ikon **Hapus Cache (`bi-trash3`)** di header atas untuk membersihkan cache browser/storage lokal dan merefresh kembali halaman sesuai menu terakhir yang dibuka.
 3. **Menu Profil Akun Lengkap dengan Foto Profil (Avatar):**
-   - Halaman `/admin/profil.php` memfasilitasi identitas akun pengguna, pratinjau avatar interaktif, unggah foto profil baru, serta pembaruan password.
-   - Foto avatar otomatis tampil pada pojok kanan atas bilah header admin.
+   * Halaman `/admin/profil.php` memfasilitasi identitas akun pengguna, pratinjau avatar interaktif, unggah foto profil baru, serta pembaruan password.
+   * Foto avatar otomatis tampil pada pojok kanan atas bilah header admin.
 4. **Pratinjau Dokumen Tab Baru (Ikon Mata 👁️ Langsung Tampil Utuh):**
-   - Membuka dokumen PDF resmi secara *native* di tab baru (`/admin/absensi.php?action=view_single&id=...` dan `/admin/berita-acara.php?action=view_single&id=...`) dengan header `application/pdf; inline`. Dokumen A4 tampil 100% utuh, jernih, dan responsif.
+   * Membuka dokumen PDF resmi secara *native* di tab baru (`/admin/absensi.php?action=view_single&id=...` dan `/admin/berita-acara.php?action=view_single&id=...`) dengan header `application/pdf; inline`. Dokumen A4 tampil 100% utuh, jernih, dan responsif.
 5. **Popup Konfirmasi "Lanjut / Tidak" untuk Tombol Hapus Semua Data:**
-   - Menggantikan prompt native dengan modal dialog konfirmasi modern dan elegan (`#modalConfirmResetGlobal`) dengan dua pilihan tombol tegas: **"Lanjut"** (merah) dan **"Tidak"** (abu-abu).
+   * Menggantikan prompt native dengan modal dialog konfirmasi modern dan elegan (`#modalConfirmResetGlobal`) dengan dua pilihan tombol tegas: **"Lanjut"** (merah) dan **"Tidak"** (abu-abu).
 6. **Fitur Intip/Lihat Password Interaktif (Ikon Mata 👁️):**
-   - Diterapkan pada tabel data pengguna, form tambah pengguna, dan formulir login admin.
+   * Diterapkan pada tabel data pengguna, form tambah pengguna, dan formulir login admin.
 7. **Unduh Sekaligus Berupa File ZIP (Universal ZIP Generator):**
-   - Mendukung native `ZipArchive` serta mesin fallback murni **Pure-PHP PKZIP Packer** berstandar RFC tanpa dependensi modul eksternal.
+   * Mendukung native `ZipArchive` serta mesin fallback murni **Pure-PHP PKZIP Packer** berstandar RFC tanpa dependensi modul eksternal.
 8. **Format Matriks Rekap Kehadiran Siswa:**
-   - Judul kolom mata pelajaran diputar 180° secara vertikal (`writing-mode: vertical-rl; transform: rotate(180deg)`), kalkulasi otomatis persentase kehadiran `(Hadir + Dispensasi) / Total Mapel × 100%`.
+   * Judul kolom mata pelajaran diputar 180° secara vertikal (`writing-mode: vertical-rl; transform: rotate(180deg)`), kalkulasi otomatis persentase kehadiran `(Hadir + Dispensasi) / Total Mapel × 100%`.
 9. **Standardisasi Ikon Aksi & Format Excel (.xls):**
-   - Seluruh tabel master dan arsip menggunakan kelompok tombol ikon yang seragam (`.action-btn-group`), format ekspor/impor `.xls` berstandar MIME `application/vnd.ms-excel` dan proteksi teks `mso-number-format: "\@"`.
+   * Seluruh tabel master dan arsip menggunakan kelompok tombol ikon yang seragam (`.action-btn-group`), format ekspor/impor `.xls` berstandar MIME `application/vnd.ms-excel` dan proteksi teks `mso-number-format: "\@"`.
 10. **Modul Master Data Mapel & Integrasi Form Publik:**
-    - Master data kurikulum ujian sekolah terhubung dinamis ke input formulir publik melalui datalist pencarian cepat.
+    * Master data kurikulum ujian sekolah terhubung dinamis ke input formulir publik melalui datalist pencarian cepat.
 11. **Tata Letak Filter Horizontal Mendatar:**
-    - Formulir filter pada menu Arsip Daftar Hadir dan Berita Acara tersusun sejajar rapi dalam satu baris mendatar dan responsif melipat di perangkat seluler.
+    * Formulir filter pada menu Arsip Daftar Hadir dan Berita Acara tersusun sejajar rapi dalam satu baris mendatar dan responsif melipat di perangkat seluler.
 
 ---
 
 ## 🗄️ Arsitektur Basis Data
+
 Aplikasi mendukung 2 mode basis data yang keduanya menyimpan seluruh perubahan secara terpusat:
+
 1. **SQLite (Bawaan & Siap Pakai):** Tersimpan di `database/sas.sqlite`. Sudah terisi penuh (*pre-seeded*) dengan:
    * **Identitas Sekolah:** SMK NEGERI FYJ Channel (Jl. Merpati No. 1).
    * **11 Kelas aktif:** XII AK, XII BD 1, XII BD 2, XII DKV, XII LPB, XII LPKKK 1, XII LPKKK 2, XII MP 1, XII MP 2, XII TKJ, XII TSM.
@@ -143,7 +152,9 @@ Aplikasi mendukung 2 mode basis data yang keduanya menyimpan seluruh perubahan s
    * **100 Arsip Daftar Hadir & 94 Berita Acara:** Tersimpan lengkap dengan riwayat waktu pelaksanaan.
    * **Template Ujian:** SAS Ganjil 2026/2027 siap pakai.
 2. **MySQL / MariaDB:** File dump skema dan data lengkap tersedia di:
-   ```
+
+   ```text
    database/database_mysql.sql
    ```
+
    Untuk beralih ke MySQL, cukup sesuaikan konstanta di `config/database.php`. Seluruh query telah diabstraksi via PDO sehingga 100% kompatibel antara SQLite dan MySQL.
