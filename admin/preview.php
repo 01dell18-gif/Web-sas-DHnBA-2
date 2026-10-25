@@ -25,14 +25,14 @@ if ($type === 'berita-acara' || $type === 'berita_acara' || $type === 'ba') {
     $doc = dbFetch("SELECT * FROM absensi WHERE id = :id", ['id' => $id]);
 }
 
-$title = $doc ? "Pratinjau {$docTypeName} - {$doc['nama_kelas']} ({$doc['mata_pelajaran']})" : "Dokumen Tidak Ditemukan";
+$namaSekolah = get_setting('nama_sekolah', 'SMK NEGERI FYJ Channel');
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title) ?> | SAS SMKN 1 Klungkung</title>
+    <title><?= htmlspecialchars($title) ?> | <?= htmlspecialchars($namaSekolah) ?></title>
     <link rel="icon" type="image/png" href="/assets/img/logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">

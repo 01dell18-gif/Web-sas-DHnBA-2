@@ -32,7 +32,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_excel') {
         ];
     }
     log_activity('EXPORT_EXCEL', "Mengekspor data guru ke format Excel (.xls)");
-    export_excel_xls("Data_Guru_SMKN1_Klungkung_" . date('Ymd_His') . ".xls", $headers, $rows, [2]);
+    $cleanSekolah = preg_replace('/[^a-zA-Z0-9_\-]/', '_', get_setting('nama_sekolah', 'SMK'));
+    export_excel_xls("Data_Guru_{$cleanSekolah}_" . date('Ymd_His') . ".xls", $headers, $rows, [2]);
 }
 
 // Handle POST actions

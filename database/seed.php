@@ -179,7 +179,7 @@ if (!$userCount) {
     dbInsert('users', [
         'username' => 'admin',
         'password' => password_hash('admin123', PASSWORD_BCRYPT),
-        'nama_lengkap' => 'Administrator SAS SMKN 1 Klungkung',
+        'nama_lengkap' => 'Administrator SAS SMK',
         'role' => 'admin',
         'created_at' => date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
@@ -192,7 +192,7 @@ if (!$operatorCount) {
     dbInsert('users', [
         'username' => 'operator',
         'password' => password_hash('operator123', PASSWORD_BCRYPT),
-        'nama_lengkap' => 'Operator SAS SMKN 1 Klungkung',
+        'nama_lengkap' => 'Operator SAS SMK',
         'role' => 'operator',
         'created_at' => date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
