@@ -1,3 +1,3 @@
 <?php
-// Root composer autoloader proxy for IDE indexing & static analyzers
+// Root composer autoloader proxy
 require_once __DIR__ . '/dompdf/autoload.inc.php';

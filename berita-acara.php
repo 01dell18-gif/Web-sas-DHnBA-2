@@ -49,6 +49,7 @@ $defaultTpl = $templates[0] ?? [
         <li><a href="/" class="nav-link"><i class="bi bi-house"></i> Beranda</a></li>
         <li><a href="/absensi.php" class="nav-link"><i class="bi bi-clipboard-check"></i> Daftar Hadir</a></li>
         <li><a href="/berita-acara.php" class="nav-link active"><i class="bi bi-file-earmark-text"></i> Berita Acara</a></li>
+        <li><a href="/arsip.php" class="nav-link"><i class="bi bi-archive"></i> Arsip Dokumen</a></li>
         <li><a href="/admin/login.php" class="btn btn-secondary btn-sm"><i class="bi bi-shield-lock"></i> Admin</a></li>
     </ul>
 </header>

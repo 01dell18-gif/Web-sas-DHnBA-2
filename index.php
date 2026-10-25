@@ -135,6 +135,7 @@ $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
         <li><a href="/" class="nav-link active"><i class="bi bi-house"></i> Beranda</a></li>
         <li><a href="/absensi.php" class="nav-link"><i class="bi bi-clipboard-check"></i> Daftar Hadir</a></li>
         <li><a href="/berita-acara.php" class="nav-link"><i class="bi bi-file-earmark-text"></i> Berita Acara</a></li>
+        <li><a href="/arsip.php" class="nav-link"><i class="bi bi-archive"></i> Arsip Dokumen</a></li>
         <li><a href="/admin/login.php" class="btn btn-secondary btn-sm"><i class="bi bi-shield-lock"></i> Admin</a></li>
     </ul>
 </header>
@@ -181,6 +182,24 @@ $logoPath = get_setting('logo_path', 'storage/uploads/logo/logo_default.png');
             <div>
                 <a href="/berita-acara.php" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1rem;">
                     Buka Berita Acara <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Pilihan 3: Arsip Dokumen (Pelihat Pengawas) -->
+        <div class="choice-card">
+            <div>
+                <div class="choice-icon" style="background: #e0f2fe; color: #0284c7;">
+                    <i class="bi bi-archive-fill"></i>
+                </div>
+                <h2 class="choice-title">Arsip Dokumen Ujian</h2>
+                <p class="choice-desc">
+                    Lihat dan pastikan lembar presensi serta berita acara yang telah dibuat sudah tersimpan aman di database.
+                </p>
+            </div>
+            <div>
+                <a href="/arsip.php" class="btn btn-secondary btn-block" style="padding: 0.85rem; font-size: 1rem; background: #f0f9ff; color: #0284c7; border-color: #bae6fd;">
+                    Buka Arsip Dokumen <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
         </div>

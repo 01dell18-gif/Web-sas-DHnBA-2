@@ -1,8 +1,12 @@
 storage/sessions/*
 !storage/sessions/.gitkeep
+storage/absensi/*.pdf
+!storage/absensi/.gitkeep
+storage/berita-acara/*.pdf
+!storage/berita-acara/.gitkeep
 __pycache__/
 *.pyc
 *.sqlite-shm
 *.sqlite-wal
 tools/test_chrome_profile*
-
+scratch/
